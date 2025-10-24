@@ -1,0 +1,628 @@
+################################################################################
+# HyFuzz MCP Server - Default Configuration
+#
+# This file contains the default configuration for the HyFuzz MCP Server.
+# Values can be overridden by:
+# 1. Environment variables (HYFUZZ_SECTION__KEY format)
+# 2. .env file
+# 3. Command-line arguments
+#
+# Version: 1.0.0
+# Last Updated: 2025-01-15
+################################################################################
+
+################################################################################
+# SERVER CONFIGURATION
+################################################################################
+server:
+  # Server binding
+  host: "0.0.0.0"               # Bind to all interfaces
+  port: 5000                    # Default port
+
+  # Debug and development
+  debug: false                  # Debug mode (disable in production)
+  reload: false                 # Auto-reload on file changes
+
+  # Worker configuration
+  workers: 1                    # Number of worker processes
+  worker_timeout: 60            # Worker timeout (seconds)
+
+  # Request handling
+  request_timeout: 30           # Request processing timeout
+  response_timeout: 60          # Wait for response timeout
+  max_concurrent_requests: 1000 # Maximum concurrent requests
+
+  # Buffer and memory
+  buffer_size: 8192             # I/O buffer size (bytes)
+  max_message_size: 1048576     # Max message size (1 MB)
+
+  # Server info
+  name: "hyfuzz-server"
+  version: "1.0.0"
+  environment: "development"    # development, testing, staging, production
+
+################################################################################
+# MCP (MODEL CONTEXT PROTOCOL) CONFIGURATION
+################################################################################
+mcp:
+  # Protocol version
+  protocol_version: "2024-11-05"
+
+  # Capabilities
+  capabilities:
+    resources:
+      enabled: true
+      listChanged: true
+    tools:
+      enabled: true
+      listChanged: true
+    prompts:
+      enabled: true
+      listChanged: true
+    sampling:
+      enabled: false
+    experimental:
+      enabled: false
+
+  # Resource limits
+  resource_limits:
+    max_resources: 1000
+    max_tools: 500
+    max_prompts: 100
+    max_concurrent_operations: 100
+
+  # Message handling
+  validate_input: true
+  validate_output: true
+  format: "json"
+
+  # Notification settings
+  notify_resource_changes: true
+  notify_tool_changes: true
+  notify_prompt_changes: true
+
+################################################################################
+# TRANSPORT LAYER CONFIGURATION
+################################################################################
+transport:
+  # Primary transport
+  default: "stdio"              # Options: stdio, http, websocket
+
+  # Standard I/O transport (recommended for MCP)
+  stdio:
+    enabled: true
+    encoding: "utf-8"
+    buffering: true
+    buffer_size: 8192
+    line_ending: "\n"
+
+  # HTTP transport
+  http:
+    enabled: false
+    endpoint: "/mcp"
+    host: "0.0.0.0"
+    port: 5000
+    ssl: false
+    ssl_cert_path: null
+    ssl_key_path: null
+    allowed_origins:
+      - "http://localhost:*"
+      - "http://127.0.0.1:*"
+
+  # WebSocket transport
+  websocket:
+    enabled: false
+    endpoint: "/ws/mcp"
+    host: "0.0.0.0"
+    port: 5000
+    ssl: false
+    ping_interval: 20            # Keep-alive ping interval (seconds)
+    ping_timeout: 10             # Ping response timeout (seconds)
+    max_connections: 100
+    max_message_queue: 100
+
+################################################################################
+# SESSION MANAGEMENT
+################################################################################
+session:
+  # Session configuration
+  enabled: true
+  max_sessions: 100
+  session_timeout: 3600         # 1 hour (seconds)
+
+  # Session storage
+  storage_type: "memory"        # Options: memory, redis, file
+  storage_path: "data/sessions"
+
+  # Session cleanup
+  cleanup_enabled: true
+  cleanup_interval: 300         # 5 minutes
+
+  # Session context
+  preserve_context: true
+  max_history: 100              # Max request history per session
+
+################################################################################
+# LLM SERVICE CONFIGURATION
+################################################################################
+llm:
+  # Provider selection
+  provider: "ollama"            # Options: ollama, mock, openai
+
+  # Ollama configuration
+  ollama:
+    enabled: true
+    base_url: "http://localhost:11434"
+    timeout: 300                # Request timeout (seconds)
+    retries: 3
+    backoff_factor: 2
+
+  # Model configuration
+  models:
+    primary_model: "mistral"    # Default model for general tasks
+    code_analysis_model: "mistral"  # For code vulnerability analysis
+    embedding_model: "mistral"  # For embeddings
+
+  # LLM parameters
+  temperature: 0.7              # Randomness (0.0-2.0)
+  top_p: 0.95                   # Nucleus sampling
+  top_k: 40                     # Top-k sampling
+  max_tokens: 2048              # Maximum tokens in response
+
+  # CoT (Chain-of-Thought) configuration
+  cot:
+    enabled: true
+    max_reasoning_steps: 10
+    include_reasoning_in_response: true
+
+  # Embedding configuration
+  embedding:
+    enabled: true
+    dimension: 768
+    batch_size: 32
+
+  # Caching for LLM responses
+  cache:
+    enabled: true
+    ttl: 3600                   # Cache time-to-live (seconds)
+    max_size: 10000             # Maximum cache entries
+
+################################################################################
+# KNOWLEDGE BASE CONFIGURATION
+################################################################################
+knowledge:
+  # Data directory
+  data_dir: "data"
+  cache_dir: "data/cache"
+
+  # CWE (Common Weakness Enumeration)
+  cwe:
+    enabled: true
+    source: "local"             # Options: local, remote, hybrid
+    cache_enabled: true
+    cache_file: "data/cache/cwe_graph.pkl"
+    update_interval: 86400      # Daily update (seconds)
+    max_cache_size: 50000
+
+  # CVE (Common Vulnerabilities and Exposures)
+  cve:
+    enabled: true
+    source: "local"             # Options: local, remote, hybrid
+    cache_enabled: true
+    cache_file: "data/cache/cve_graph.pkl"
+    update_interval: 86400      # Daily update
+    max_cache_size: 50000
+
+  # Vulnerability database
+  vulnerability_db:
+    enabled: true
+    type: "sqlite"              # Options: sqlite, mysql, postgresql
+    path: "data/vulnerability.db"
+    auto_backup: true
+    backup_interval: 604800     # Weekly backup
+    backup_path: "data/backups"
+
+  # Graph configuration
+  graph:
+    type: "networkx"            # Graph library
+    direction: "directed"
+    enable_caching: true
+
+  # Vector database (embeddings)
+  vector_db:
+    enabled: true
+    type: "memory"              # Options: memory, faiss, pinecone
+    dimension: 768
+    similarity_metric: "cosine"
+
+################################################################################
+# CACHING CONFIGURATION
+################################################################################
+cache:
+  # Cache type
+  type: "memory"                # Options: memory, redis, memcached
+
+  # Memory cache
+  memory:
+    max_size: 10000             # Maximum entries
+    ttl: 3600                   # Time-to-live (seconds)
+    eviction_policy: "lru"      # Least Recently Used
+
+  # Redis cache (if applicable)
+  redis:
+    enabled: false
+    host: "localhost"
+    port: 6379
+    db: 0
+    password: null
+    ttl: 3600
+
+  # Cache warming
+  warm_on_startup: false
+  warm_categories: []
+
+################################################################################
+# LOGGING CONFIGURATION
+################################################################################
+logging:
+  # Global log level
+  level: "INFO"                 # DEBUG, INFO, WARNING, ERROR, CRITICAL
+
+  # Log format
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  date_format: "%Y-%m-%d %H:%M:%S"
+
+  # Console handler
+  console:
+    enabled: true
+    level: "INFO"
+
+  # File handler
+  file:
+    enabled: true
+    path: "logs/server.log"
+    level: "DEBUG"
+    max_bytes: 10485760         # 10 MB
+    backup_count: 5             # Keep 5 backup files
+
+  # Module-specific log levels
+  loggers:
+    mcp_server:
+      level: "INFO"
+    llm:
+      level: "INFO"
+    knowledge:
+      level: "INFO"
+    transport:
+      level: "DEBUG"
+    api:
+      level: "INFO"
+
+  # Performance logging
+  performance:
+    enabled: true
+    log_slow_requests: true
+    slow_request_threshold: 1.0  # Log requests > 1 second
+
+################################################################################
+# SECURITY CONFIGURATION
+################################################################################
+security:
+  # Authentication
+  auth:
+    enabled: false              # Disable for development
+    type: "api_key"             # Options: api_key, jwt, oauth2
+
+    # API Key authentication
+    api_key:
+      header_name: "X-API-Key"
+      required: false
+
+  # Authorization
+  authorization:
+    enabled: false
+    type: "rbac"                # Role-Based Access Control
+
+  # Rate limiting
+  rate_limit:
+    enabled: false              # Disable for development
+    requests_per_minute: 60
+    burst_size: 10
+    storage: "memory"
+
+  # Input validation
+  input_validation:
+    enabled: true
+    sanitize_input: false       # Don't sanitize for debugging
+    max_input_length: 10000
+    allowed_patterns: null
+
+  # HTTPS/TLS
+  tls:
+    enabled: false
+    cert_path: null
+    key_path: null
+    verify_client: false
+
+  # CORS (Cross-Origin Resource Sharing)
+  cors:
+    enabled: false
+    allowed_origins:
+      - "http://localhost:*"
+      - "http://127.0.0.1:*"
+    allowed_methods:
+      - "GET"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+      - "OPTIONS"
+    allowed_headers:
+      - "Content-Type"
+      - "Authorization"
+
+################################################################################
+# MONITORING AND HEALTH CHECK
+################################################################################
+monitoring:
+  # Health check
+  health_check:
+    enabled: true
+    interval: 30                # Check interval (seconds)
+    endpoint: "/health"
+    check_llm_connection: true
+    check_knowledge_base: true
+    check_cache: true
+
+  # Metrics
+  metrics:
+    enabled: true
+    export_format: "prometheus" # Options: prometheus, json
+    export_interval: 60         # Seconds
+    export_endpoint: "/metrics"
+
+    # Metrics to track
+    track_requests: true
+    track_latency: true
+    track_errors: true
+    track_cache_hits: true
+
+  # Tracing
+  tracing:
+    enabled: false
+    sample_rate: 0.1
+    export_format: "jaeger"
+    export_endpoint: "http://localhost:6831"
+
+################################################################################
+# ERROR HANDLING
+################################################################################
+error:
+  # Error reporting
+  report_errors: true
+  include_stack_trace: true     # Disable in production
+
+  # Error codes
+  use_error_codes: true
+
+  # Retry policy
+  retry:
+    enabled: true
+    max_attempts: 3
+    backoff_factor: 2           # Exponential backoff
+    max_backoff: 300            # Maximum backoff (seconds)
+
+  # Fallback behavior
+  fallback_enabled: true
+  fallback_timeout: 5           # Fallback timeout (seconds)
+
+################################################################################
+# FEATURES AND CAPABILITIES
+################################################################################
+features:
+  # Payload generation
+  payload_generation:
+    enabled: true
+    max_payloads_per_request: 10
+    payload_format: "auto"      # auto, uri, body, header
+
+  # CoT reasoning
+  cot_reasoning:
+    enabled: true
+    include_reasoning_steps: true
+    max_steps: 10
+
+  # Knowledge fusion
+  knowledge_fusion:
+    enabled: true
+    fusion_strategy: "weighted"  # Options: simple, weighted, ensemble
+    weight_symbolic: 0.6
+    weight_semantic: 0.4
+
+  # Feedback learning
+  feedback_learning:
+    enabled: true
+    min_feedback_samples: 10
+    update_interval: 3600       # Update models hourly
+
+  # Advanced features
+  advanced:
+    enable_experimental: false
+    enable_beta_features: false
+
+################################################################################
+# DATABASE CONFIGURATION
+################################################################################
+database:
+  # Database type
+  type: "sqlite"                # Options: sqlite, mysql, postgresql
+
+  # SQLite configuration
+  sqlite:
+    path: "data/hyfuzz.db"
+
+  # MySQL configuration (if applicable)
+  mysql:
+    host: "localhost"
+    port: 3306
+    user: "root"
+    password: ""
+    database: "hyfuzz"
+
+  # PostgreSQL configuration (if applicable)
+  postgresql:
+    host: "localhost"
+    port: 5432
+    user: "postgres"
+    password: ""
+    database: "hyfuzz"
+
+  # Connection settings
+  pool_size: 5
+    max_overflow: 10
+  pool_timeout: 30
+  pool_recycle: 3600
+  echo_sql: false              # Log SQL queries
+
+################################################################################
+# PERFORMANCE TUNING
+################################################################################
+performance:
+  # Threading
+  max_threads: 10
+  thread_pool_size: 4
+
+  # Async configuration
+  async:
+    enabled: true
+    max_concurrent_tasks: 100
+
+  # Memory management
+  memory:
+    gc_enabled: true
+    gc_interval: 3600          # Garbage collect hourly
+    max_memory_mb: 2048        # Max memory usage
+
+  # Optimization
+  optimize_queries: true
+  cache_optimization: true
+  parallel_processing: true
+
+################################################################################
+# API DOCUMENTATION
+################################################################################
+api:
+  # Documentation
+  documentation:
+    enabled: true
+    swagger_enabled: true
+    redoc_enabled: true
+    endpoints:
+      swagger: "/docs"
+      redoc: "/redoc"
+      openapi: "/openapi.json"
+
+  # API versioning
+  version: "v1"
+  base_path: "/api/v1"
+
+################################################################################
+# DEVELOPMENT-SPECIFIC SETTINGS
+################################################################################
+development:
+  # Hot reload
+  hot_reload: false
+  watch_paths:
+    - "src/"
+    - "config/"
+
+  # Debug toolbar
+  debug_toolbar: false
+
+  # Development endpoints
+  dev_endpoints:
+    enabled: false
+    endpoints:
+      - "/dev/config"          # View configuration
+      - "/dev/logs"            # View logs
+      - "/dev/cache"           # Cache statistics
+      - "/dev/reset"           # Reset state
+
+  # Test data
+  load_test_data: false
+  test_data_path: "tests/fixtures/data"
+
+################################################################################
+# ENVIRONMENT-SPECIFIC OVERRIDES
+################################################################################
+
+# Development environment
+development_overrides:
+  server:
+    debug: true
+    reload: true
+  security:
+    auth:
+      enabled: false
+    rate_limit:
+      enabled: false
+  logging:
+    level: "DEBUG"
+  development:
+    hot_reload: true
+    dev_endpoints:
+      enabled: true
+
+# Testing environment
+testing_overrides:
+  server:
+    debug: true
+    timeout: 5
+  knowledge:
+    cwe:
+      update_interval: 0       # No auto-update
+    cve:
+      update_interval: 0
+  cache:
+    ttl: 60                    # Short TTL for tests
+  logging:
+    level: "CRITICAL"         # Minimal output
+  llm:
+    provider: "mock"          # Use mock provider
+
+# Staging environment
+staging_overrides:
+  server:
+    debug: false
+    workers: 2
+  security:
+    auth:
+      enabled: true
+    tls:
+      enabled: true
+
+# Production environment
+production_overrides:
+  server:
+    debug: false
+    reload: false
+    workers: 4
+  security:
+    auth:
+      enabled: true
+    tls:
+      enabled: true
+    input_validation:
+      sanitize_input: true
+  logging:
+    level: "WARNING"
+    console:
+      enabled: false
+  error:
+    include_stack_trace: false
+  development:
+    dev_endpoints:
+      enabled: false
+
+################################################################################
+# END OF DEFAULT CONFIGURATION
+################################################################################

@@ -1,0 +1,696 @@
+################################################################################
+# HyFuzz MCP Server - Logging Configuration
+#
+# This file contains comprehensive logging configuration for the MCP server.
+# Uses Python's logging.config dictConfig format for maximum flexibility.
+#
+# Supports:
+# - Multiple loggers for different modules
+# - Console and file handlers with rotation
+# - Custom formatters for different log types
+# - Log level control per module
+# - Performance and error logging
+# - Structured logging support
+#
+# Version: 1.0.0
+# Last Updated: 2025-01-15
+################################################################################
+
+# Disable existing loggers to have full control
+disable_existing_loggers: false
+
+################################################################################
+# FORMATTERS - Define log output formats
+################################################################################
+formatters:
+
+  # Standard format for most logs
+  standard:
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+  # Verbose format with more details
+  verbose:
+    format: "%(asctime)s - %(name)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+  # Compact format for console
+  compact:
+    format: "%(levelname)s | %(name)s | %(message)s"
+
+  # JSON format for structured logging
+  json_format:
+    format: '{"timestamp": "%(asctime)s", "level": "%(levelname)s", "logger": "%(name)s", "message": "%(message)s", "module": "%(module)s"}'
+    datefmt: "%Y-%m-%dT%H:%M:%SZ"
+
+  # Performance logging format
+  performance:
+    format: "%(asctime)s - PERF [%(name)s] - Duration: %(duration).3fs - %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+  # Error logging format with stack trace
+  error:
+    format: "%(asctime)s - ERROR [%(name)s:%(lineno)d] - %(message)s - EXCEPTION: %(exc_info)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+  # Access/API logging format
+  access:
+    format: "%(asctime)s - ACCESS - %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+################################################################################
+# HANDLERS - Define where logs are sent
+################################################################################
+handlers:
+
+  # Console handler - Output to stdout
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: compact
+    stream: ext://sys.stdout
+
+  # Console debug handler - For development
+  console_debug:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: verbose
+    stream: ext://sys.stdout
+
+  # File handler - Main server log
+  file:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: standard
+    filename: logs/server.log
+    maxBytes: 10485760               # 10 MB
+    backupCount: 5                   # Keep 5 backup files
+    encoding: utf-8
+
+  # File handler - Detailed log
+  file_verbose:
+    class: logging.handlers.RotatingFileHandler
+    level: DEBUG
+    formatter: verbose
+    filename: logs/detailed.log
+    maxBytes: 20971520               # 20 MB
+    backupCount: 3
+    encoding: utf-8
+
+  # File handler - Error log
+  file_error:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: error
+    filename: logs/error.log
+    maxBytes: 10485760               # 10 MB
+    backupCount: 10                  # Keep more error logs
+    encoding: utf-8
+
+  # File handler - Performance log
+  file_performance:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: performance
+    filename: logs/performance.log
+    maxBytes: 5242880                # 5 MB
+    backupCount: 5
+    encoding: utf-8
+
+  # File handler - Access/API log
+  file_access:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: access
+    filename: logs/access.log
+    maxBytes: 10485760               # 10 MB
+    backupCount: 7
+    encoding: utf-8
+
+  # Daily rotating file handler - For production
+  file_daily:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: INFO
+    formatter: standard
+    filename: logs/daily.log
+    when: midnight                   # Rotate at midnight
+    interval: 1
+    backupCount: 30                  # Keep 30 days
+    encoding: utf-8
+
+  # Null handler - For development (no output)
+  null:
+    class: logging.NullHandler
+    level: NOTSET
+
+################################################################################
+# FILTERS - Filter log records
+################################################################################
+filters:
+
+  # Filter to suppress verbose module logs
+  suppress_verbose:
+    (): src.utils.logging_filters.SuppressFilter
+    level: WARNING
+
+  # Filter for performance logs only
+  performance_only:
+    (): src.utils.logging_filters.PerformanceFilter
+
+  # Filter for errors only
+  error_only:
+    (): src.utils.logging_filters.ErrorFilter
+
+  # Rate limiting filter
+  rate_limit:
+    (): src.utils.logging_filters.RateLimitFilter
+    max_per_minute: 60
+
+################################################################################
+# LOGGERS - Configure loggers for different modules
+################################################################################
+loggers:
+
+  # Root logger
+  root:
+    level: INFO
+    handlers:
+      - console
+      - file
+      - file_error
+
+  # MCP Server logger
+  mcp_server:
+    level: INFO
+    handlers:
+      - console
+      - file
+      - file_error
+    propagate: true
+
+  # MCP Transport layer
+  mcp_server.transport:
+    level: DEBUG
+    handlers:
+      - file_verbose
+    propagate: false
+
+  # MCP Message handler
+  mcp_server.message_handler:
+    level: INFO
+    handlers:
+      - file
+    propagate: false
+
+  # LLM service logger
+  llm:
+    level: INFO
+    handlers:
+      - console
+      - file
+      - file_performance
+      - file_error
+    propagate: true
+
+  # LLM client (Ollama integration)
+  llm.llm_client:
+    level: DEBUG
+    handlers:
+      - file_verbose
+    propagate: false
+
+  # LLM service
+  llm.llm_service:
+    level: INFO
+    handlers:
+      - file
+    propagate: false
+
+  # CoT reasoning engine
+  llm.cot_engine:
+    level: DEBUG
+    handlers:
+      - file_verbose
+    propagate: false
+
+  # Prompt builder
+  llm.prompt_builder:
+    level: INFO
+    handlers:
+      - file
+    propagate: false
+
+  # Embedding manager
+  llm.embedding_manager:
+    level: DEBUG
+    handlers:
+      - file_verbose
+    propagate: false
+
+  # Cache manager
+  llm.cache_manager:
+    level: DEBUG
+    handlers:
+      - file_verbose
+    propagate: false
+
+  # Knowledge base logger
+  knowledge:
+    level: INFO
+    handlers:
+      - console
+      - file
+      - file_error
+    propagate: true
+
+  # CWE repository
+  knowledge.cwe_repository:
+    level: DEBUG
+    handlers:
+      - file_verbose
+    propagate: false
+
+  # CVE repository
+  knowledge.cve_repository:
+    level: DEBUG
+    handlers:
+      - file_verbose
+    propagate: false
+
+  # Vulnerability database
+  knowledge.vulnerability_db:
+    level: INFO
+    handlers:
+      - file
+    propagate: false
+
+  # Graph cache
+  knowledge.graph_cache:
+    level: DEBUG
+    handlers:
+      - file_verbose
+    propagate: false
+
+  # Configuration logger
+  config:
+    level: INFO
+    handlers:
+      - file
+    propagate: true
+
+  # Config loader
+  config.config_loader:
+    level: DEBUG
+    handlers:
+      - file_verbose
+    propagate: false
+
+  # API logger
+  api:
+    level: INFO
+    handlers:
+      - console
+      - file
+      - file_access
+      - file_error
+    propagate: true
+
+  # API routes
+  api.routes:
+    level: INFO
+    handlers:
+      - file_access
+    propagate: false
+
+  # API handlers
+  api.handlers:
+    level: DEBUG
+    handlers:
+      - file_verbose
+    propagate: false
+
+  # API middleware
+  api.middleware:
+    level: INFO
+    handlers:
+      - file_access
+    propagate: false
+
+  # Utils logger
+  utils:
+    level: INFO
+    handlers:
+      - file
+    propagate: true
+
+  # Custom exceptions logger
+  utils.exceptions:
+    level: ERROR
+    handlers:
+      - file_error
+    propagate: false
+
+  # Decorators logger
+  utils.decorators:
+    level: DEBUG
+    handlers:
+      - file_verbose
+    propagate: false
+
+################################################################################
+# ROOT LOGGER CONFIGURATION
+################################################################################
+root:
+  level: DEBUG
+  handlers:
+    - console
+    - file
+    - file_error
+
+################################################################################
+# VERSION AND INCREMENTAL CONFIG
+################################################################################
+version: 1
+incremental: false
+
+################################################################################
+# ENVIRONMENT-SPECIFIC OVERRIDES
+################################################################################
+
+# Development environment configuration
+development_config:
+  version: 1
+
+  # In development, use verbose console output
+  handlers:
+    console:
+      level: DEBUG
+    file:
+      level: DEBUG
+
+    file_verbose:
+      level: DEBUG
+
+  loggers:
+    root:
+      level: DEBUG
+      handlers:
+        - console
+        - file_verbose
+
+    mcp_server:
+      level: DEBUG
+      handlers:
+        - console
+        - file_verbose
+
+    llm:
+      level: DEBUG
+      handlers:
+        - console
+        - file_verbose
+
+    knowledge:
+      level: DEBUG
+      handlers:
+        - console
+        - file_verbose
+
+    api:
+      level: DEBUG
+      handlers:
+        - console
+        - file_verbose
+
+# Testing environment configuration
+testing_config:
+  version: 1
+
+  # In testing, minimize console output
+  handlers:
+    console:
+      level: CRITICAL            # Only critical errors
+    file:
+      level: WARNING
+    null:
+      level: NOTSET
+
+  loggers:
+    root:
+      level: CRITICAL
+      handlers:
+        - null
+
+    mcp_server:
+      level: CRITICAL
+      handlers:
+        - null
+
+    llm:
+      level: CRITICAL
+      handlers:
+        - null
+
+# Staging environment configuration
+staging_config:
+  version: 1
+
+  handlers:
+    console:
+      level: WARNING
+    file:
+      level: INFO
+    file_daily:
+      level: INFO
+
+  loggers:
+    root:
+      level: INFO
+      handlers:
+        - console
+        - file_daily
+        - file_error
+
+# Production environment configuration
+production_config:
+  version: 1
+
+  # In production, no console output, file only
+  handlers:
+    console:
+      level: NOTSET              # Disabled
+      handlers: []
+    file:
+      level: INFO
+    file_daily:
+      level: INFO
+    file_performance:
+      level: WARNING
+    file_access:
+      level: INFO
+
+  loggers:
+    root:
+      level: WARNING
+      handlers:
+        - file_daily
+        - file_error
+
+    mcp_server:
+      level: INFO
+      handlers:
+        - file_daily
+        - file_error
+
+    llm:
+      level: INFO
+      handlers:
+        - file_daily
+        - file_performance
+        - file_error
+
+    api:
+      level: INFO
+      handlers:
+        - file_access
+        - file_error
+
+################################################################################
+# PERFORMANCE LOGGING CONFIGURATION
+################################################################################
+performance_logging:
+  enabled: true
+
+  # Log threshold for slow operations (seconds)
+  slow_operation_threshold: 1.0
+
+  # Modules to track performance
+  track_modules:
+    - "llm"
+    - "knowledge"
+    - "api"
+
+  # Metrics to track
+  track_metrics:
+    - "response_time"
+    - "cache_hits"
+    - "cache_misses"
+    - "llm_calls"
+    - "database_queries"
+
+  # Performance log format
+  format: "Performance: {module} - {operation} - {duration:.3f}s"
+
+################################################################################
+# SECURITY LOGGING CONFIGURATION
+################################################################################
+security_logging:
+  enabled: true
+
+  # Log authentication attempts
+  log_auth_attempts: true
+
+  # Log authorization failures
+  log_auth_failures: true
+
+  # Log suspicious activity
+  log_suspicious: true
+
+  # Log rate limit violations
+  log_rate_limit_violations: true
+
+  # Security log file
+  file: "logs/security.log"
+
+################################################################################
+# AUDIT LOGGING CONFIGURATION
+################################################################################
+audit_logging:
+  enabled: false
+
+  # Log all API calls
+  log_all_calls: false
+
+  # Log data modifications
+  log_modifications: true
+
+  # Log configuration changes
+  log_config_changes: true
+
+  # Audit log file
+  file: "logs/audit.log"
+
+  # Retention period (days)
+  retention_days: 90
+
+################################################################################
+# LOG AGGREGATION CONFIGURATION
+################################################################################
+log_aggregation:
+  enabled: false
+
+  # Syslog aggregation
+  syslog:
+    enabled: false
+    host: "localhost"
+    port: 514
+    facility: "local0"
+
+  # ELK Stack integration
+  elk:
+    enabled: false
+    elasticsearch_host: "localhost:9200"
+    index_prefix: "hyfuzz"
+
+  # Splunk integration
+  splunk:
+    enabled: false
+    host: "localhost"
+    port: 8088
+    token: "your-splunk-token"
+
+################################################################################
+# LOG CLEANUP CONFIGURATION
+################################################################################
+log_cleanup:
+  enabled: true
+
+  # Max age of log files (days)
+  max_age_days: 90
+
+  # Max total log size (GB)
+  max_total_size_gb: 10
+
+  # Cleanup interval (hours)
+  cleanup_interval_hours: 24
+
+  # Directories to clean
+  directories:
+    - "logs"
+
+################################################################################
+# DEBUGGING CONFIGURATION
+################################################################################
+debugging:
+  # Enable debug logging for development
+  enabled: false
+
+  # Debug modules
+  debug_modules:
+    - "mcp_server"
+    - "llm"
+    - "knowledge"
+
+  # Debug log level
+  debug_level: "DEBUG"
+
+  # Include source code location in logs
+  include_location: true
+
+  # Include function name in logs
+  include_function: true
+
+################################################################################
+# USAGE NOTES AND EXAMPLES
+################################################################################
+#
+# Example: Load logging configuration
+#
+#   import logging.config
+#   import yaml
+#
+#   with open('config/logging_config.yaml', 'r') as f:
+#       config = yaml.safe_load(f)
+#
+#   logging.config.dictConfig(config)
+#   logger = logging.getLogger(__name__)
+#   logger.info("Application started")
+#
+# Example: Get logger for specific module
+#
+#   logger = logging.getLogger("llm.llm_client")
+#   logger.debug("Connecting to Ollama...")
+#   logger.info("Connection successful")
+#   logger.error("Failed to connect", exc_info=True)
+#
+# Example: Performance logging
+#
+#   logger = logging.getLogger("llm")
+#   start_time = time.time()
+#   # ... do work ...
+#   duration = time.time() - start_time
+#   logger.info(f"CoT reasoning completed in {duration:.3f}s")
+#
+# Log file locations:
+#   - logs/server.log          : Main server log
+#   - logs/detailed.log        : Detailed verbose log
+#   - logs/error.log           : Error and exception log
+#   - logs/performance.log     : Performance metrics
+#   - logs/access.log          : API access log
+#   - logs/daily.log           : Daily rotation log
+#   - logs/security.log        : Security events
+#   - logs/audit.log           : Audit trail
+
+################################################################################
+# END OF LOGGING CONFIGURATION
+################################################################################
