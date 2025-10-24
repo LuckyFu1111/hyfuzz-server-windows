@@ -1,213 +1,112 @@
-# ==============================================================================
-# HyFuzz Server - Windows MCP Server Dependencies
-# ==============================================================================
-# Production dependencies for the HyFuzz Server project
-#
-# Usage:
-#   pip install -r requirements.txt
-#
-# Version Guidelines:
-# - Use flexible version constraints (>=X.Y.Z,<X+1.0.0)
-# - Major version lock to prevent breaking changes
-# - Allow patch and minor version updates for bug fixes
-# ==============================================================================
+# ============================================================================
+# HyFuzz MCP Server - Production Dependencies (Python 3.13 Compatible)
+# ============================================================================
+# Updated for compatibility with Python 3.13+ on macOS/Windows
+# Use: pip install -r requirements.txt
+# ============================================================================
 
-# ==============================================================================
-# CORE WEB FRAMEWORK AND ASYNC SUPPORT
-# ==============================================================================
+# ============================================================================
+# CORE FRAMEWORKS & LIBRARIES
+# ============================================================================
 
-# Async HTTP client/server framework
-aiohttp>=3.9.0,<4.0.0
+# HTTP client for requests
+requests>=2.31.0
 
-# Modern ASGI web framework
-starlette>=0.35.0,<1.0.0
+# Async HTTP client
+aiohttp>=3.9.1
 
-# HTTP library for making requests
-requests>=2.31.0,<3.0.0
+# Configuration management
+python-dotenv>=1.0.0
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
 
-# ==============================================================================
-# DATA VALIDATION AND CONFIGURATION MANAGEMENT
-# ==============================================================================
+# YAML parsing
+PyYAML>=6.0.1
 
-# Data validation using Python type annotations
-pydantic>=2.5.0,<3.0.0
-
-# Settings management with Pydantic
-pydantic-settings>=2.1.0,<3.0.0
-
-# Backported and runtime type hints support
-typing-extensions>=4.9.0,<5.0.0
-
-# ==============================================================================
-# ENVIRONMENT AND CONFIGURATION
-# ==============================================================================
-
-# Read environment variables from .env file
-python-dotenv>=1.0.0,<2.0.0
-
-# YAML parser and emitter
-pyyaml>=6.0.1,<7.0.0
-
-# ==============================================================================
+# ============================================================================
 # LLM INTEGRATION
-# ==============================================================================
+# ============================================================================
 
-# Ollama Python client
-ollama>=0.1.0,<1.0.0
+# Token counting and processing (updated for Python 3.13)
+tiktoken>=0.7.0
 
-# ==============================================================================
-# LOGGING AND MONITORING
-# ==============================================================================
+# JSON schema validation
+jsonschema>=4.20.0
 
-# Standard library logging already included
+# ============================================================================
+# KNOWLEDGE BASE & DATA PROCESSING
+# ============================================================================
 
-# Optional: For advanced monitoring (install with: pip install -r requirements.txt -e ".[monitoring]")
-# sentry-sdk>=1.43.0  # Security update for CVE-2024-40847
+# Numpy for numerical operations (updated for Python 3.13)
+numpy>=1.26.4
 
-# ==============================================================================
-# TESTING DEPENDENCIES (Optional - Install with: pip install -r requirements-dev.txt)
-# ==============================================================================
+# Pandas for data manipulation (UPDATED to 2.2.0+ for Python 3.13 support)
+pandas>=2.2.0
 
-# pytest>=7.4.0
-# pytest-asyncio>=0.21.0
-# pytest-cov>=4.1.0
+# Graph operations for CWE/CVE relationships
+networkx>=3.2
 
-# ==============================================================================
-# DEVELOPMENT TOOLS (Optional - Install with: pip install -r requirements-dev.txt)
-# ==============================================================================
+# ============================================================================
+# CACHING & PERFORMANCE
+# ============================================================================
 
-# black>=23.0.0
-# isort>=5.12.0
-# flake8>=6.0.0
-# mypy>=1.0.0
-# pre-commit>=3.0.0
+# In-memory caching
+cachetools>=5.3.2
 
-# ==============================================================================
-# PLATFORM-SPECIFIC NOTES
-# ==============================================================================
+# Redis support (optional, for distributed caching)
+# redis>=5.0.1
 
-# Windows-specific considerations:
-# - All packages are Windows compatible
-# - No platform-specific dependencies required for production
-# - GPU support (torch/faiss) can be added optionally
+# ============================================================================
+# LOGGING & MONITORING
+# ============================================================================
 
-# ==============================================================================
-# VERSION HISTORY AND COMPATIBILITY NOTES
-# ==============================================================================
+# Structured logging
+python-json-logger>=2.0.7
 
-"""
-VERSION 1.0.0 (2025-10-24)
-============================
+# ============================================================================
+# UTILITIES & HELPERS
+# ============================================================================
 
-✓ Updated dependency versions for compatibility
-✓ Fixed CVE-2024-40847 security vulnerability
-✓ All packages tested on Windows 10/11
-✓ Python 3.9+ compatibility maintained
+# Click for command-line interfaces
+click>=8.1.7
 
-MAJOR CHANGES:
-- aiohttp: 3.9.1 → >=3.9.0,<4.0.0
-- starlette: 0.35.0 → >=0.35.0,<1.0.0
-- requests: 2.31.0 → >=2.31.0,<3.0.0
-- pydantic: 2.5.0 → >=2.5.0,<3.0.0
-- sentry-sdk: 1.39.1 → >=1.43.0 (when used)
+# Color output for terminal
+colorama>=0.4.6
 
-SECURITY UPDATES:
-- sentry-sdk: Fixed CVE-2024-40847 information leak
+# Decorators and utilities
+decorator>=5.1.1
 
-COMPATIBILITY MATRIX:
-┌─────────────────────────────────────────────────┐
-│ Python Version │ Tested │ Recommended │ Minimum │
-├─────────────────────────────────────────────────┤
-│ 3.9            │ ✓      │             │ ✓       │
-│ 3.10           │ ✓      │ ✓           │         │
-│ 3.11           │ ✓      │ ✓           │         │
-│ 3.12           │ ✓      │ ✓           │         │
-└─────────────────────────────────────────────────┘
+# More-itertools for functional programming
+more-itertools>=10.1.0
 
-WINDOWS COMPATIBILITY:
-┌─────────────────────────────────────────────────┐
-│ Windows Version │ Status    │ Notes              │
-├─────────────────────────────────────────────────┤
-│ Windows 10      │ ✓ Full    │ All features work  │
-│ Windows 11      │ ✓ Full    │ Recommended        │
-│ Windows Server  │ ✓ Full    │ All editions       │
-│ 2019/2022       │ ✓ Full    │ Tested             │
-└─────────────────────────────────────────────────┘
-"""
+# Retry decorator
+tenacity>=8.2.3
 
-# ==============================================================================
-# INSTALLATION INSTRUCTIONS
-# ==============================================================================
+# ============================================================================
+# WINDOWS-SPECIFIC UTILITIES (Optional)
+# ============================================================================
 
-"""
-QUICK START:
-============
+# Windows path utilities (optional)
+pathlib2>=2.3.7.post1
 
-1. Create virtual environment:
-   python -m venv venv
-   source venv/Scripts/activate  # Windows
+# ============================================================================
+# NOTES FOR PYTHON 3.13
+# ============================================================================
 
-2. Upgrade pip:
-   pip install --upgrade pip setuptools wheel
-
-3. Install production dependencies:
-   pip install -r requirements.txt
-
-4. (Optional) Install development tools:
-   pip install -r requirements-dev.txt
-
-5. (Optional) Install with GPU support:
-   pip install .[gpu]
-
-6. (Optional) Install with monitoring:
-   pip install .[monitoring]
-
-
-TROUBLESHOOTING:
-================
-
-ERROR: "No module named 'aiohttp'"
-→ Solution: pip install --upgrade -r requirements.txt --force-reinstall
-
-ERROR: "Dependency conflicts detected"
-→ Solution: Delete venv, create fresh one, reinstall
-
-ERROR: "Build failed for package X"
-→ Solution:
-  1. Ensure you have build tools: pip install wheel setuptools
-  2. Update pip: pip install --upgrade pip
-  3. Reinstall: pip install --no-cache-dir package_name
-
-
-VERIFICATION:
-=============
-
-Check installation:
-$ python -c "import aiohttp, starlette, pydantic, pyyaml, ollama; print('✓ All dependencies installed')"
-
-List installed packages:
-$ pip list
-
-Check for conflicts:
-$ pip check
-
-Show package versions:
-$ pip show aiohttp starlette pydantic
-
-
-UPDATING DEPENDENCIES:
-======================
-
-Check for outdated packages:
-$ pip list --outdated
-
-Update all packages:
-$ pip install --upgrade -r requirements.txt
-
-Update specific package:
-$ pip install --upgrade aiohttp
-"""
-
-# ==============================================================================
-# END OF REQUIREMENTS.TXT
-# ==============================================================================
+# Key updates for Python 3.13 compatibility:
+# 1. pandas >= 2.2.0 (fixes C API compatibility issues with Python 3.13)
+# 2. numpy >= 1.26.4 (ensures C extension compatibility)
+# 3. tiktoken >= 0.7.0 (updated tokenizer support)
+#
+# If you encounter issues:
+# - Clear pip cache: pip cache purge
+# - Reinstall with no cache: pip install --no-cache-dir -r requirements.txt
+# - Use pre-built wheels: pip install --prefer-binary -r requirements.txt
+#
+# For macOS with Apple Silicon (M1/M2/M3):
+# - May need: xcode-select --install
+# - Consider using conda for compiled packages
+#
+# Version constraints explanation:
+# >= allows newer versions (automatically upgrades)
+# Use with caution in production (add specific versions for lock files)
