@@ -1,0 +1,375 @@
+# ==============================================================================
+# HyFuzz Server - Main Configuration File
+# ==============================================================================
+# This file contains the core configuration for the MCP Server
+# Override values using environment variables or .env file
+# Format: HYFUZZ_<SECTION>_<KEY> (e.g., HYFUZZ_SERVER_HOST=0.0.0.0)
+# ==============================================================================
+
+# ==============================================================================
+# SERVER CONFIGURATION
+# ==============================================================================
+server:
+  # Server identification
+  name: "HyFuzz Server"
+  version: "1.0.0"
+  description: "Hybrid AI-Enhanced Vulnerability Detection Framework (Windows MCP Server)"
+
+  # Server listening configuration
+  host: "127.0.0.1"              # localhost by default for security
+  port: 8000                      # Main server port
+
+  # Server modes
+  debug: false                    # Enable debug mode (DO NOT use in production)
+  reload: false                   # Auto-reload on file changes
+  workers: 1                      # Number of worker processes (Windows: 1)
+
+  # Timeouts (in seconds)
+  timeout: 30                     # Request timeout
+  shutdown_timeout: 10            # Graceful shutdown timeout
+
+  # CORS configuration
+  cors:
+    enabled: true
+    origins:
+      - "http://localhost:3000"
+      - "http://localhost:8000"
+      - "http://127.0.0.1:3000"
+    allow_credentials: true
+    allow_methods:
+      - "GET"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+      - "OPTIONS"
+    allow_headers:
+      - "Content-Type"
+      - "Authorization"
+
+# ==============================================================================
+# TRANSPORT CONFIGURATION
+# ==============================================================================
+transport:
+  # Primary transport protocol
+  type: "stdio"                   # Options: stdio, http, websocket
+
+  # stdio transport (recommended for MCP)
+  stdio:
+    enabled: true
+
+  # HTTP transport
+  http:
+    enabled: false
+    endpoint: "/mcp"
+
+  # WebSocket transport
+  websocket:
+    enabled: false
+    endpoint: "/ws/mcp"
+    ping_interval: 20             # Keep-alive ping interval (seconds)
+    ping_timeout: 10              # Ping timeout (seconds)
+
+# ==============================================================================
+# MESSAGE HANDLING
+# ==============================================================================
+message:
+  # Message validation
+  validate_input: true
+  validate_output: true
+
+  # Message format
+  format: "json"                  # JSON format for MCP protocol
+
+  # Message buffering
+  buffer_size: 8192               # In bytes
+  max_message_size: 1048576       # 1 MB max message size
+
+  # Timeouts
+  processing_timeout: 30          # Message processing timeout (seconds)
+  response_timeout: 60            # Wait for response timeout (seconds)
+
+# ==============================================================================
+# SESSION MANAGEMENT
+# ==============================================================================
+session:
+  # Session configuration
+  enabled: true
+  max_sessions: 100               # Maximum concurrent sessions
+  session_timeout: 3600           # Session idle timeout (seconds) - 1 hour
+
+  # Session storage
+  storage_type: "memory"          # Options: memory, redis, file
+  storage_path: "data/sessions"   # For file-based storage
+
+  # Session cleanup
+  cleanup_interval: 300           # Cleanup interval (seconds)
+
+# ==============================================================================
+# CAPABILITY MANAGEMENT
+# ==============================================================================
+capabilities:
+  # Enable/disable capabilities
+  resources:
+    enabled: true
+  tools:
+    enabled: true
+  prompts:
+    enabled: true
+
+  # Resource limits
+  max_resources: 1000
+  max_tools: 500
+  max_prompts: 100
+
+  # Capability discovery
+  discovery:
+    enabled: true
+    cache_enabled: true
+    cache_ttl: 3600               # Cache TTL (seconds) - 1 hour
+
+# ==============================================================================
+# KNOWLEDGE BASE CONFIGURATION
+# ==============================================================================
+knowledge:
+  # Knowledge base paths
+  data_dir: "data/knowledge"
+  cache_dir: "data/knowledge_cache"
+
+  # CWE/CVE repositories
+  cwe:
+    enabled: true
+    source: "local"               # Options: local, remote, hybrid
+    cache_file: "data/knowledge_cache/cwe_graph.pkl"
+    update_interval: 86400        # Update interval (seconds) - 24 hours
+
+  cve:
+    enabled: true
+    source: "local"               # Options: local, remote, hybrid
+    cache_file: "data/knowledge_cache/cve_graph.pkl"
+    update_interval: 86400        # Update interval (seconds) - 24 hours
+
+  # Vulnerability database
+  vulnerability_db:
+    enabled: true
+    db_path: "data/vulnerability.db"
+    auto_backup: true
+    backup_interval: 86400        # Backup interval (seconds) - 24 hours
+
+  # Embedding configuration
+  embeddings:
+    enabled: true
+    model: "sentence-transformers/all-MiniLM-L6-v2"
+    cache_file: "data/knowledge_cache/embeddings.npy"
+    batch_size: 32
+    dim: 384                       # Embedding dimension
+
+# ==============================================================================
+# LLM INTEGRATION
+# ==============================================================================
+llm:
+  # LLM backend
+  provider: "ollama"              # Options: ollama, openai, local
+
+  # Ollama configuration
+  ollama:
+    enabled: true
+    host: "http://localhost"
+    port: 11434
+    model: "llama2"               # Primary model
+    fallback_model: "mistral"     # Fallback model
+
+    # Generation parameters
+    temperature: 0.7              # Randomness (0.0-1.0)
+    top_p: 0.9                    # Nucleus sampling
+    top_k: 40                      # Top-k sampling
+    repeat_penalty: 1.1           # Penalty for repetition
+
+    # Performance settings
+    num_predict: 256              # Max tokens to generate
+    context_window: 4096          # Context window size
+    batch_size: 32
+
+    # Timeouts
+    timeout: 120                  # Request timeout (seconds)
+    connect_timeout: 10           # Connection timeout (seconds)
+
+  # OpenAI configuration (if provider: openai)
+  openai:
+    enabled: false
+    api_key: "${OPENAI_API_KEY}"
+    model: "gpt-3.5-turbo"
+    api_base: "https://api.openai.com/v1"
+    timeout: 60
+
+  # Local model configuration
+  local:
+    enabled: false
+    model_path: "models/local_model"
+    device: "cpu"                 # Options: cpu, cuda, mps
+
+# ==============================================================================
+# CACHING CONFIGURATION
+# ==============================================================================
+cache:
+  # Cache backend
+  type: "memory"                  # Options: memory, redis, file
+
+  # Memory cache
+  max_size: 1000                  # Maximum items
+  ttl: 3600                       # Time to live (seconds)
+  eviction_policy: "lru"          # Options: lru, lfu, fifo
+
+  # Redis cache (if type: redis)
+  redis:
+    host: "localhost"
+    port: 6379
+    db: 0
+    password: ""
+    ssl: false
+
+  # File cache (if type: file)
+  file:
+    path: "data/cache"
+    max_size: 1000000000          # 1 GB max size
+
+# ==============================================================================
+# REASONING ENGINE
+# ==============================================================================
+reasoning:
+  # Chain-of-Thought (CoT) engine
+  cot:
+    enabled: true
+    max_steps: 10                 # Maximum reasoning steps
+    step_timeout: 30              # Timeout per step (seconds)
+
+    # CoT strategies
+    strategies:
+      - "step_by_step"
+      - "tree_of_thought"
+      - "graph_based"
+
+  # Prompt optimization
+  prompt_optimization:
+    enabled: true
+    cache_prompts: true
+    optimize_for: "accuracy"      # Options: accuracy, speed, balanced
+
+# ==============================================================================
+# SECURITY CONFIGURATION
+# ==============================================================================
+security:
+  # Authentication
+  auth:
+    enabled: false                # Enable authentication
+    type: "api_key"               # Options: api_key, jwt, oauth2
+
+    # API Key authentication
+    api_key:
+      header_name: "X-API-Key"
+
+  # Rate limiting
+  rate_limit:
+    enabled: true
+    requests_per_minute: 60
+    burst_size: 10
+
+  # Input validation
+  input_validation:
+    enabled: true
+    max_input_length: 10000
+    sanitize_input: true
+
+  # HTTPS/TLS
+  tls:
+    enabled: false
+    cert_path: ""
+    key_path: ""
+
+# ==============================================================================
+# MONITORING AND HEALTH CHECK
+# ==============================================================================
+monitoring:
+  # Health check
+  health_check:
+    enabled: true
+    interval: 30                  # Check interval (seconds)
+    endpoint: "/health"
+
+  # Metrics
+  metrics:
+    enabled: true
+    export_format: "prometheus"   # Options: prometheus, json
+    export_interval: 60           # Seconds
+
+  # Tracing
+  tracing:
+    enabled: false
+    sample_rate: 0.1
+    export_format: "jaeger"
+
+# ==============================================================================
+# ERROR HANDLING
+# ==============================================================================
+error:
+  # Error reporting
+  report_errors: true
+
+  # Stack traces
+  include_stack_trace: true       # Include in error response (disable in production)
+
+  # Error codes
+  use_error_codes: true
+
+  # Retry policy
+  retry:
+    enabled: true
+    max_attempts: 3
+    backoff_factor: 2             # Exponential backoff
+
+# ==============================================================================
+# ENVIRONMENT-SPECIFIC OVERRIDES
+# ==============================================================================
+# These settings can be overridden by:
+# 1. Environment variables: HYFUZZ_SECTION_KEY
+# 2. .env file values
+# 3. Command-line arguments
+
+# Development overrides (when ENV=development)
+development:
+  server:
+    debug: true
+    reload: true
+  security:
+    auth:
+      enabled: false
+
+# Production overrides (when ENV=production)
+production:
+  server:
+    debug: false
+    reload: false
+    workers: 4
+  security:
+    auth:
+      enabled: true
+    tls:
+      enabled: true
+  cache:
+    type: "redis"
+
+# Testing overrides (when ENV=testing)
+testing:
+  server:
+    debug: true
+    timeout: 5
+  knowledge:
+    cwe:
+      update_interval: 0          # Disable auto-update
+    cve:
+      update_interval: 0          # Disable auto-update
+  cache:
+    ttl: 60                        # Short TTL for tests
+
+# ==============================================================================
+# END OF SERVER_CONFIG.YAML
+# ==============================================================================

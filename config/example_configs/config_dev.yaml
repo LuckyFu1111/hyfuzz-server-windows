@@ -1,0 +1,313 @@
+# ==============================================================================
+# HyFuzz Server - Development Environment Configuration
+# ==============================================================================
+# This file contains development-specific settings
+# Override default configuration for local development
+# ==============================================================================
+
+# ==============================================================================
+# ENVIRONMENT
+# ==============================================================================
+environment: "development"
+debug: true
+
+# ==============================================================================
+# SERVER CONFIGURATION
+# ==============================================================================
+server:
+  # Development server
+  host: "127.0.0.1"
+  port: 8000
+  debug: true
+  reload: true                    # Auto-reload on code changes
+  workers: 1
+
+  # Longer timeouts for debugging
+  timeout: 60
+  shutdown_timeout: 10
+
+  # CORS - Allow local development tools
+  cors:
+    enabled: true
+    origins:
+      - "http://localhost:3000"
+      - "http://localhost:8000"
+      - "http://localhost:5173"   # Vite dev server
+      - "http://127.0.0.1:3000"
+      - "http://127.0.0.1:8000"
+      - "http://127.0.0.1:5173"
+
+# ==============================================================================
+# TRANSPORT
+# ==============================================================================
+transport:
+  type: "stdio"
+  stdio:
+    enabled: true
+  http:
+    enabled: true
+    endpoint: "/mcp"
+  websocket:
+    enabled: true
+    endpoint: "/ws/mcp"
+
+# ==============================================================================
+# SESSION & CACHE
+# ==============================================================================
+session:
+  enabled: true
+  max_sessions: 100
+  session_timeout: 7200           # 2 hours for development
+  storage_type: "memory"
+
+cache:
+  type: "memory"
+  max_size: 5000
+  ttl: 3600
+
+# ==============================================================================
+# KNOWLEDGE BASE
+# ==============================================================================
+knowledge:
+  data_dir: "data/knowledge"
+  cache_dir: "data/knowledge_cache"
+
+  cwe:
+    enabled: true
+    source: "local"
+
+  cve:
+    enabled: true
+    source: "local"
+
+  vulnerability_db:
+    enabled: true
+    db_path: "data/vulnerability.db"
+    auto_backup: true
+
+# ==============================================================================
+# LLM CONFIGURATION
+# ==============================================================================
+llm:
+  provider: "ollama"
+
+  ollama:
+    enabled: true
+    host: "localhost"
+    port: 11434
+    model: "llama2"
+    timeout: 180                  # Longer timeout for debugging
+
+    # Development-friendly parameters
+    temperature: 0.8              # More creative for testing
+    num_predict: 512              # More verbose output
+    context_window: 4096
+
+# ==============================================================================
+# LOGGING
+# ==============================================================================
+logging:
+  level: "DEBUG"                  # Verbose logging
+
+  # Development-specific loggers
+  loggers:
+    mcp_server:
+      level: "DEBUG"
+    llm:
+      level: "DEBUG"
+    knowledge:
+      level: "DEBUG"
+    api:
+      level: "DEBUG"
+
+  # Console output
+  handlers:
+    console:
+      enabled: true
+      level: "DEBUG"
+
+    # File logging
+    file:
+      enabled: true
+      level: "DEBUG"
+      path: "logs/dev.log"
+      max_size: 50000000          # 50 MB for development
+      backup_count: 5
+
+# ==============================================================================
+# SECURITY - RELAXED FOR DEVELOPMENT
+# ==============================================================================
+security:
+  auth:
+    enabled: false                # No auth required in development
+
+  rate_limit:
+    enabled: false                # No rate limiting in development
+
+  input_validation:
+    enabled: true
+    sanitize_input: false         # Don't sanitize for debugging
+
+  tls:
+    enabled: false                # No TLS in development
+
+# ==============================================================================
+# MONITORING & DEBUGGING
+# ==============================================================================
+monitoring:
+  health_check:
+    enabled: true
+    interval: 60
+
+  metrics:
+    enabled: true
+    export_interval: 10           # Frequent updates
+
+  tracing:
+    enabled: true
+    sample_rate: 1.0              # Sample everything
+
+# ==============================================================================
+# ERROR HANDLING
+# ==============================================================================
+error:
+  report_errors: true
+  include_stack_trace: true       # Always show stack traces
+
+  retry:
+    enabled: true
+    max_attempts: 3
+
+# ==============================================================================
+# API DOCUMENTATION
+# ==============================================================================
+api:
+  documentation:
+    enabled: true
+    swagger_enabled: true
+    redoc_enabled: true
+    endpoints:
+      swagger: "/docs"
+      redoc: "/redoc"
+      openapi: "/openapi.json"
+
+# ==============================================================================
+# HOT RELOAD
+# ==============================================================================
+development_tools:
+  hot_reload: true
+  auto_restart: true
+  watch_paths:
+    - "src/"
+    - "config/"
+
+  # Debug toolbar
+  debug_toolbar:
+    enabled: true
+    position: "right"
+
+# ==============================================================================
+# USEFUL DEVELOPMENT ENDPOINTS
+# ==============================================================================
+dev_endpoints:
+  enabled: true
+
+  endpoints:
+    # Health check
+    - method: "GET"
+      path: "/health"
+      description: "Server health status"
+
+    # Config dump
+    - method: "GET"
+      path: "/dev/config"
+      description: "Current configuration (development only)"
+
+    # Log viewer
+    - method: "GET"
+      path: "/dev/logs"
+      description: "View recent logs"
+
+    # Cache status
+    - method: "GET"
+      path: "/dev/cache"
+      description: "Cache statistics"
+
+    # Reset endpoints
+    - method: "POST"
+      path: "/dev/reset"
+      description: "Reset development state"
+
+# ==============================================================================
+# DATABASE (LOCAL SQLITE)
+# ==============================================================================
+database:
+  type: "sqlite"
+  path: "data/dev.db"
+  echo: true                      # Log SQL queries
+  pool_pre_ping: true
+  pool_recycle: 3600
+
+# ==============================================================================
+# TEST DATA
+# ==============================================================================
+test_data:
+  enabled: true
+  load_samples: true
+  sample_files:
+    - "data/sample_cwe.json"
+    - "data/sample_cve.json"
+
+  fixtures:
+    enabled: true
+    auto_load: true
+
+# ==============================================================================
+# EXAMPLE USAGE
+# ==============================================================================
+# Start the development server:
+#
+# 1. Ensure Ollama is running locally:
+#    ollama serve
+#
+# 2. In another terminal, start the HyFuzz server with dev config:
+#    python -m src --config config/example_configs/config_dev.yaml
+#
+# Or with environment variable:
+#    export HYFUZZ_ENV=development
+#    python -m src
+#
+# 3. Server will be available at:
+#    - HTTP: http://localhost:8000
+#    - API Docs: http://localhost:8000/docs
+#    - ReDoc: http://localhost:8000/redoc
+#
+# 4. View logs:
+#    tail -f logs/dev.log
+
+# ==============================================================================
+# USEFUL DEVELOPMENT COMMANDS
+# ==============================================================================
+#
+# # Format code
+# black src/
+# isort src/
+#
+# # Run linter
+# flake8 src/
+#
+# # Type checking
+# mypy src/
+#
+# # Run tests
+# pytest tests/
+#
+# # Run with specific log level
+# LOG_LEVEL=DEBUG python -m src
+#
+# # Run with profiling
+# python -m cProfile -s cumulative -m src
+
+# ==============================================================================
+# END OF CONFIG_DEV.YAML
+# ==============================================================================

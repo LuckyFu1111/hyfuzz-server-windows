@@ -1,0 +1,446 @@
+# ==============================================================================
+# HyFuzz Server - LLM Configuration File
+# ==============================================================================
+# This file contains LLM integration and model configuration
+# Configure LLM providers, models, and parameters
+# ==============================================================================
+
+# ==============================================================================
+# LLM PROVIDER CONFIGURATION
+# ==============================================================================
+providers:
+  # Primary provider
+  primary: "ollama"
+
+  # Ollama provider configuration
+  ollama:
+    enabled: true
+    name: "Ollama"
+    description: "Local LLM inference server"
+
+    # Connection settings
+    host: "localhost"
+    port: 11434
+    scheme: "http"                # http or https
+    base_url: "http://localhost:11434"
+    timeout: 120                  # Request timeout (seconds)
+    connect_timeout: 10
+    read_timeout: 120
+
+    # Connection pooling
+    pool_connections: 10
+    pool_maxsize: 10
+
+    # API endpoints
+    endpoints:
+      models: "/api/tags"
+      generate: "/api/generate"
+      embedding: "/api/embeddings"
+      chat: "/api/chat"
+
+  # OpenAI provider configuration (optional)
+  openai:
+    enabled: false
+    name: "OpenAI"
+    description: "OpenAI GPT models"
+
+    # Authentication
+    api_key: "${OPENAI_API_KEY}"
+    organization: ""
+
+    # Connection
+    api_base: "https://api.openai.com/v1"
+    timeout: 60
+
+    # API endpoints
+    endpoints:
+      models: "/models"
+      chat: "/chat/completions"
+      embeddings: "/embeddings"
+
+  # Local provider configuration (optional)
+  local:
+    enabled: false
+    name: "Local Model"
+    description: "Local model running on this machine"
+
+    # Model settings
+    model_path: "models/local_model"
+    device: "cpu"                # cpu, cuda, mps
+    dtype: "float32"
+
+    # Memory settings
+    max_memory: 8192              # MB
+    offload_folder: ""
+
+# ==============================================================================
+# MODEL CONFIGURATION
+# ==============================================================================
+models:
+  # Primary reasoning model
+  primary_model:
+    provider: "ollama"
+    name: "llama2"
+    version: "7b"
+    description: "Primary reasoning model for vulnerability analysis"
+
+    # Model capabilities
+    capabilities:
+      - "text_generation"
+      - "chain_of_thought"
+      - "code_analysis"
+      - "reasoning"
+
+    # Context and performance
+    context_window: 4096
+    max_tokens: 256
+    embedding_dim: 4096           # Output embedding dimension (varies by model)
+
+  # Code analysis model
+  code_analysis_model:
+    provider: "ollama"
+    name: "mistral"
+    version: "7b"
+    description: "Specialized model for code analysis"
+
+    capabilities:
+      - "code_understanding"
+      - "syntax_analysis"
+      - "vulnerability_detection"
+
+    context_window: 8192
+    max_tokens: 512
+
+  # Embedding model
+  embedding_model:
+    provider: "ollama"
+    name: "nomic-embed-text"      # Lightweight embedding model
+    version: "latest"
+    description: "Text embedding model for similarity search"
+
+    capabilities:
+      - "embeddings"
+      - "similarity_search"
+
+    embedding_dim: 768
+    max_input_length: 8192
+
+  # Knowledge retrieval model
+  knowledge_retrieval_model:
+    provider: "ollama"
+    name: "orca-mini"
+    version: "3b"
+    description: "Lightweight model for knowledge retrieval"
+
+    capabilities:
+      - "information_retrieval"
+      - "question_answering"
+
+    context_window: 2048
+    max_tokens: 256
+
+  # Fallback model (used if primary unavailable)
+  fallback_model:
+    provider: "ollama"
+    name: "mistral"
+    version: "7b"
+    description: "Fallback model when primary is unavailable"
+
+# ==============================================================================
+# GENERATION PARAMETERS
+# ==============================================================================
+generation:
+  # Default parameters for text generation
+  defaults:
+    temperature: 0.7              # Randomness (0.0-2.0), higher = more creative
+    top_p: 0.9                    # Nucleus sampling (0.0-1.0)
+    top_k: 40                      # Top-k sampling
+    repeat_penalty: 1.1           # Penalize repetition (1.0-2.0)
+    frequency_penalty: 0.0        # Frequency penalty (0.0-2.0)
+    presence_penalty: 0.0         # Presence penalty (0.0-2.0)
+
+    # Length control
+    max_tokens: 256
+    min_tokens: 0
+
+    # Sampling
+    num_beams: 1                  # 1 = greedy, >1 = beam search
+    do_sample: true
+
+    # Stop sequences
+    stop_sequences:
+      - "\n\n"
+      - "###"
+      - "[END]"
+
+  # Reasoning-specific parameters
+  reasoning:
+    temperature: 0.5              # Lower temperature for logical reasoning
+    top_p: 0.95
+    num_beams: 3                  # Use beam search for reasoning
+    max_tokens: 512               # Allow more tokens for reasoning
+
+  # Code analysis parameters
+  code_analysis:
+    temperature: 0.3              # Lower for precise code analysis
+    top_p: 0.9
+    max_tokens: 512
+
+  # Embedding generation parameters
+  embeddings:
+    normalize: true               # Normalize embeddings
+    pool_type: "mean"             # mean, max, cls
+
+# ==============================================================================
+# PROMPT CONFIGURATION
+# ==============================================================================
+prompts:
+  # System prompts
+  system_prompts:
+    default: |
+      You are HyFuzz Server, an advanced security analysis assistant.
+      Your role is to analyze code, identify vulnerabilities, and provide remediation strategies.
+      Be precise, technical, and helpful in your analysis.
+
+    reasoning: |
+      You are a security expert. Analyze the provided code step by step.
+      Use chain-of-thought reasoning to identify potential vulnerabilities.
+      Consider OWASP top vulnerabilities, CWE/CVE databases, and common security patterns.
+
+    code_analysis: |
+      You are a code security analyzer. Examine the code for:
+      - Injection vulnerabilities (SQL, command, XPath, etc.)
+      - Authentication/Authorization issues
+      - Sensitive data exposure
+      - Broken access control
+      - XML/XPath injection
+      - Broken cryptography
+      - Insecure deserialization
+      - Using components with known vulnerabilities
+      - Insufficient logging and monitoring
+
+    knowledge_retrieval: |
+      You are a vulnerability knowledge retrieval system.
+      Search and retrieve relevant information about CWE/CVE from the knowledge base.
+      Be specific about vulnerability IDs, severity levels, and remediation steps.
+
+  # Few-shot examples
+  few_shot_examples:
+    enabled: true
+    max_examples: 3
+
+    code_analysis_example: |
+      Example input: Python code with SQL query
+      Example output: Identified SQL injection vulnerability, provided remediation
+
+    vulnerability_detection_example: |
+      Example: Detecting hardcoded credentials in configuration files
+
+  # Prompt templates
+  templates:
+    vulnerability_analysis: |
+      Analyze the following code for security vulnerabilities:
+      {code}
+      
+      Provide:
+      1. Identified vulnerabilities with CWE IDs
+      2. Severity assessment (CVSS score)
+      3. Remediation recommendations
+      4. Code examples for fixes
+
+    cwe_lookup: |
+      Provide detailed information about CWE-{cwe_id}:
+      Include: Description, consequences, examples, and remediation
+
+    cve_lookup: |
+      Search for information about CVE-{cve_id}:
+      Include: Description, affected products, CVSS score, remediation
+
+# ==============================================================================
+# CACHING CONFIGURATION FOR LLM
+# ==============================================================================
+cache:
+  # Prompt caching
+  prompt_cache:
+    enabled: true
+    type: "memory"                # memory, redis, file
+    ttl: 3600                     # Time to live (seconds) - 1 hour
+    max_size: 1000                # Max cached prompts
+
+  # Embedding cache
+  embedding_cache:
+    enabled: true
+    type: "memory"
+    ttl: 86400                    # 24 hours
+    max_size: 10000               # Max cached embeddings
+
+  # Model response cache
+  response_cache:
+    enabled: true
+    type: "memory"
+    ttl: 1800                     # 30 minutes
+    max_size: 5000
+
+# ==============================================================================
+# TOKEN COUNTING AND MANAGEMENT
+# ==============================================================================
+tokens:
+  # Token counting
+  counting:
+    enabled: true
+    method: "tiktoken"            # tiktoken, sentencepiece, custom
+
+  # Token limits
+  limits:
+    max_input_tokens: 4096
+    max_output_tokens: 256
+    max_total_tokens: 8192
+
+  # Token costs (for monitoring)
+  costs:
+    input_cost_per_1k: 0.0        # Cost per 1000 input tokens
+    output_cost_per_1k: 0.0       # Cost per 1000 output tokens
+
+# ==============================================================================
+# RESPONSE PARSING
+# ==============================================================================
+response_parsing:
+  # JSON parsing
+  json_parsing:
+    enabled: true
+    strict_mode: false            # Strict JSON parsing
+    default_value: {}
+
+  # Code extraction
+  code_extraction:
+    enabled: true
+    languages:
+      - "python"
+      - "javascript"
+      - "java"
+      - "cpp"
+      - "c"
+      - "go"
+      - "rust"
+
+  # Vulnerability extraction
+  vulnerability_extraction:
+    enabled: true
+    extract_cwe: true
+    extract_cve: true
+    extract_severity: true
+
+# ==============================================================================
+# ERROR HANDLING AND FALLBACK
+# ==============================================================================
+error_handling:
+  # Retry policy
+  retry:
+    enabled: true
+    max_attempts: 3
+    backoff_type: "exponential"   # linear, exponential
+    initial_delay: 1              # seconds
+    max_delay: 30                 # seconds
+
+  # Fallback strategy
+  fallback:
+    enabled: true
+    use_fallback_model: true      # Use fallback if primary fails
+    use_cached_response: true     # Use cached response if available
+    use_default_response: true    # Use predefined response if all else fails
+
+  # Error responses
+  error_responses:
+    connection_error: "Unable to connect to LLM service. Please try again."
+    timeout_error: "Request timeout. Analysis took too long."
+    overloaded_error: "LLM service is busy. Please try again later."
+
+# ==============================================================================
+# MONITORING AND LOGGING
+# ==============================================================================
+monitoring:
+  # Metrics
+  metrics:
+    enabled: true
+    track_latency: true
+    track_tokens: true
+    track_errors: true
+
+  # Logging
+  logging:
+    enabled: true
+    log_level: "INFO"             # DEBUG, INFO, WARNING, ERROR
+    log_requests: true
+    log_responses: true
+    log_errors: true
+
+    # Sensitive data handling
+    mask_api_keys: true
+    mask_sensitive_data: true
+
+# ==============================================================================
+# PERFORMANCE TUNING
+# ==============================================================================
+performance:
+  # Batch processing
+  batching:
+    enabled: true
+    batch_size: 32
+    batch_timeout: 10             # seconds
+
+  # Parallel processing
+  parallel_processing:
+    enabled: false                # Disable for Windows (use sequential)
+    max_workers: 1                # 1 for Windows
+
+  # Optimization
+  optimization:
+    use_quantization: true        # For local models
+    use_compression: true
+    use_pruning: false
+
+# ==============================================================================
+# ENVIRONMENT-SPECIFIC OVERRIDES
+# ==============================================================================
+development:
+  providers:
+    ollama:
+      timeout: 180                # Longer timeout for development
+
+  monitoring:
+    logging:
+      log_level: "DEBUG"          # Verbose logging
+      log_requests: true
+      log_responses: true
+
+production:
+  providers:
+    ollama:
+      timeout: 60                 # Strict timeout in production
+
+  cache:
+    prompt_cache:
+      ttl: 7200                   # Longer cache for production
+    embedding_cache:
+      ttl: 172800                 # 48 hours
+
+  monitoring:
+    logging:
+      log_level: "WARNING"        # Less verbose in production
+      mask_sensitive_data: true
+
+testing:
+  providers:
+    ollama:
+      timeout: 10                 # Short timeout for tests
+
+  cache:
+    enabled: false                # Disable caching in tests
+
+  error_handling:
+    fallback:
+      enabled: false              # Don't use fallback in tests
+
+# ==============================================================================
+# END OF LLM_CONFIG.YAML
+# ==============================================================================

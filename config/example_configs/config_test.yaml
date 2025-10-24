@@ -1,0 +1,467 @@
+# ==============================================================================
+# HyFuzz Server - Testing Environment Configuration
+# ==============================================================================
+# This file contains testing-specific settings
+# Optimized for fast, isolated, repeatable tests
+# ==============================================================================
+
+# ==============================================================================
+# ENVIRONMENT
+# ==============================================================================
+environment: "testing"
+debug: true
+
+# ==============================================================================
+# SERVER CONFIGURATION
+# ==============================================================================
+server:
+  # Test server
+  host: "127.0.0.1"
+  port: 9000                      # Different port for testing
+  debug: true
+  reload: false
+  workers: 1                      # Single worker for tests
+
+  # Fast timeouts for tests
+  timeout: 5
+  shutdown_timeout: 1
+
+  # CORS - Allow all for testing
+  cors:
+    enabled: true
+    origins:
+      - "*"                       # Allow all origins for testing
+    allow_credentials: true
+    allow_methods:
+      - "GET"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+      - "OPTIONS"
+      - "PATCH"
+
+# ==============================================================================
+# TRANSPORT
+# ==============================================================================
+transport:
+  type: "stdio"
+  stdio:
+    enabled: true
+  http:
+    enabled: true
+    endpoint: "/mcp"
+  websocket:
+    enabled: false
+
+# ==============================================================================
+# SESSION & CACHE - IN-MEMORY ONLY
+# ==============================================================================
+session:
+  enabled: true
+  max_sessions: 100
+  session_timeout: 1800          # 30 minutes
+  storage_type: "memory"         # Always use memory for tests
+
+  # No persistence
+  cleanup_interval: 60
+
+cache:
+  type: "memory"                  # Always in-memory for tests
+  max_size: 1000
+  ttl: 300                        # 5 minutes
+  eviction_policy: "lru"
+
+# ==============================================================================
+# KNOWLEDGE BASE - TEST DATA
+# ==============================================================================
+knowledge:
+  data_dir: "tests/fixtures/data"
+  cache_dir: ":memory:"           # In-memory cache
+
+  cwe:
+    enabled: true
+    source: "local"               # Only use local test data
+    cache_file: ":memory:"        # In-memory cache
+    update_interval: 0            # No automatic updates
+
+  cve:
+    enabled: true
+    source: "local"               # Only use local test data
+    cache_file: ":memory:"        # In-memory cache
+    update_interval: 0            # No automatic updates
+
+  vulnerability_db:
+    enabled: true
+    db_path: ":memory:"           # In-memory SQLite
+    auto_backup: false            # No backups in tests
+
+# ==============================================================================
+# LLM CONFIGURATION - MOCKED
+# ==============================================================================
+llm:
+  provider: "mock"                # Use mock provider for tests
+
+  # Mock provider configuration
+  mock:
+    enabled: true
+    responses_file: "tests/fixtures/llm_responses.json"
+    delay: 0                      # No artificial delays
+    seed: 42                      # Fixed seed for reproducibility
+
+    # Mock models
+    models:
+      primary_model: "mock-llama2"
+      code_analysis_model: "mock-mistral"
+      embedding_model: "mock-embeddings"
+      knowledge_retrieval_model: "mock-retrieval"
+
+# ==============================================================================
+# LOGGING - MINIMAL
+# ==============================================================================
+logging:
+  level: "CRITICAL"               # Minimal logging to keep output clean
+
+  # Suppress all non-critical logs
+  loggers:
+    mcp_server:
+      level: "ERROR"
+    llm:
+      level: "ERROR"
+    knowledge:
+      level: "ERROR"
+    api:
+      level: "ERROR"
+
+  # Only critical errors to file
+  handlers:
+    console:
+      enabled: false              # No console output during tests
+
+    file:
+      enabled: true
+      level: "WARNING"
+      path: "logs/test.log"
+      max_size: 5000000           # 5 MB
+      backup_count: 1
+
+# ==============================================================================
+# SECURITY - DISABLED FOR TESTING
+# ==============================================================================
+security:
+  # No authentication in tests
+  auth:
+    enabled: false
+
+  # No rate limiting
+  rate_limit:
+    enabled: false
+
+  # Minimal input validation
+  input_validation:
+    enabled: true
+    sanitize_input: false
+    validate_json_schema: false
+
+  # No TLS
+  tls:
+    enabled: false
+
+# ==============================================================================
+# DATABASE - IN-MEMORY SQLITE
+# ==============================================================================
+database:
+  type: "sqlite"
+
+  sqlite:
+    path: ":memory:"              # In-memory database
+    echo: false                   # Don't log SQL
+    check_same_thread: false
+
+  # No migrations in tests
+  auto_migrate: false
+
+  # Test isolation
+  setup_tables: true
+  teardown_tables: true
+
+# ==============================================================================
+# FIXTURES & TEST DATA
+# ==============================================================================
+fixtures:
+  enabled: true
+
+  # Auto-load fixtures
+  auto_load: true
+  fixtures_dir: "tests/fixtures"
+
+  # Available fixtures
+  fixtures:
+    - "mock_data.py"
+    - "mock_llm.py"
+    - "mock_models.py"
+
+  # Test data files
+  test_data:
+    cwe: "tests/fixtures/sample_cwe.json"
+    cve: "tests/fixtures/sample_cve.json"
+    vulnerabilities: "tests/fixtures/sample_vulnerabilities.json"
+    requests: "tests/fixtures/sample_requests.json"
+    responses: "tests/fixtures/expected_responses.json"
+
+# ==============================================================================
+# PYTEST CONFIGURATION
+# ==============================================================================
+pytest:
+  # Test discovery
+  python_files: ["test_*.py", "*_test.py"]
+  python_classes: ["Test*"]
+  python_functions: ["test_*"]
+
+  # Test execution
+  addopts: >
+    -v
+    --tb=short
+    --strict-markers
+    --disable-warnings
+    -x
+
+  # Coverage
+  coverage:
+    enabled: true
+    min_percentage: 80
+
+    # Branches to exclude
+    exclude:
+      - "pragma: no cover"
+      - "if TYPE_CHECKING:"
+
+  # Markers
+  markers:
+    - "unit: Unit tests"
+    - "integration: Integration tests"
+    - "performance: Performance tests"
+    - "slow: Slow tests"
+    - "smoke: Smoke tests"
+    - "regression: Regression tests"
+
+# ==============================================================================
+# TEST EXECUTION PROFILES
+# ==============================================================================
+test_profiles:
+  # Quick smoke tests
+  smoke:
+    tests_dir: "tests/unit"
+    markers: ["smoke", "not slow"]
+    timeout: 60
+
+  # Full unit tests
+  unit:
+    tests_dir: "tests/unit"
+    markers: ["unit"]
+    timeout: 300
+
+  # Integration tests
+  integration:
+    tests_dir: "tests/integration"
+    markers: ["integration"]
+    timeout: 600
+
+  # All tests
+  full:
+    tests_dir: "tests"
+    timeout: 1800
+
+  # Performance tests
+  performance:
+    tests_dir: "tests/performance"
+    markers: ["performance"]
+    timeout: 1200
+
+# ==============================================================================
+# MOCK CONFIGURATION
+# ==============================================================================
+mocking:
+  # Mock providers
+  mock_providers:
+    - llm
+    - knowledge_base
+    - external_services
+
+  # Mock responses
+  mock_responses:
+    enabled: true
+    responses_file: "tests/fixtures/mock_responses.json"
+
+    # Deterministic responses
+    deterministic: true
+    seed: 42
+
+  # Mock delays
+  delays:
+    enabled: false                # No delays for fast tests
+    min_delay: 0
+    max_delay: 0
+
+# ==============================================================================
+# PARALLEL TESTING
+# ==============================================================================
+parallel:
+  enabled: true
+  workers: "auto"                 # Use all available cores
+
+  # Isolation
+  db_per_worker: true
+  cache_per_worker: true
+
+# ==============================================================================
+# TEST REPORTING
+# ==============================================================================
+reporting:
+  # Output formats
+  formats:
+    - "json"
+    - "html"
+    - "junit"
+
+  # Report locations
+  output_dir: "test_results"
+
+  # Artifacts
+  artifacts:
+    - "logs/"
+    - "test_results/"
+    - "coverage/"
+
+  # Coverage report
+  coverage_report:
+    enabled: true
+    format: "html"
+    output_dir: "coverage_html"
+
+# ==============================================================================
+# CONTINUOUS INTEGRATION
+# ==============================================================================
+ci:
+  enabled: true
+
+  # CI/CD platforms
+  github_actions:
+    enabled: true
+    workflow_file: ".github/workflows/tests.yml"
+
+  gitlab_ci:
+    enabled: false
+
+  jenkins:
+    enabled: false
+
+# ==============================================================================
+# TEST ISOLATION
+# ==============================================================================
+isolation:
+  # Database isolation
+  database:
+    transaction_per_test: true
+    rollback_after_test: true
+
+  # Cache isolation
+  cache:
+    clear_after_test: true
+
+  # File system isolation
+  temp_dir: "tests/temp"
+  cleanup_after_test: true
+
+# ==============================================================================
+# USEFUL TEST COMMANDS
+# ==============================================================================
+#
+# # Run all tests
+# pytest
+#
+# # Run specific test file
+# pytest tests/unit/test_server.py
+#
+# # Run specific test function
+# pytest tests/unit/test_server.py::test_initialization
+#
+# # Run with markers
+# pytest -m "unit"
+# pytest -m "not slow"
+# pytest -m "smoke"
+#
+# # Run with coverage
+# pytest --cov=src --cov-report=html
+#
+# # Run in parallel
+# pytest -n auto
+#
+# # Run with profiling
+# pytest --profile
+#
+# # Run with specific log level
+# pytest --log-cli-level=DEBUG
+#
+# # Run and stop on first failure
+# pytest -x
+#
+# # Run only failed tests
+# pytest --lf
+#
+# # Run failed tests first, then others
+# pytest --ff
+
+# ==============================================================================
+# TEST BEST PRACTICES
+# ==============================================================================
+#
+# 1. Test organization
+#    - Unit tests: tests/unit/
+#    - Integration tests: tests/integration/
+#    - Performance tests: tests/performance/
+#    - Fixtures: tests/fixtures/
+#
+# 2. Test naming
+#    - test_<feature>_<scenario>_<expected_result>
+#    - Example: test_authentication_with_valid_token_returns_200
+#
+# 3. Test data
+#    - Use fixtures for setup
+#    - Keep test data minimal
+#    - Use factories for complex objects
+#
+# 4. Mocking
+#    - Mock external services
+#    - Mock slow operations
+#    - Use deterministic seeds
+#
+# 5. Assertions
+#    - Be specific (not just assertTrue)
+#    - Test both happy path and error cases
+#    - Verify side effects
+
+# ==============================================================================
+# DEBUGGING TESTS
+# ==============================================================================
+#
+# # Print debug information
+# pytest -vvv
+#
+# # Show local variables on failure
+# pytest -l
+#
+# # Drop into debugger on failure
+# pytest --pdb
+#
+# # Drop into debugger at start
+# pytest --trace
+#
+# # Show print statements
+# pytest -s
+#
+# # Show warnings
+# pytest -W default
+
+# ==============================================================================
+# END OF CONFIG_TEST.YAML
+# ==============================================================================

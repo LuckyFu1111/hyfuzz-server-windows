@@ -1,0 +1,445 @@
+# ==============================================================================
+# HyFuzz Server - Production Environment Configuration
+# ==============================================================================
+# This file contains production-specific settings
+# Optimized for performance, security, and reliability
+# ==============================================================================
+
+# ==============================================================================
+# ENVIRONMENT
+# ==============================================================================
+environment: "production"
+debug: false
+
+# ==============================================================================
+# SERVER CONFIGURATION
+# ==============================================================================
+server:
+  # Production server
+  host: "0.0.0.0"                 # Listen on all interfaces
+  port: 8000
+  debug: false
+  reload: false                   # Never auto-reload in production
+  workers: 4                      # Multiple workers for load distribution
+
+  # Strict timeouts
+  timeout: 30
+  shutdown_timeout: 10
+
+  # CORS - Whitelist specific domains
+  cors:
+    enabled: true
+    origins:
+      - "https://yourdomain.com"
+      - "https://app.yourdomain.com"
+      - "https://api.yourdomain.com"
+    allow_credentials: true
+    allow_methods:
+      - "GET"
+      - "POST"
+      - "PUT"
+      - "DELETE"
+      - "OPTIONS"
+    allow_headers:
+      - "Content-Type"
+      - "Authorization"
+    max_age: 86400                # Cache preflight for 24 hours
+
+# ==============================================================================
+# TRANSPORT
+# ==============================================================================
+transport:
+  type: "stdio"
+  stdio:
+    enabled: true
+  http:
+    enabled: false                # Disable HTTP in favor of stdio
+  websocket:
+    enabled: false                # Disable WebSocket in production
+
+# ==============================================================================
+# SESSION & CACHE
+# ==============================================================================
+session:
+  enabled: true
+  max_sessions: 1000
+  session_timeout: 3600           # 1 hour session timeout
+  storage_type: "redis"           # Use Redis for session persistence
+
+  redis:
+    host: "redis-host"
+    port: 6379
+    db: 0
+    password: "${REDIS_PASSWORD}"
+    ssl: true
+
+cache:
+  type: "redis"                   # Production-grade caching
+
+  redis:
+    host: "redis-host"
+    port: 6379
+    db: 1
+    password: "${REDIS_PASSWORD}"
+    ssl: true
+    sentinel: false               # Or use Redis Sentinel for HA
+    cluster: false                # Or use Redis Cluster for scaling
+
+  ttl: 3600
+  max_size: 100000
+
+# ==============================================================================
+# KNOWLEDGE BASE
+# ==============================================================================
+knowledge:
+  data_dir: "/data/knowledge"     # Use absolute path
+  cache_dir: "/data/knowledge_cache"
+
+  cwe:
+    enabled: true
+    source: "hybrid"              # Use both local and remote
+    cache_file: "/data/knowledge_cache/cwe_graph.pkl"
+    update_interval: 86400        # Daily updates
+    remote_source: "https://cwe.mitre.org/data/json/1000.json"
+
+  cve:
+    enabled: true
+    source: "hybrid"              # Use both local and remote
+    cache_file: "/data/knowledge_cache/cve_graph.pkl"
+    update_interval: 3600         # Hourly updates for CVEs
+    remote_source: "https://services.nvd.nist.gov/rest/json/cves/2.0"
+
+  vulnerability_db:
+    enabled: true
+    db_path: "/data/vulnerability.db"
+    auto_backup: true
+    backup_interval: 21600        # 6-hour backup interval
+    backup_location: "/backups/vulnerability"
+    retention_days: 30
+
+# ==============================================================================
+# LLM CONFIGURATION
+# ==============================================================================
+llm:
+  provider: "ollama"
+
+  ollama:
+    enabled: true
+    host: "llm-service"           # Use service hostname
+    port: 11434
+    scheme: "https"               # Use HTTPS
+    model: "llama2"
+    fallback_model: "mistral"
+
+    # Strict production parameters
+    temperature: 0.5              # Less creative for determinism
+    num_predict: 256              # Limit output length
+    context_window: 4096
+    timeout: 60                   # Strict timeout
+    connect_timeout: 10
+
+    # Connection pooling
+    pool_connections: 20
+    pool_maxsize: 20
+
+# ==============================================================================
+# LOGGING
+# ==============================================================================
+logging:
+  level: "INFO"                   # Less verbose in production
+
+  # Production-specific loggers
+  loggers:
+    mcp_server:
+      level: "INFO"
+    llm:
+      level: "INFO"
+    knowledge:
+      level: "INFO"
+    api:
+      level: "INFO"
+
+  # Reduce noise from external libraries
+  handlers:
+    console:
+      level: "WARNING"
+
+    # File logging with rotation
+    file:
+      enabled: true
+      level: "INFO"
+      path: "/var/log/hyfuzz/server.log"
+      max_size: 104857600         # 100 MB
+      backup_count: 30            # 30 days of logs
+
+    # Central logging service
+    syslog:
+      enabled: true
+      host: "syslog-server"
+      port: 514
+      facility: "LOCAL0"
+
+    # Error tracking service
+    sentry:
+      enabled: true
+      dsn: "${SENTRY_DSN}"
+      environment: "production"
+      tracing_sample_rate: 0.1
+
+# ==============================================================================
+# SECURITY - PRODUCTION HARDENED
+# ==============================================================================
+security:
+  # Authentication required
+  auth:
+    enabled: true
+    type: "jwt"
+    jwt:
+      secret: "${JWT_SECRET}"
+      algorithm: "HS256"
+      expiration: 3600            # 1 hour
+
+  # Rate limiting
+  rate_limit:
+    enabled: true
+    requests_per_minute: 100      # Strict limits
+    burst_size: 10
+    storage_backend: "redis"      # Use Redis for distributed rate limiting
+
+  # Input validation
+  input_validation:
+    enabled: true
+    max_input_length: 5000
+    sanitize_input: true
+    validate_json_schema: true
+
+  # HTTPS/TLS
+  tls:
+    enabled: true
+    cert_path: "/etc/ssl/certs/server.crt"
+    key_path: "/etc/ssl/private/server.key"
+    require_https: true
+    hsts_enabled: true
+    hsts_max_age: 31536000        # 1 year
+
+  # Security headers
+  headers:
+    x_content_type_options: "nosniff"
+    x_frame_options: "DENY"
+    x_xss_protection: "1; mode=block"
+    strict_transport_security: "max-age=31536000; includeSubDomains"
+    content_security_policy: "default-src 'self'"
+
+# ==============================================================================
+# MONITORING & OBSERVABILITY
+# ==============================================================================
+monitoring:
+  # Health check
+  health_check:
+    enabled: true
+    interval: 30
+    startup_delay: 5
+
+  # Metrics
+  metrics:
+    enabled: true
+    export_format: "prometheus"
+    export_interval: 60
+    pushgateway: "prometheus-pushgateway:9091"
+    labels:
+      environment: "production"
+      service: "hyfuzz-server"
+
+  # Tracing
+  tracing:
+    enabled: true
+    sample_rate: 0.1              # Sample 10% of requests
+    export_format: "jaeger"
+    jaeger:
+      agent_host: "jaeger-agent"
+      agent_port: 6831
+
+# ==============================================================================
+# ERROR HANDLING & RESILIENCE
+# ==============================================================================
+error:
+  report_errors: true
+  include_stack_trace: false      # Don't expose details
+
+  retry:
+    enabled: true
+    max_attempts: 3
+    backoff_type: "exponential"
+    initial_delay: 1
+    max_delay: 30
+
+  circuit_breaker:
+    enabled: true
+    failure_threshold: 5
+    recovery_timeout: 60
+
+  fallback:
+    enabled: true
+    use_fallback_model: true
+    use_cached_response: true
+
+# ==============================================================================
+# DATABASE (PRODUCTION)
+# ==============================================================================
+database:
+  type: "postgresql"              # Use PostgreSQL in production
+
+  postgresql:
+    host: "${DB_HOST}"
+    port: 5432
+    database: "${DB_NAME}"
+    user: "${DB_USER}"
+    password: "${DB_PASSWORD}"
+    ssl_mode: "require"
+
+    pool:
+      min_size: 10
+      max_size: 100
+      timeout: 30
+      idle_timeout: 900           # 15 minutes
+      recycle: 3600               # 1 hour
+
+  backup:
+    enabled: true
+    schedule: "0 2 * * *"         # Daily at 2 AM
+    location: "/backups/database"
+    retention_days: 30
+
+# ==============================================================================
+# DEPLOYMENT
+# ==============================================================================
+deployment:
+  # Container/VM settings
+  replicas: 3                     # Number of replicas
+
+  # Resource limits
+  resources:
+    cpu:
+      request: "1"
+      limit: "2"
+    memory:
+      request: "2Gi"
+      limit: "4Gi"
+
+  # Rolling updates
+  rolling_update:
+    max_surge: "25%"
+    max_unavailable: "0"
+
+  # Graceful shutdown
+  grace_period: 30                # seconds
+
+  # Auto-scaling
+  autoscaling:
+    enabled: true
+    min_replicas: 3
+    max_replicas: 10
+    target_cpu_utilization: "70%"
+    target_memory_utilization: "80%"
+
+# ==============================================================================
+# NOTIFICATIONS & ALERTS
+# ==============================================================================
+notifications:
+  # Alert channels
+  channels:
+    - type: "email"
+      to: "ops-team@company.com"
+      on: ["error", "critical"]
+
+    - type: "slack"
+      webhook: "${SLACK_WEBHOOK_URL}"
+      channel: "#alerts"
+      on: ["error", "critical", "deployment"]
+
+    - type: "pagerduty"
+      integration_key: "${PAGERDUTY_KEY}"
+      on: ["critical"]
+
+# ==============================================================================
+# BACKUP & DISASTER RECOVERY
+# ==============================================================================
+backup:
+  enabled: true
+
+  # Database backup
+  database:
+    schedule: "0 2 * * *"         # Daily at 2 AM
+    retention_days: 30
+    location: "s3://backups/database"
+
+  # Knowledge base backup
+  knowledge_base:
+    schedule: "0 3 * * *"         # Daily at 3 AM
+    retention_days: 30
+    location: "s3://backups/knowledge"
+
+  # Configuration backup
+  configuration:
+    schedule: "0 * * * *"         # Every hour
+    retention_days: 7
+    location: "s3://backups/config"
+
+# ==============================================================================
+# COMPLIANCE & SECURITY SCANNING
+# ==============================================================================
+compliance:
+  # Security scanning
+  vulnerability_scanning:
+    enabled: true
+    schedule: "0 1 * * *"         # Daily at 1 AM
+
+  # Log auditing
+  audit_logging:
+    enabled: true
+    retention_days: 90
+    location: "/var/log/hyfuzz/audit"
+
+  # Data protection
+  data_encryption:
+    enabled: true
+    algorithm: "AES-256-GCM"
+    key_rotation_days: 90
+
+# ==============================================================================
+# USEFUL DEPLOYMENT CHECKS
+# ==============================================================================
+#
+# Before deploying to production:
+#
+# 1. Security audit
+#    - All secrets in environment variables
+#    - No hardcoded credentials
+#    - TLS certificates valid
+#    - Authentication enabled
+#
+# 2. Performance testing
+#    - Load testing with expected traffic
+#    - Database connection pooling optimized
+#    - Cache configuration tuned
+#    - Response times acceptable
+#
+# 3. Monitoring setup
+#    - Prometheus collecting metrics
+#    - Logs aggregated and searchable
+#    - Alerts configured
+#    - Dashboards created
+#
+# 4. Backup verification
+#    - Backups created on schedule
+#    - Restore process tested
+#    - Recovery time objective (RTO) acceptable
+#
+# 5. Documentation
+#    - Runbooks created
+#    - Incident response procedures documented
+#    - Contact information updated
+
+# ==============================================================================
+# END OF CONFIG_PROD.YAML
+# ==============================================================================

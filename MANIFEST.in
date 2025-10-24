@@ -1,0 +1,52 @@
+# ==============================================================================
+# HyFuzz Server - Manifest for Package Distribution
+# ==============================================================================
+# This file specifies which non-Python files to include in distributions
+# Reference: https://packaging.python.org/guides/using-manifest-in/
+# ==============================================================================
+
+# Include documentation
+include README.md
+include SETUP_GUIDE.md
+include LICENSE
+include CHANGELOG.md
+
+# Include configuration files
+recursive-include config *.yaml *.yml *.json *.toml
+recursive-include config .env.template
+
+# Include data files
+recursive-include data *.json *.csv *.txt *.pkl *.npy
+
+# Include documentation
+recursive-include docs *.md *.rst
+
+# Include example files
+recursive-include examples *.py *.ipynb *.json
+
+# Include scripts
+recursive-include scripts *.py *.sh *.bat
+
+# Exclude unnecessary files
+exclude .gitignore
+exclude .github
+exclude .pytest_cache
+exclude .mypy_cache
+exclude *.pyc
+exclude __pycache__
+exclude *.egg-info
+exclude build
+exclude dist
+exclude .tox
+exclude .coverage
+
+# Global patterns
+global-exclude *.pyc
+global-exclude __pycache__
+global-exclude .DS_Store
+global-exclude *.egg-info
+global-exclude .git*
+
+# ==============================================================================
+# END OF MANIFEST.IN
+# ==============================================================================

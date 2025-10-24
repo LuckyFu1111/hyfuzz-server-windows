@@ -1,0 +1,460 @@
+# ==============================================================================
+# HyFuzz Server - Logging Configuration File
+# ==============================================================================
+# This file configures logging for the MCP Server
+# Supports multiple handlers, formatters, and log levels
+# ==============================================================================
+
+# ==============================================================================
+# LOGGING VERSION AND HANDLERS
+# ==============================================================================
+version: 1
+disable_existing_loggers: false
+
+# ==============================================================================
+# FORMATTERS
+# ==============================================================================
+formatters:
+  # Standard format
+  standard:
+    format: "[%(asctime)s] %(levelname)-8s [%(name)s] %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+  # Detailed format with more context
+  detailed:
+    format: "[%(asctime)s] %(levelname)-8s [%(name)s:%(funcName)s:%(lineno)d] %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+  # JSON format for structured logging
+  json:
+    class: "pythonjsonlogger.jsonlogger.JsonFormatter"
+    format: "[%(asctime)s] %(levelname)s %(name)s %(message)s"
+
+  # Minimal format
+  minimal:
+    format: "%(levelname)s - %(message)s"
+
+  # Colored format for console (optional)
+  colored:
+    format: "[%(asctime)s] %(levelname)-8s [%(name)s] %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+# ==============================================================================
+# HANDLERS
+# ==============================================================================
+handlers:
+  # Console handler - Output to console
+  console:
+    class: "logging.StreamHandler"
+    level: "DEBUG"
+    formatter: "standard"
+    stream: "ext://sys.stdout"
+
+  # File handler - Main log file
+  file:
+    class: "logging.handlers.RotatingFileHandler"
+    level: "DEBUG"
+    formatter: "detailed"
+    filename: "logs/server.log"
+    maxBytes: 10485760            # 10 MB
+    backupCount: 10               # Keep 10 backup files
+    encoding: "utf-8"
+
+  # File handler - Error log
+  error_file:
+    class: "logging.handlers.RotatingFileHandler"
+    level: "ERROR"
+    formatter: "detailed"
+    filename: "logs/error.log"
+    maxBytes: 10485760            # 10 MB
+    backupCount: 10
+    encoding: "utf-8"
+
+  # File handler - LLM operations
+  llm_file:
+    class: "logging.handlers.RotatingFileHandler"
+    level: "DEBUG"
+    formatter: "detailed"
+    filename: "logs/llm.log"
+    maxBytes: 10485760            # 10 MB
+    backupCount: 5
+    encoding: "utf-8"
+
+  # File handler - MCP protocol
+  mcp_file:
+    class: "logging.handlers.RotatingFileHandler"
+    level: "DEBUG"
+    formatter: "detailed"
+    filename: "logs/mcp.log"
+    maxBytes: 10485760            # 10 MB
+    backupCount: 5
+    encoding: "utf-8"
+
+  # File handler - Knowledge base operations
+  knowledge_file:
+    class: "logging.handlers.RotatingFileHandler"
+    level: "DEBUG"
+    formatter: "detailed"
+    filename: "logs/knowledge.log"
+    maxBytes: 10485760            # 10 MB
+    backupCount: 5
+    encoding: "utf-8"
+
+  # File handler - API/Request logs
+  api_file:
+    class: "logging.handlers.RotatingFileHandler"
+    level: "DEBUG"
+    formatter: "standard"
+    filename: "logs/api.log"
+    maxBytes: 10485760            # 10 MB
+    backupCount: 5
+    encoding: "utf-8"
+
+  # Timed rotating file handler (daily rotation)
+  daily_file:
+    class: "logging.handlers.TimedRotatingFileHandler"
+    level: "INFO"
+    formatter: "standard"
+    filename: "logs/daily.log"
+    when: "midnight"              # Rotate at midnight
+    interval: 1
+    backupCount: 30               # Keep 30 days of logs
+    encoding: "utf-8"
+
+# ==============================================================================
+# LOGGERS
+# ==============================================================================
+loggers:
+  # Root logger
+  root:
+    level: "DEBUG"
+    handlers:
+      - "console"
+      - "file"
+      - "daily_file"
+
+  # MCP Server logger
+  mcp_server:
+    level: "DEBUG"
+    handlers:
+      - "console"
+      - "file"
+      - "mcp_file"
+    propagate: false
+
+  # Message Handler logger
+  mcp_server.message_handler:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "mcp_file"
+    propagate: false
+
+  # Capability Manager logger
+  mcp_server.capability_manager:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "mcp_file"
+    propagate: false
+
+  # Session Manager logger
+  mcp_server.session_manager:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "mcp_file"
+    propagate: false
+
+  # Transport layer logger
+  mcp_server.transport:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "mcp_file"
+    propagate: false
+
+  # LLM Service logger
+  llm:
+    level: "DEBUG"
+    handlers:
+      - "console"
+      - "file"
+      - "llm_file"
+    propagate: false
+
+  # LLM Client logger
+  llm.llm_client:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "llm_file"
+    propagate: false
+
+  # LLM Service logger
+  llm.llm_service:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "llm_file"
+    propagate: false
+
+  # CoT Engine logger
+  llm.cot_engine:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "llm_file"
+    propagate: false
+
+  # Prompt Builder logger
+  llm.prompt_builder:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "llm_file"
+    propagate: false
+
+  # Cache Manager logger
+  llm.cache_manager:
+    level: "INFO"
+    handlers:
+      - "file"
+      - "llm_file"
+    propagate: false
+
+  # Knowledge Base logger
+  knowledge:
+    level: "DEBUG"
+    handlers:
+      - "console"
+      - "file"
+      - "knowledge_file"
+    propagate: false
+
+  # Knowledge Loader logger
+  knowledge.knowledge_loader:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "knowledge_file"
+    propagate: false
+
+  # CWE Repository logger
+  knowledge.cwe_repository:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "knowledge_file"
+    propagate: false
+
+  # CVE Repository logger
+  knowledge.cve_repository:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "knowledge_file"
+    propagate: false
+
+  # Vulnerability DB logger
+  knowledge.vulnerability_db:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "knowledge_file"
+    propagate: false
+
+  # Graph Cache logger
+  knowledge.graph_cache:
+    level: "INFO"
+    handlers:
+      - "file"
+      - "knowledge_file"
+    propagate: false
+
+  # API logger
+  api:
+    level: "DEBUG"
+    handlers:
+      - "console"
+      - "file"
+      - "api_file"
+    propagate: false
+
+  # Route handlers logger
+  api.routes:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "api_file"
+    propagate: false
+
+  # Request handlers logger
+  api.handlers:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "api_file"
+    propagate: false
+
+  # Middleware logger
+  api.middleware:
+    level: "DEBUG"
+    handlers:
+      - "file"
+      - "api_file"
+    propagate: false
+
+  # Config logger
+  config:
+    level: "DEBUG"
+    handlers:
+      - "console"
+      - "file"
+    propagate: false
+
+  # Utils logger
+  utils:
+    level: "DEBUG"
+    handlers:
+      - "file"
+    propagate: false
+
+  # External libraries (reduce noise)
+  aiohttp:
+    level: "INFO"
+    handlers:
+      - "file"
+    propagate: false
+
+  urllib3:
+    level: "INFO"
+    handlers:
+      - "file"
+    propagate: false
+
+  asyncio:
+    level: "INFO"
+    handlers:
+      - "file"
+    propagate: false
+
+# ==============================================================================
+# LOG LEVELS
+# ==============================================================================
+# DEBUG    - Detailed information for diagnosing problems
+# INFO     - General informational messages
+# WARNING  - Warning messages for potentially problematic situations
+# ERROR    - Error messages for serious problems
+# CRITICAL - Critical messages for very serious problems
+
+# ==============================================================================
+# ENVIRONMENT-SPECIFIC CONFIGURATIONS
+# ==============================================================================
+
+# Development environment
+development:
+  # More verbose logging
+  root:
+    level: "DEBUG"
+
+  handlers:
+    console:
+      level: "DEBUG"
+    file:
+      level: "DEBUG"
+
+  # Log all requests
+  api:
+    level: "DEBUG"
+
+# Production environment
+production:
+  # Less verbose logging
+  root:
+    level: "INFO"
+
+  handlers:
+    console:
+      level: "WARNING"
+    file:
+      level: "INFO"
+
+  # External libraries
+  aiohttp:
+    level: "WARNING"
+
+  urllib3:
+    level: "WARNING"
+
+  asyncio:
+    level: "WARNING"
+
+# Testing environment
+testing:
+  # Minimal logging
+  root:
+    level: "WARNING"
+
+  handlers:
+    console:
+      level: "CRITICAL"
+    file:
+      level: "WARNING"
+
+  # Disable most logging to keep test output clean
+  aiohttp:
+    level: "ERROR"
+
+  urllib3:
+    level: "ERROR"
+
+# ==============================================================================
+# LOG FILE LOCATIONS
+# ==============================================================================
+# All log files are stored in: logs/
+#
+# logs/
+# ├── server.log          - Main server log (all levels)
+# ├── error.log           - Error messages only
+# ├── llm.log             - LLM service operations
+# ├── mcp.log             - MCP protocol messages
+# ├── knowledge.log       - Knowledge base operations
+# ├── api.log             - API/Request logs
+# └── daily.log           - Daily rotating log
+#
+# Each log file rotates when it reaches 10 MB
+# Backup files are named: logfile.log.1, logfile.log.2, etc.
+
+# ==============================================================================
+# BEST PRACTICES
+# ==============================================================================
+#
+# 1. Use appropriate log levels:
+#    - DEBUG: Development and troubleshooting
+#    - INFO: Normal operations and milestones
+#    - WARNING: Unusual situations, potential issues
+#    - ERROR: Failures and exceptions
+#    - CRITICAL: System failures requiring immediate action
+#
+# 2. Log important events:
+#    - Server startup/shutdown
+#    - Connection establishment/closure
+#    - Request processing (input/output)
+#    - Errors and exceptions
+#    - Performance metrics
+#
+# 3. Avoid logging:
+#    - Sensitive data (API keys, passwords, personal info)
+#    - Too much verbose output in production
+#    - Duplicate messages across handlers
+#
+# 4. Monitor log files:
+#    - Rotate logs regularly to prevent disk space issues
+#    - Archive old logs for compliance
+#    - Monitor for errors and warnings
+#    - Use log analysis tools for insights
+
+# ==============================================================================
+# END OF LOGGING_CONFIG.YAML
+# ==============================================================================
