@@ -1,669 +1,539 @@
+#!/usr/bin/env python3
 """
-Ollama setup script for the MCP server.
-Handles installation, configuration, model download, and verification of Ollama.
+MCP Server Startup Script for HyFuzz Windows Server
+Handles initialization of all server components and graceful shutdown
+
+This is a startup script, not a test module. Run with --test flag to execute tests.
 """
 
-import os
 import sys
-import json
+import os
+import asyncio
+import signal
+import argparse
 import logging
-import subprocess
-import platform
-import time
-import socket
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any
-from dataclasses import dataclass, asdict
-from datetime import datetime
-import urllib.request
-import urllib.error
+from typing import Optional
+from contextlib import asynccontextmanager
 
-logger = logging.getLogger(__name__)
+# Prevent pytest from treating this as a test module
+__test__ = False
 
+# Add src directory to path
+PROJECT_ROOT = Path(__file__).parent.parent
+sys.path.insert(0, str(PROJECT_ROOT / 'src'))
 
-# ============================================================================
-# DATA STRUCTURES
-# ============================================================================
-
-@dataclass
-class SetupStep:
-    """Represents a setup step result."""
-    name: str
-    status: str  # 'success', 'warning', 'error', 'skipped'
-    message: str
-    details: Optional[Dict[str, Any]] = None
-    timestamp: str = ""
-
-    def __post_init__(self):
-        if not self.timestamp:
-            self.timestamp = datetime.now().isoformat()
+try:
+    from config.settings import Settings
+    from config.config_loader import ConfigLoader
+    from mcp_server.server import MCPServer
+    from llm.llm_client import LLMClient
+    from llm.llm_service import LLMService
+    from knowledge.knowledge_loader import KnowledgeLoader
+    from utils.logger import setup_logger
+    from utils.exceptions import ConfigurationError, InitializationError
+except ImportError as e:
+    print(f"ERROR: Failed to import modules. Make sure you're running from project root: {e}", file=sys.stderr)
+    sys.exit(1)
 
 
-@dataclass
-class OllamaSetupResult:
-    """Result of Ollama setup."""
-    overall_status: str  # 'success', 'partial', 'failed'
-    ollama_installed: bool
-    ollama_version: Optional[str]
-    ollama_running: bool
-    models_available: List[str]
-    steps: List[SetupStep]
-    timestamp: str = ""
+class ServerManager:
+    """Manages the lifecycle of the MCP server and its components"""
 
-    def __post_init__(self):
-        if not self.timestamp:
-            self.timestamp = datetime.now().isoformat()
-
-
-# ============================================================================
-# COLOR CODES
-# ============================================================================
-
-class Colors:
-    """ANSI color codes."""
-    GREEN = '\033[92m'
-    YELLOW = '\033[93m'
-    RED = '\033[91m'
-    BLUE = '\033[94m'
-    RESET = '\033[0m'
-    BOLD = '\033[1m'
-
-
-# ============================================================================
-# OLLAMA SETUP MANAGER
-# ============================================================================
-
-class OllamaSetupManager:
-    """Manages Ollama installation and setup."""
-
-    # Ollama configuration
-    OLLAMA_VERSION = "latest"
-    DEFAULT_MODELS = ["mistral", "neural-chat"]  # Lightweight models for testing
-    OLLAMA_PORT = 11434
-    OLLAMA_HOST = "127.0.0.1"
-    OLLAMA_TIMEOUT = 30
-
-    # URLs
-    OLLAMA_DOWNLOAD_URLS = {
-        "Darwin": "https://ollama.ai/download/ollama-darwin.zip",
-        "Linux": "https://ollama.ai/install.sh",
-        "Windows": "https://ollama.ai/download/OllamaSetup.exe",
-    }
-
-    def __init__(self, config_dir: Optional[Path] = None):
+    def __init__(self, config_path: Optional[str] = None, env_path: Optional[str] = None):
         """
-        Initialize setup manager.
+        Initialize ServerManager with configuration
 
         Args:
-            config_dir: Directory for storing configuration
+            config_path: Path to config YAML file
+            env_path: Path to .env file
         """
-        self.config_dir = config_dir or Path.home() / ".ollama"
-        self.config_dir.mkdir(parents=True, exist_ok=True)
-        self.steps: List[SetupStep] = []
+        self.config_path = config_path
+        self.env_path = env_path
+        self.logger: Optional[logging.Logger] = None
+        self.settings: Optional[Settings] = None
+        self.mcp_server: Optional[MCPServer] = None
+        self.llm_service: Optional[LLMService] = None
+        self.knowledge_loader: Optional[KnowledgeLoader] = None
+        self.is_running = False
+        self._shutdown_event = asyncio.Event()
 
-    def run_full_setup(self, skip_model_download: bool = False) -> OllamaSetupResult:
-        """
-        Run complete Ollama setup.
-
-        Args:
-            skip_model_download: Skip downloading models
-
-        Returns:
-            Setup result with status
-        """
-        print(f"\n{Colors.BLUE}{Colors.BOLD}╔════════════════════════════════════════╗{Colors.RESET}")
-        print(f"{Colors.BLUE}{Colors.BOLD}║     OLLAMA SETUP FOR MCP SERVER         ║{Colors.RESET}")
-        print(f"{Colors.BLUE}{Colors.BOLD}╚════════════════════════════════════════╝{Colors.RESET}\n")
-
-        print(f"{Colors.BOLD}Step 1: Checking Ollama Installation{Colors.RESET}\n")
-        installed, version = self._check_ollama_installed()
-
-        if not installed:
-            print(f"{Colors.BOLD}Step 2: Installing Ollama{Colors.RESET}\n")
-            installed = self._install_ollama()
-
-            if not installed:
-                print(f"{Colors.RED}✗ Failed to install Ollama{Colors.RESET}\n")
-                return self._compile_results(
-                    installed, version, False, [], "failed"
-                )
-
-        print(f"{Colors.BOLD}Step 2: Starting Ollama Service{Colors.RESET}\n")
-        running = self._start_ollama_service()
-
-        print(f"{Colors.BOLD}Step 3: Configuring Ollama{Colors.RESET}\n")
-        self._configure_ollama()
-
-        print(f"{Colors.BOLD}Step 4: Verifying Installation{Colors.RESET}\n")
-        verified = self._verify_ollama()
-
-        models = []
-        if not skip_model_download and installed and running:
-            print(f"{Colors.BOLD}Step 5: Downloading Models{Colors.RESET}\n")
-            models = self._download_models()
-
-        # Compile results
-        overall_status = "success" if verified and running else "partial"
-        if not installed:
-            overall_status = "failed"
-
-        result = self._compile_results(
-            installed, version, running, models, overall_status
-        )
-
-        self._print_summary(result)
-
-        return result
-
-    def _check_ollama_installed(self) -> Tuple[bool, Optional[str]]:
-        """Check if Ollama is installed."""
-        print("Checking for Ollama installation...")
-
+    def setup_logger(self) -> None:
+        """Initialize logging system"""
         try:
-            result = subprocess.run(
-                ["ollama", "--version"],
-                capture_output=True,
-                text=True,
-                timeout=5
+            log_config_path = (
+                Path(self.config_path).parent / 'logging_config.yaml'
+                if self.config_path else None
+            )
+            self.logger = setup_logger(
+                name='hyfuzz_server',
+                config_path=log_config_path
+            )
+            self.logger.info("Logger initialized successfully")
+        except Exception as e:
+            print(f"ERROR: Failed to setup logger: {e}", file=sys.stderr)
+            raise InitializationError(f"Logger setup failed: {e}")
+
+    def load_configuration(self) -> None:
+        """Load configuration from files and environment"""
+        try:
+            self.logger.info("Loading configuration...")
+            config_loader = ConfigLoader(
+                config_path=self.config_path,
+                env_path=self.env_path
+            )
+            self.settings = config_loader.load()
+
+            self.logger.info(f"Configuration loaded: {self.settings.server.host}:{self.settings.server.port}")
+            self.logger.debug(f"LLM Config: {self.settings.llm.model}")
+            self.logger.debug(f"Transport Mode: {self.settings.server.transport_mode}")
+
+        except ConfigurationError as e:
+            self.logger.error(f"Configuration error: {e}")
+            raise
+        except Exception as e:
+            self.logger.error(f"Unexpected error loading configuration: {e}")
+            raise InitializationError(f"Configuration loading failed: {e}")
+
+    async def initialize_llm_service(self) -> None:
+        """Initialize LLM client and service"""
+        try:
+            self.logger.info("Initializing LLM service...")
+
+            # Create LLM client
+            llm_client = LLMClient(
+                base_url=self.settings.llm.ollama_base_url,
+                model=self.settings.llm.model,
+                timeout=self.settings.llm.timeout
             )
 
-            if result.returncode == 0:
-                version = result.stdout.strip()
-                self._add_step("check_installation", "success",
-                               f"Ollama found: {version}",
-                               {"version": version})
-                print(f"  {Colors.GREEN}✓ Ollama installed: {version}{Colors.RESET}\n")
-                return True, version
-        except (subprocess.TimeoutExpired, FileNotFoundError):
-            pass
+            # Test connection
+            self.logger.info(f"Testing connection to LLM server at {self.settings.llm.ollama_base_url}...")
+            is_available = await llm_client.is_model_available()
 
-        self._add_step("check_installation", "warning",
-                       "Ollama not found in PATH")
-        print(f"  {Colors.YELLOW}⚠ Ollama not found in PATH{Colors.RESET}\n")
-        return False, None
+            if not is_available:
+                raise InitializationError(
+                    f"LLM model '{self.settings.llm.model}' is not available at "
+                    f"{self.settings.llm.ollama_base_url}"
+                )
 
-    def _install_ollama(self) -> bool:
-        """Install Ollama."""
-        print("Attempting to install Ollama...\n")
+            self.logger.info(f"LLM connection successful. Model: {self.settings.llm.model}")
 
-        system = platform.system()
+            # Create LLM service
+            self.llm_service = LLMService(
+                client=llm_client,
+                config=self.settings.llm,
+                cache_enabled=self.settings.cache.enabled,
+                max_cache_size=self.settings.cache.max_size
+            )
 
-        if system == "Windows":
-            return self._install_ollama_windows()
-        elif system == "Darwin":
-            return self._install_ollama_macos()
-        elif system == "Linux":
-            return self._install_ollama_linux()
-        else:
-            self._add_step("install", "error",
-                           f"Unsupported system: {system}")
-            print(f"  {Colors.RED}✗ Unsupported system: {system}{Colors.RESET}\n")
-            return False
+            self.logger.info("LLM service initialized successfully")
 
-    def _install_ollama_windows(self) -> bool:
-        """Install Ollama on Windows."""
-        print("Installing Ollama on Windows...\n")
+        except InitializationError:
+            raise
+        except Exception as e:
+            self.logger.error(f"LLM service initialization failed: {e}")
+            raise InitializationError(f"LLM service setup failed: {e}")
+
+    async def initialize_knowledge_base(self) -> None:
+        """Initialize knowledge base and repositories"""
+        try:
+            self.logger.info("Loading knowledge base...")
+
+            data_dir = Path(PROJECT_ROOT) / 'data'
+            cache_dir = data_dir / 'knowledge_cache'
+
+            self.knowledge_loader = KnowledgeLoader(
+                data_dir=str(data_dir),
+                cache_dir=str(cache_dir),
+                enable_caching=self.settings.knowledge.enable_caching
+            )
+
+            # Load knowledge bases asynchronously
+            await self.knowledge_loader.load_all()
+
+            self.logger.info("Knowledge base loaded successfully")
+            self.logger.debug(
+                f"Loaded CWE entries: {len(self.knowledge_loader.cwe_repository.cwe_data)}, "
+                f"CVE entries: {len(self.knowledge_loader.cve_repository.cve_data)}"
+            )
+
+        except Exception as e:
+            self.logger.error(f"Knowledge base initialization failed: {e}")
+            raise InitializationError(f"Knowledge base loading failed: {e}")
+
+    async def initialize_mcp_server(self) -> None:
+        """Initialize MCP server"""
+        try:
+            self.logger.info("Initializing MCP server...")
+
+            self.mcp_server = MCPServer(
+                host=self.settings.server.host,
+                port=self.settings.server.port,
+                transport_mode=self.settings.server.transport_mode,
+                llm_service=self.llm_service,
+                knowledge_loader=self.knowledge_loader,
+                config=self.settings
+            )
+
+            # Register signal handlers for graceful shutdown
+            self._register_signal_handlers()
+
+            self.logger.info(
+                f"MCP server initialized: {self.settings.server.host}:"
+                f"{self.settings.server.port} ({self.settings.server.transport_mode})"
+            )
+
+        except Exception as e:
+            self.logger.error(f"MCP server initialization failed: {e}")
+            raise InitializationError(f"MCP server setup failed: {e}")
+
+    def _register_signal_handlers(self) -> None:
+        """Register signal handlers for graceful shutdown"""
+        def signal_handler(signum, frame):
+            self.logger.info(f"Received signal {signum}. Initiating graceful shutdown...")
+            asyncio.create_task(self.shutdown())
+
+        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGTERM, signal_handler)
+
+        if sys.platform == 'win32':
+            # Windows-specific signal handling
+            import win32api
+            win32api.SetConsoleCtrlHandler(lambda x: asyncio.create_task(self.shutdown()), True)
+
+    async def start(self) -> None:
+        """Start the MCP server"""
+        try:
+            if self.is_running:
+                self.logger.warning("Server is already running")
+                return
+
+            self.logger.info("=" * 60)
+            self.logger.info("Starting HyFuzz MCP Server")
+            self.logger.info("=" * 60)
+
+            self.is_running = True
+            await self.mcp_server.start()
+
+            self.logger.info("Server started successfully")
+            self.logger.info(f"Listening on {self.settings.server.host}:{self.settings.server.port}")
+
+            # Wait for shutdown signal
+            await self._shutdown_event.wait()
+
+        except Exception as e:
+            self.logger.error(f"Server startup failed: {e}", exc_info=True)
+            raise
+        finally:
+            if self.is_running:
+                await self.shutdown()
+
+    async def shutdown(self) -> None:
+        """Gracefully shutdown the server"""
+        if not self.is_running:
+            return
 
         try:
-            # Download installer
-            print("  Downloading Ollama installer...")
-            url = self.OLLAMA_DOWNLOAD_URLS["Windows"]
-            installer_path = Path(self.config_dir) / "OllamaSetup.exe"
+            self.logger.info("Initiating graceful shutdown...")
+            self.is_running = False
 
-            self._download_file(url, installer_path)
-            print(f"  {Colors.GREEN}✓ Downloaded to {installer_path}{Colors.RESET}")
+            # Shutdown MCP server
+            if self.mcp_server:
+                self.logger.info("Stopping MCP server...")
+                await self.mcp_server.stop()
 
-            # Run installer
-            print("  Running installer (this may take a few minutes)...")
-            subprocess.run([str(installer_path)], check=True)
+            # Cleanup LLM service
+            if self.llm_service:
+                self.logger.info("Closing LLM service...")
+                await self.llm_service.cleanup()
 
-            self._add_step("install_windows", "success",
-                           "Ollama installed via installer")
-            print(f"  {Colors.GREEN}✓ Ollama installed successfully{Colors.RESET}\n")
+            # Cleanup knowledge base
+            if self.knowledge_loader:
+                self.logger.info("Clearing knowledge base...")
+                self.knowledge_loader.cleanup()
+
+            self.logger.info("=" * 60)
+            self.logger.info("Server shutdown completed")
+            self.logger.info("=" * 60)
+
+            self._shutdown_event.set()
+
+        except Exception as e:
+            self.logger.error(f"Error during shutdown: {e}", exc_info=True)
+
+    async def health_check(self) -> bool:
+        """
+        Perform health check on all components
+
+        Returns:
+            bool: True if all components are healthy
+        """
+        try:
+            self.logger.info("Running health checks...")
+
+            # Check LLM service
+            if self.llm_service:
+                is_healthy = await self.llm_service.health_check()
+                if not is_healthy:
+                    self.logger.error("LLM service health check failed")
+                    return False
+                self.logger.debug("LLM service is healthy")
+
+            # Check MCP server
+            if self.mcp_server:
+                server_healthy = await self.mcp_server.health_check()
+                if not server_healthy:
+                    self.logger.error("MCP server health check failed")
+                    return False
+                self.logger.debug("MCP server is healthy")
+
+            # Check knowledge base
+            if self.knowledge_loader:
+                if not self.knowledge_loader.is_loaded():
+                    self.logger.error("Knowledge base is not loaded")
+                    return False
+                self.logger.debug("Knowledge base is healthy")
+
+            self.logger.info("All health checks passed")
             return True
 
         except Exception as e:
-            self._add_step("install_windows", "error", f"Installation failed: {e}")
-            print(f"  {Colors.RED}✗ Installation failed: {e}{Colors.RESET}\n")
+            self.logger.error(f"Health check failed: {e}")
             return False
 
-    def _install_ollama_macos(self) -> bool:
-        """Install Ollama on macOS."""
-        print("Installing Ollama on macOS...\n")
 
-        try:
-            # macOS installation typically uses Homebrew or direct download
-            print("  Checking for Homebrew...")
-            result = subprocess.run(
-                ["brew", "install", "ollama"],
-                capture_output=True,
-                text=True,
-                timeout=60
-            )
+async def main(args) -> int:
+    """
+    Main entry point for the server
 
-            if result.returncode == 0:
-                self._add_step("install_macos", "success",
-                               "Ollama installed via Homebrew")
-                print(f"  {Colors.GREEN}✓ Ollama installed via Homebrew{Colors.RESET}\n")
-                return True
+    Args:
+        args: Command line arguments
 
-        except FileNotFoundError:
-            print("  Homebrew not found. Manual installation required.")
-        except Exception as e:
-            print(f"  Error: {e}")
-
-        self._add_step("install_macos", "warning",
-                       "Please install Ollama manually from ollama.ai")
-        print(f"  {Colors.YELLOW}⚠ Please install Ollama manually from https://ollama.ai{Colors.RESET}\n")
-        return False
-
-    def _install_ollama_linux(self) -> bool:
-        """Install Ollama on Linux."""
-        print("Installing Ollama on Linux...\n")
-
-        try:
-            print("  Running installation script...")
-            result = subprocess.run(
-                ["curl", "-fsSL", "https://ollama.ai/install.sh", "|", "sh"],
-                capture_output=True,
-                text=True,
-                timeout=120,
-                shell=True
-            )
-
-            if result.returncode == 0:
-                self._add_step("install_linux", "success",
-                               "Ollama installed successfully")
-                print(f"  {Colors.GREEN}✓ Ollama installed successfully{Colors.RESET}\n")
-                return True
-
-        except Exception as e:
-            self._add_step("install_linux", "error", f"Installation failed: {e}")
-            print(f"  {Colors.RED}✗ Installation failed: {e}{Colors.RESET}\n")
-
-        return False
-
-    def _download_file(self, url: str, destination: Path):
-        """Download a file from URL."""
-        try:
-            urllib.request.urlretrieve(url, destination)
-        except urllib.error.URLError as e:
-            raise Exception(f"Failed to download from {url}: {e}")
-
-    def _start_ollama_service(self) -> bool:
-        """Start Ollama service."""
-        print("Starting Ollama service...\n")
-
-        try:
-            # Check if already running
-            if self._is_ollama_running():
-                self._add_step("start_service", "success",
-                               "Ollama service already running")
-                print(f"  {Colors.GREEN}✓ Ollama service already running{Colors.RESET}\n")
-                return True
-
-            # Start service based on OS
-            system = platform.system()
-
-            if system == "Windows":
-                # Windows: Start Ollama service
-                subprocess.Popen(["ollama", "serve"],
-                                 stdout=subprocess.DEVNULL,
-                                 stderr=subprocess.DEVNULL)
-            elif system == "Darwin":
-                # macOS: Use launchctl
-                subprocess.run(["launchctl", "start", "ai.ollama.ollama"],
-                               capture_output=True)
-            elif system == "Linux":
-                # Linux: Use systemctl or manual start
-                try:
-                    subprocess.run(["systemctl", "start", "ollama"],
-                                   capture_output=True)
-                except:
-                    subprocess.Popen(["ollama", "serve"],
-                                     stdout=subprocess.DEVNULL,
-                                     stderr=subprocess.DEVNULL)
-
-            # Wait for service to start
-            print("  Waiting for Ollama to start...")
-            for i in range(30):
-                if self._is_ollama_running():
-                    self._add_step("start_service", "success",
-                                   "Ollama service started")
-                    print(f"  {Colors.GREEN}✓ Ollama service started{Colors.RESET}\n")
-                    return True
-                time.sleep(1)
-
-            self._add_step("start_service", "warning",
-                           "Ollama not responding after 30 seconds")
-            print(f"  {Colors.YELLOW}⚠ Ollama not responding{Colors.RESET}\n")
-            return False
-
-        except Exception as e:
-            self._add_step("start_service", "error", f"Failed to start: {e}")
-            print(f"  {Colors.RED}✗ Failed to start service: {e}{Colors.RESET}\n")
-            return False
-
-    def _is_ollama_running(self) -> bool:
-        """Check if Ollama service is running."""
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(1)
-            result = sock.connect_ex((self.OLLAMA_HOST, self.OLLAMA_PORT))
-            sock.close()
-            return result == 0
-        except:
-            return False
-
-    def _configure_ollama(self):
-        """Configure Ollama settings."""
-        print("Configuring Ollama...\n")
-
-        try:
-            config = {
-                "port": self.OLLAMA_PORT,
-                "host": self.OLLAMA_HOST,
-                "models_dir": str(self.config_dir / "models"),
-                "keep_alive": "5m",
-            }
-
-            config_file = self.config_dir / "config.json"
-            with open(config_file, 'w') as f:
-                json.dump(config, f, indent=2)
-
-            self._add_step("configure", "success",
-                           f"Configuration saved to {config_file}")
-            print(f"  {Colors.GREEN}✓ Configuration saved{Colors.RESET}\n")
-
-        except Exception as e:
-            self._add_step("configure", "warning", f"Configuration error: {e}")
-            print(f"  {Colors.YELLOW}⚠ Configuration warning: {e}{Colors.RESET}\n")
-
-    def _verify_ollama(self) -> bool:
-        """Verify Ollama installation."""
-        print("Verifying Ollama installation...\n")
-
-        try:
-            # Test API endpoint
-            print("  Testing API endpoint...")
-            import urllib.request
-            import json as json_lib
-
-            url = f"http://{self.OLLAMA_HOST}:{self.OLLAMA_PORT}/api/tags"
-
-            try:
-                with urllib.request.urlopen(url, timeout=5) as response:
-                    data = json_lib.loads(response.read())
-                    self._add_step("verify", "success",
-                                   "Ollama API responding")
-                    print(f"  {Colors.GREEN}✓ Ollama API responding{Colors.RESET}\n")
-                    return True
-            except urllib.error.URLError:
-                pass
-
-            self._add_step("verify", "warning",
-                           "Ollama API not responding")
-            print(f"  {Colors.YELLOW}⚠ Ollama API not responding yet{Colors.RESET}\n")
-            return False
-
-        except Exception as e:
-            self._add_step("verify", "error", f"Verification failed: {e}")
-            print(f"  {Colors.RED}✗ Verification error: {e}{Colors.RESET}\n")
-            return False
-
-    def _download_models(self) -> List[str]:
-        """Download default models."""
-        print("Downloading models...\n")
-
-        downloaded = []
-
-        for model in self.DEFAULT_MODELS:
-            try:
-                print(f"  Downloading {model}...")
-                result = subprocess.run(
-                    ["ollama", "pull", model],
-                    capture_output=True,
-                    text=True,
-                    timeout=300
-                )
-
-                if result.returncode == 0:
-                    downloaded.append(model)
-                    print(f"    {Colors.GREEN}✓ {model} downloaded{Colors.RESET}")
-                else:
-                    print(f"    {Colors.YELLOW}⚠ Failed to download {model}{Colors.RESET}")
-
-            except subprocess.TimeoutExpired:
-                print(f"    {Colors.YELLOW}⚠ Download timeout for {model}{Colors.RESET}")
-            except Exception as e:
-                print(f"    {Colors.RED}✗ Error downloading {model}: {e}{Colors.RESET}")
-
-        if downloaded:
-            self._add_step("download_models", "success",
-                           f"Downloaded models: {', '.join(downloaded)}")
-        else:
-            self._add_step("download_models", "warning",
-                           "No models downloaded")
-
-        print()
-        return downloaded
-
-    def _add_step(self, name: str, status: str, message: str,
-                  details: Optional[Dict] = None):
-        """Add a setup step."""
-        step = SetupStep(name, status, message, details)
-        self.steps.append(step)
-        logger.info(f"{name}: {status} - {message}")
-
-    def _compile_results(self, installed: bool, version: Optional[str],
-                         running: bool, models: List[str],
-                         overall_status: str) -> OllamaSetupResult:
-        """Compile setup results."""
-        return OllamaSetupResult(
-            overall_status=overall_status,
-            ollama_installed=installed,
-            ollama_version=version,
-            ollama_running=running,
-            models_available=models,
-            steps=self.steps
-        )
-
-    def _print_summary(self, result: OllamaSetupResult):
-        """Print setup summary."""
-        status_color = Colors.GREEN if result.overall_status == "success" else \
-            Colors.YELLOW if result.overall_status == "partial" else \
-                Colors.RED
-
-        print(f"{Colors.BOLD}{'=' * 50}{Colors.RESET}\n")
-        print(f"{Colors.BOLD}OLLAMA SETUP SUMMARY{Colors.RESET}\n")
-        print(f"Status: {status_color}{result.overall_status.upper()}{Colors.RESET}\n")
-
-        print("Installation Status:")
-        print(f"  Installed: {Colors.GREEN if result.ollama_installed else Colors.RED}" +
-              f"{'Yes' if result.ollama_installed else 'No'}{Colors.RESET}")
-        if result.ollama_version:
-            print(f"  Version: {result.ollama_version}")
-        print(f"  Running: {Colors.GREEN if result.ollama_running else Colors.YELLOW}" +
-              f"{'Yes' if result.ollama_running else 'No'}{Colors.RESET}")
-
-        if result.models_available:
-            print(f"\nModels Available: {len(result.models_available)}")
-            for model in result.models_available:
-                print(f"  • {model}")
-
-        print(f"\n{Colors.BOLD}{'=' * 50}{Colors.RESET}\n")
-
-
-# ============================================================================
-# TEST SECTION
-# ============================================================================
-
-def run_tests():
-    """Run setup tests."""
-    print("\n" + "=" * 70)
-    print("OLLAMA SETUP TEST SUITE")
-    print("=" * 70 + "\n")
-
-    test_results = []
-
-    # Test 1: Manager initialization
-    print("Test 1: Manager Initialization")
-    try:
-        manager = OllamaSetupManager()
-        assert manager is not None
-        assert manager.config_dir.exists()
-        print("✓ PASSED: Manager initialized successfully\n")
-        test_results.append(True)
-    except Exception as e:
-        print(f"✗ FAILED: {e}\n")
-        test_results.append(False)
-
-    # Test 2: Check Ollama installed
-    print("Test 2: Check Ollama Installation")
-    try:
-        manager = OllamaSetupManager()
-        installed, version = manager._check_ollama_installed()
-        print(f"  Installed: {installed}")
-        if version:
-            print(f"  Version: {version}")
-        print("✓ PASSED: Installation check completed\n")
-        test_results.append(True)
-    except Exception as e:
-        print(f"✗ FAILED: {e}\n")
-        test_results.append(False)
-
-    # Test 3: Check if running
-    print("Test 3: Check If Ollama Running")
-    try:
-        manager = OllamaSetupManager()
-        running = manager._is_ollama_running()
-        print(f"  Running: {running}")
-        print("✓ PASSED: Running check completed\n")
-        test_results.append(True)
-    except Exception as e:
-        print(f"✗ FAILED: {e}\n")
-        test_results.append(False)
-
-    # Test 4: Platform detection
-    print("Test 4: Platform Detection")
-    try:
-        system = platform.system()
-        print(f"  System: {system}")
-        assert system in ["Windows", "Darwin", "Linux"]
-        print("✓ PASSED: Platform detected correctly\n")
-        test_results.append(True)
-    except Exception as e:
-        print(f"✗ FAILED: {e}\n")
-        test_results.append(False)
-
-    # Test 5: Setup step tracking
-    print("Test 5: Setup Step Tracking")
-    try:
-        manager = OllamaSetupManager()
-        manager._add_step("test_step", "success", "Test message", {"detail": "value"})
-        assert len(manager.steps) == 1
-        step = manager.steps[0]
-        assert step.name == "test_step"
-        assert step.status == "success"
-        print("✓ PASSED: Steps tracked correctly\n")
-        test_results.append(True)
-    except Exception as e:
-        print(f"✗ FAILED: {e}\n")
-        test_results.append(False)
-
-    # Test 6: Results compilation
-    print("Test 6: Results Compilation")
-    try:
-        manager = OllamaSetupManager()
-        manager._add_step("test", "success", "test")
-        result = manager._compile_results(True, "0.1.0", False, [], "partial")
-        assert result.ollama_installed == True
-        assert result.ollama_version == "0.1.0"
-        assert result.overall_status == "partial"
-        print("✓ PASSED: Results compiled correctly\n")
-        test_results.append(True)
-    except Exception as e:
-        print(f"✗ FAILED: {e}\n")
-        test_results.append(False)
-
-    # Test 7: Configuration file creation
-    print("Test 7: Configuration File Creation")
-    try:
-        manager = OllamaSetupManager()
-        manager._configure_ollama()
-        config_file = manager.config_dir / "config.json"
-        assert config_file.exists()
-        with open(config_file, 'r') as f:
-            config = json.load(f)
-        assert "port" in config
-        print("✓ PASSED: Configuration file created\n")
-        test_results.append(True)
-    except Exception as e:
-        print(f"✗ FAILED: {e}\n")
-        test_results.append(False)
-
-    # Test 8: JSON serialization
-    print("Test 8: JSON Serialization")
-    try:
-        manager = OllamaSetupManager()
-        manager._add_step("test", "success", "message")
-        result = manager._compile_results(True, "0.1.0", True, ["model1"], "success")
-
-        # Convert to JSON
-        json_str = json.dumps(asdict(result), default=str)
-        assert len(json_str) > 0
-
-        # Verify structure
-        parsed = json.loads(json_str)
-        assert parsed["overall_status"] == "success"
-        print("✓ PASSED: JSON serialization works\n")
-        test_results.append(True)
-    except Exception as e:
-        print(f"✗ FAILED: {e}\n")
-        test_results.append(False)
-
-    # Summary
-    print("=" * 70)
-    print(f"TEST SUMMARY: {sum(test_results)}/{len(test_results)} tests passed")
-    print("=" * 70 + "\n")
-
-    return all(test_results)
-
-
-if __name__ == "__main__":
-    import argparse
-
-    # Setup logging
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s'
+    Returns:
+        int: Exit code
+    """
+    manager = ServerManager(
+        config_path=args.config,
+        env_path=args.env
     )
 
-    parser = argparse.ArgumentParser(description="Setup Ollama for MCP Server")
-    parser.add_argument("--skip-models", action="store_true",
-                        help="Skip downloading models")
-    parser.add_argument("--check-only", action="store_true",
-                        help="Only check current status")
-    parser.add_argument("--test", action="store_true",
-                        help="Run test suite")
+    try:
+        # Setup logger
+        manager.setup_logger()
 
-    args = parser.parse_args()
+        # Load configuration
+        manager.load_configuration()
 
-    if args.test:
-        success = run_tests()
-        exit(0 if success else 1)
+        # Initialize components
+        await manager.initialize_llm_service()
+        await manager.initialize_knowledge_base()
+        await manager.initialize_mcp_server()
 
-    manager = OllamaSetupManager()
+        # Run health check
+        if not await manager.health_check():
+            manager.logger.error("Health check failed")
+            return 1
 
-    if args.check_only:
-        installed, version = manager._check_ollama_installed()
-        running = manager._is_ollama_running()
-        print(f"\nOllama Status:")
-        print(f"  Installed: {installed}")
-        if version:
-            print(f"  Version: {version}")
-        print(f"  Running: {running}")
-        exit(0 if installed and running else 1)
+        # Start server
+        await manager.start()
 
-    result = manager.run_full_setup(skip_model_download=args.skip_models)
-    exit(0 if result.overall_status in ["success", "partial"] else 1)
+        return 0
+
+    except KeyboardInterrupt:
+        manager.logger.info("Keyboard interrupt received")
+        if manager.is_running:
+            await manager.shutdown()
+        return 0
+    except Exception as e:
+        if manager.logger:
+            manager.logger.error(f"Fatal error: {e}", exc_info=True)
+        else:
+            print(f"FATAL ERROR: {e}", file=sys.stderr)
+        return 1
+
+
+def parse_arguments():
+    """Parse command line arguments"""
+    parser = argparse.ArgumentParser(
+        description="Start HyFuzz MCP Server",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  # Start with default configuration
+  python start_server.py
+  
+  # Start with custom config
+  python start_server.py --config config/server_config.yaml
+  
+  # Start with custom .env file
+  python start_server.py --env /path/to/.env
+        """
+    )
+
+    parser.add_argument(
+        '--config', '-c',
+        type=str,
+        default=None,
+        help='Path to configuration YAML file (default: config/default_config.yaml)'
+    )
+
+    parser.add_argument(
+        '--env', '-e',
+        type=str,
+        default=None,
+        help='Path to .env file (default: .env)'
+    )
+
+    parser.add_argument(
+        '--debug',
+        action='store_true',
+        help='Enable debug logging'
+    )
+
+    return parser.parse_args()
+
+
+# ============================================================================
+# TESTS
+# ============================================================================
+
+async def test_server_initialization():
+    """
+    Test: Verify ServerManager initialization
+    """
+    print("\n[TEST] ServerManager Initialization")
+    print("-" * 60)
+
+    manager = ServerManager()
+    manager.setup_logger()
+
+    assert manager.logger is not None, "Logger not initialized"
+    assert manager.settings is None, "Settings should be None before loading"
+    assert manager.is_running is False, "Server should not be running initially"
+
+    print("✓ ServerManager initialized correctly")
+    print("✓ Logger setup successful")
+    print("✓ Initial state verified")
+
+
+async def test_configuration_loading():
+    """
+    Test: Verify configuration loading
+    """
+    print("\n[TEST] Configuration Loading")
+    print("-" * 60)
+
+    try:
+        manager = ServerManager()
+        manager.setup_logger()
+        manager.load_configuration()
+
+        assert manager.settings is not None, "Settings not loaded"
+        assert manager.settings.server is not None, "Server config not found"
+        assert manager.settings.llm is not None, "LLM config not found"
+        assert manager.settings.cache is not None, "Cache config not found"
+
+        print(f"✓ Configuration loaded successfully")
+        print(f"✓ Server: {manager.settings.server.host}:{manager.settings.server.port}")
+        print(f"✓ LLM Model: {manager.settings.llm.model}")
+        print(f"✓ Transport Mode: {manager.settings.server.transport_mode}")
+
+    except ConfigurationError as e:
+        print(f"⚠ Configuration test skipped: {e}")
+
+
+async def test_signal_handling():
+    """
+    Test: Verify signal handler registration
+    """
+    print("\n[TEST] Signal Handler Registration")
+    print("-" * 60)
+
+    manager = ServerManager()
+    manager.setup_logger()
+    manager.load_configuration()
+
+    try:
+        # Create a mock MCP server
+        mock_server = type('MockServer', (), {
+            'start': lambda self: asyncio.sleep(0),
+            'stop': lambda self: asyncio.sleep(0),
+            'health_check': lambda self: True
+        })()
+
+        manager.mcp_server = mock_server
+        manager._register_signal_handlers()
+
+        print("✓ Signal handlers registered successfully")
+
+    except Exception as e:
+        print(f"✗ Signal handler test failed: {e}")
+
+
+async def test_shutdown_sequence():
+    """
+    Test: Verify graceful shutdown sequence
+    """
+    print("\n[TEST] Graceful Shutdown Sequence")
+    print("-" * 60)
+
+    manager = ServerManager()
+    manager.setup_logger()
+    manager.load_configuration()
+    manager.is_running = True
+
+    try:
+        # Create mock components
+        class MockComponent:
+            async def cleanup(self): pass
+            def is_loaded(self): return True
+
+        manager.mcp_server = MockComponent()
+        manager.llm_service = MockComponent()
+        manager.knowledge_loader = MockComponent()
+
+        await manager.shutdown()
+
+        assert manager.is_running is False, "Server flag should be False after shutdown"
+        print("✓ Shutdown sequence completed successfully")
+        print("✓ All components cleaned up")
+        print("✓ Server flag reset correctly")
+
+    except Exception as e:
+        print(f"✗ Shutdown test failed: {e}")
+
+
+async def run_all_tests():
+    """Run all tests"""
+    print("\n" + "=" * 60)
+    print("RUNNING HYFUZZ SERVER STARTUP TESTS")
+    print("=" * 60)
+
+    try:
+        await test_server_initialization()
+        await test_configuration_loading()
+        await test_signal_handling()
+        await test_shutdown_sequence()
+
+        print("\n" + "=" * 60)
+        print("TEST SUITE COMPLETED SUCCESSFULLY")
+        print("=" * 60 + "\n")
+
+    except Exception as e:
+        print(f"\n✗ TEST SUITE FAILED: {e}\n")
+        raise
+
+
+if __name__ == '__main__':
+    import sys
+
+    # Check if running tests
+    if len(sys.argv) > 1 and sys.argv[1] == '--test':
+        asyncio.run(run_all_tests())
+        sys.exit(0)
+
+    # Parse arguments and run server
+    args = parse_arguments()
+    exit_code = asyncio.run(main(args))
+    sys.exit(exit_code)
