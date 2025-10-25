@@ -1,0 +1,6 @@
+{
+  "CWE-79": {
+    "title": "Improper Neutralization of Input During Web Page Generation",
+    "severity": "high"
+  }
+}
