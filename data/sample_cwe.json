@@ -1,0 +1,2206 @@
+{
+  "nodes": {
+    "CWE-20": {
+      "cwe_id": "CWE-20",
+      "cwe_number": 20,
+      "name": "Improper Input Validation",
+      "description": "Improper Input Validation: A weakness that allows attackers to manipulate the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles improper input validation. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Node.js, C++ applications running on iOS.",
+      "severity": "CRITICAL",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "iOS"
+      ],
+      "applicable_technologies": [
+        "Node.js",
+        "C++"
+      ],
+      "consequences": [
+        "Integrity Impact",
+        "Data Manipulation",
+        "Denial of Service"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-575"
+      ],
+      "remediation_strategies": [
+        "Update dependencies",
+        "Input validation and sanitization",
+        "Implement WAF rules",
+        "Use security headers"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/20.html",
+        "https://owasp.org/www-community/attacks/CWE-20",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2013-04-17T00:00:00",
+      "last_updated": "2026-10-17T00:00:00"
+    },
+    "CWE-77": {
+      "cwe_id": "CWE-77",
+      "cwe_number": 77,
+      "name": "Improper Neutralization of Special Elements used in a Command",
+      "description": "Improper Neutralization of Special Elements used in a Command: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles improper neutralization of special elements used in a command. Attackers can exploit this to gain unauthorized access or manipulate data. It affects PHP, C# applications running on Android, Embedded.",
+      "severity": "UNKNOWN",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Android",
+        "Embedded"
+      ],
+      "applicable_technologies": [
+        "PHP",
+        "C#",
+        "HTML"
+      ],
+      "consequences": [
+        "Authentication Bypass",
+        "Availability Impact"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-271",
+        "CAPEC-45"
+      ],
+      "remediation_strategies": [
+        "Security training",
+        "Output encoding and escaping"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/77.html",
+        "https://owasp.org/www-community/attacks/CWE-77",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2011-07-04T00:00:00",
+      "last_updated": "2019-07-22T00:00:00"
+    },
+    "CWE-78": {
+      "cwe_id": "CWE-78",
+      "cwe_number": 78,
+      "name": "Improper Neutralization of Special Elements used in an OS Command",
+      "description": "Improper Neutralization of Special Elements used in an OS Command: A weakness that allows attackers to bypass the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles improper neutralization of special elements used in an os command. Attackers can exploit this to gain unauthorized access or manipulate data. It affects OpenSSL applications running on Cloud.",
+      "severity": "UNKNOWN",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Cloud"
+      ],
+      "applicable_technologies": [
+        "OpenSSL"
+      ],
+      "consequences": [
+        "Denial of Service",
+        "System Compromise"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-239"
+      ],
+      "remediation_strategies": [
+        "Logging and monitoring",
+        "Security frameworks and libraries",
+        "Output encoding and escaping"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/78.html",
+        "https://owasp.org/www-community/attacks/CWE-78",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2010-11-08T00:00:00",
+      "last_updated": "2017-05-05T00:00:00"
+    },
+    "CWE-79": {
+      "cwe_id": "CWE-79",
+      "cwe_number": 79,
+      "name": "Cross-site Scripting (XSS)",
+      "description": "Cross-site Scripting (XSS): A weakness that allows attackers to bypass the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles cross-site scripting (xss). Attackers can exploit this to gain unauthorized access or manipulate data. It affects SQL, Azure applications running on Embedded, Web.",
+      "severity": "LOW",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Embedded",
+        "Web"
+      ],
+      "applicable_technologies": [
+        "SQL",
+        "Azure"
+      ],
+      "consequences": [
+        "Denial of Service"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-571",
+        "CAPEC-225",
+        "CAPEC-333"
+      ],
+      "remediation_strategies": [
+        "Output encoding and escaping",
+        "Parameterized queries",
+        "Security frameworks and libraries"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/79.html",
+        "https://owasp.org/www-community/attacks/CWE-79",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2012-08-13T00:00:00",
+      "last_updated": "2018-09-02T00:00:00"
+    },
+    "CWE-80": {
+      "cwe_id": "CWE-80",
+      "cwe_number": 80,
+      "name": "Improper Neutralization of Script-Related HTML Tags",
+      "description": "Improper Neutralization of Script-Related HTML Tags: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles improper neutralization of script-related html tags. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Ruby, Java applications running on Web.",
+      "severity": "HIGH",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Web"
+      ],
+      "applicable_technologies": [
+        "Ruby",
+        "Java",
+        ".NET",
+        "Rust"
+      ],
+      "consequences": [
+        "Denial of Service"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-270",
+        "CAPEC-599",
+        "CAPEC-439"
+      ],
+      "remediation_strategies": [
+        "Update dependencies",
+        "Use security headers",
+        "Parameterized queries"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/80.html",
+        "https://owasp.org/www-community/attacks/CWE-80",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2014-03-08T00:00:00",
+      "last_updated": "2026-10-09T00:00:00"
+    },
+    "CWE-89": {
+      "cwe_id": "CWE-89",
+      "cwe_number": 89,
+      "name": "SQL Injection",
+      "description": "SQL Injection: A weakness that allows attackers to bypass the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles sql injection. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Java, Python applications running on macOS.",
+      "severity": "MEDIUM",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "macOS"
+      ],
+      "applicable_technologies": [
+        "Java",
+        "Python",
+        "JavaScript",
+        "C++"
+      ],
+      "consequences": [
+        "Availability Impact",
+        "Privilege Escalation",
+        "Integrity Impact"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-550",
+        "CAPEC-274",
+        "CAPEC-349"
+      ],
+      "remediation_strategies": [
+        "Update dependencies",
+        "Use security headers",
+        "Code review and testing"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/89.html",
+        "https://owasp.org/www-community/attacks/CWE-89",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2018-01-22T00:00:00",
+      "last_updated": "2020-08-17T00:00:00"
+    },
+    "CWE-119": {
+      "cwe_id": "CWE-119",
+      "cwe_number": 119,
+      "name": "Improper Restriction of Operations within the Bounds",
+      "description": "Improper Restriction of Operations within the Bounds: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles improper restriction of operations within the bounds. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Ruby applications running on macOS, Embedded.",
+      "severity": "MEDIUM",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "macOS",
+        "Embedded"
+      ],
+      "applicable_technologies": [
+        "Ruby"
+      ],
+      "consequences": [
+        "Availability Impact",
+        "Data Manipulation",
+        "Integrity Impact"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-332"
+      ],
+      "remediation_strategies": [
+        "Code review and testing",
+        "Implement WAF rules",
+        "Security frameworks and libraries",
+        "Output encoding and escaping"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/119.html",
+        "https://owasp.org/www-community/attacks/CWE-119",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2015-03-18T00:00:00",
+      "last_updated": "2027-02-07T00:00:00"
+    },
+    "CWE-125": {
+      "cwe_id": "CWE-125",
+      "cwe_number": 125,
+      "name": "Out-of-bounds Read",
+      "description": "Out-of-bounds Read: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles out-of-bounds read. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Node.js, Python applications running on Web.",
+      "severity": "CRITICAL",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Web"
+      ],
+      "applicable_technologies": [
+        "Node.js",
+        "Python",
+        "Azure"
+      ],
+      "consequences": [
+        "Integrity Impact",
+        "Denial of Service",
+        "Information Disclosure"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-272"
+      ],
+      "remediation_strategies": [
+        "Implement WAF rules",
+        "Parameterized queries"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/125.html",
+        "https://owasp.org/www-community/attacks/CWE-125",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2012-11-16T00:00:00",
+      "last_updated": "2025-03-16T00:00:00"
+    },
+    "CWE-190": {
+      "cwe_id": "CWE-190",
+      "cwe_number": 190,
+      "name": "Integer Overflow or Wraparound",
+      "description": "Integer Overflow or Wraparound: A weakness that allows attackers to bypass the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles integer overflow or wraparound. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Apache, IIS applications running on Android, iOS.",
+      "severity": "HIGH",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Android",
+        "iOS",
+        "Cloud"
+      ],
+      "applicable_technologies": [
+        "Apache",
+        "IIS",
+        "Azure"
+      ],
+      "consequences": [
+        "Access Control Bypass"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-226",
+        "CAPEC-8",
+        "CAPEC-73"
+      ],
+      "remediation_strategies": [
+        "Output encoding and escaping",
+        "Security training"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/190.html",
+        "https://owasp.org/www-community/attacks/CWE-190",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2010-10-18T00:00:00",
+      "last_updated": "2015-12-16T00:00:00"
+    },
+    "CWE-287": {
+      "cwe_id": "CWE-287",
+      "cwe_number": 287,
+      "name": "Improper Authentication",
+      "description": "Improper Authentication: A weakness that allows attackers to bypass the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles improper authentication. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Java, IIS applications running on Windows.",
+      "severity": "HIGH",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "Windows"
+      ],
+      "applicable_technologies": [
+        "Java",
+        "IIS",
+        "Node.js"
+      ],
+      "consequences": [
+        "Denial of Service",
+        "Information Disclosure"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-417",
+        "CAPEC-195"
+      ],
+      "remediation_strategies": [
+        "Implement WAF rules",
+        "Parameterized queries"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/287.html",
+        "https://owasp.org/www-community/attacks/CWE-287",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2019-10-16T00:00:00",
+      "last_updated": "2025-03-28T00:00:00"
+    },
+    "CWE-352": {
+      "cwe_id": "CWE-352",
+      "cwe_number": 352,
+      "name": "Cross-Site Request Forgery (CSRF)",
+      "description": "Cross-Site Request Forgery (CSRF): A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles cross-site request forgery (csrf). Attackers can exploit this to gain unauthorized access or manipulate data. It affects Apache, Python applications running on Cloud, Web.",
+      "severity": "CRITICAL",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Cloud",
+        "Web",
+        "Mobile"
+      ],
+      "applicable_technologies": [
+        "Apache",
+        "Python",
+        "JavaScript",
+        "AWS"
+      ],
+      "consequences": [
+        "Authorization Bypass",
+        "Integrity Impact"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-286"
+      ],
+      "remediation_strategies": [
+        "Security frameworks and libraries",
+        "Logging and monitoring"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/352.html",
+        "https://owasp.org/www-community/attacks/CWE-352",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2018-08-05T00:00:00",
+      "last_updated": "2028-01-21T00:00:00"
+    },
+    "CWE-434": {
+      "cwe_id": "CWE-434",
+      "cwe_number": 434,
+      "name": "Unrestricted Upload of File with Dangerous Type",
+      "description": "Unrestricted Upload of File with Dangerous Type: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles unrestricted upload of file with dangerous type. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Python applications running on Embedded.",
+      "severity": "HIGH",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Embedded"
+      ],
+      "applicable_technologies": [
+        "Python"
+      ],
+      "consequences": [
+        "Data Manipulation",
+        "Confidentiality Impact",
+        "Integrity Impact"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-169"
+      ],
+      "remediation_strategies": [
+        "Parameterized queries",
+        "Update dependencies"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/434.html",
+        "https://owasp.org/www-community/attacks/CWE-434",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2017-08-07T00:00:00",
+      "last_updated": "2026-08-05T00:00:00"
+    },
+    "CWE-502": {
+      "cwe_id": "CWE-502",
+      "cwe_number": 502,
+      "name": "Deserialization of Untrusted Data",
+      "description": "Deserialization of Untrusted Data: A weakness that allows attackers to manipulate the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles deserialization of untrusted data. Attackers can exploit this to gain unauthorized access or manipulate data. It affects HTML, OpenSSL applications running on iOS, Embedded.",
+      "severity": "CRITICAL",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "iOS",
+        "Embedded"
+      ],
+      "applicable_technologies": [
+        "HTML",
+        "OpenSSL",
+        "Nginx"
+      ],
+      "consequences": [
+        "Access Control Bypass"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-515",
+        "CAPEC-544"
+      ],
+      "remediation_strategies": [
+        "Security frameworks and libraries",
+        "Input validation and sanitization",
+        "Implement WAF rules"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/502.html",
+        "https://owasp.org/www-community/attacks/CWE-502",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2015-01-02T00:00:00",
+      "last_updated": "2028-02-08T00:00:00"
+    },
+    "CWE-610": {
+      "cwe_id": "CWE-610",
+      "cwe_number": 610,
+      "name": "Externally Controlled Reference to a Resource in Another Sphere",
+      "description": "Externally Controlled Reference to a Resource in Another Sphere: A weakness that allows attackers to manipulate the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles externally controlled reference to a resource in another sphere. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Node.js applications running on Linux, macOS.",
+      "severity": "CRITICAL",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Linux",
+        "macOS",
+        "Mobile"
+      ],
+      "applicable_technologies": [
+        "Node.js"
+      ],
+      "consequences": [
+        "Integrity Impact",
+        "System Compromise"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-536",
+        "CAPEC-324",
+        "CAPEC-268"
+      ],
+      "remediation_strategies": [
+        "Logging and monitoring",
+        "Input validation and sanitization"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/610.html",
+        "https://owasp.org/www-community/attacks/CWE-610",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2019-02-14T00:00:00",
+      "last_updated": "2032-03-18T00:00:00"
+    },
+    "CWE-611": {
+      "cwe_id": "CWE-611",
+      "cwe_number": 611,
+      "name": "Improper Restriction of XML External Entity Reference",
+      "description": "Improper Restriction of XML External Entity Reference: A weakness that allows attackers to bypass the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles improper restriction of xml external entity reference. Attackers can exploit this to gain unauthorized access or manipulate data. It affects C++, Go applications running on iOS.",
+      "severity": "MEDIUM",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "iOS"
+      ],
+      "applicable_technologies": [
+        "C++",
+        "Go",
+        "Apache",
+        "Rust"
+      ],
+      "consequences": [
+        "Confidentiality Impact"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-358"
+      ],
+      "remediation_strategies": [
+        "Logging and monitoring",
+        "Output encoding and escaping",
+        "Implement WAF rules"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/611.html",
+        "https://owasp.org/www-community/attacks/CWE-611",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2018-04-17T00:00:00",
+      "last_updated": "2024-03-28T00:00:00"
+    },
+    "CWE-901": {
+      "cwe_id": "CWE-901",
+      "cwe_number": 901,
+      "name": "Weakness CWE-901",
+      "description": "Weakness CWE-901: A weakness that allows attackers to exploit the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-901. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Azure, IIS applications running on macOS, Embedded.",
+      "severity": "MEDIUM",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "macOS",
+        "Embedded"
+      ],
+      "applicable_technologies": [
+        "Azure",
+        "IIS",
+        "PHP"
+      ],
+      "consequences": [
+        "Data Manipulation",
+        "Authentication Bypass",
+        "Integrity Impact"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-289",
+        "CAPEC-216"
+      ],
+      "remediation_strategies": [
+        "Code review and testing",
+        "Output encoding and escaping"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/901.html",
+        "https://owasp.org/www-community/attacks/CWE-901",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2011-12-18T00:00:00",
+      "last_updated": "2015-06-13T00:00:00"
+    },
+    "CWE-209": {
+      "cwe_id": "CWE-209",
+      "cwe_number": 209,
+      "name": "Weakness CWE-209",
+      "description": "Weakness CWE-209: A weakness that allows attackers to manipulate the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-209. Attackers can exploit this to gain unauthorized access or manipulate data. It affects HTML applications running on Embedded, iOS.",
+      "severity": "MEDIUM",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "Embedded",
+        "iOS",
+        "Windows"
+      ],
+      "applicable_technologies": [
+        "HTML"
+      ],
+      "consequences": [
+        "Confidentiality Impact",
+        "Denial of Service"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-10",
+        "CAPEC-115",
+        "CAPEC-78"
+      ],
+      "remediation_strategies": [
+        "Parameterized queries",
+        "Code review and testing",
+        "Logging and monitoring"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/209.html",
+        "https://owasp.org/www-community/attacks/CWE-209",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2017-09-23T00:00:00",
+      "last_updated": "2027-04-27T00:00:00"
+    },
+    "CWE-559": {
+      "cwe_id": "CWE-559",
+      "cwe_number": 559,
+      "name": "Weakness CWE-559",
+      "description": "Weakness CWE-559: A weakness that allows attackers to manipulate the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-559. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Python, Go applications running on IoT, macOS.",
+      "severity": "MEDIUM",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "IoT",
+        "macOS",
+        "Cloud"
+      ],
+      "applicable_technologies": [
+        "Python",
+        "Go"
+      ],
+      "consequences": [
+        "Confidentiality Impact",
+        "Authorization Bypass"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-159",
+        "CAPEC-243",
+        "CAPEC-167"
+      ],
+      "remediation_strategies": [
+        "Security frameworks and libraries",
+        "Output encoding and escaping"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/559.html",
+        "https://owasp.org/www-community/attacks/CWE-559",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2015-09-28T00:00:00",
+      "last_updated": "2024-11-08T00:00:00"
+    },
+    "CWE-903": {
+      "cwe_id": "CWE-903",
+      "cwe_number": 903,
+      "name": "Weakness CWE-903",
+      "description": "Weakness CWE-903: A weakness that allows attackers to manipulate the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-903. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Node.js, Ruby applications running on Web.",
+      "severity": "CRITICAL",
+      "cwe_type": "Category",
+      "applicable_platforms": [
+        "Web"
+      ],
+      "applicable_technologies": [
+        "Node.js",
+        "Ruby",
+        "C#",
+        "JavaScript"
+      ],
+      "consequences": [
+        "Confidentiality Impact",
+        "Information Disclosure"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-25"
+      ],
+      "remediation_strategies": [
+        "Security frameworks and libraries",
+        "Use security headers"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/903.html",
+        "https://owasp.org/www-community/attacks/CWE-903",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2015-05-27T00:00:00",
+      "last_updated": "2020-07-03T00:00:00"
+    },
+    "CWE-409": {
+      "cwe_id": "CWE-409",
+      "cwe_number": 409,
+      "name": "Weakness CWE-409",
+      "description": "Weakness CWE-409: A weakness that allows attackers to bypass the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-409. Attackers can exploit this to gain unauthorized access or manipulate data. It affects IIS, XML applications running on iOS.",
+      "severity": "MEDIUM",
+      "cwe_type": "Category",
+      "applicable_platforms": [
+        "iOS"
+      ],
+      "applicable_technologies": [
+        "IIS",
+        "XML",
+        "OpenSSL"
+      ],
+      "consequences": [
+        "Confidentiality Impact",
+        "Integrity Impact"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-322",
+        "CAPEC-447",
+        "CAPEC-524"
+      ],
+      "remediation_strategies": [
+        "Parameterized queries",
+        "Code review and testing",
+        "Input validation and sanitization"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/409.html",
+        "https://owasp.org/www-community/attacks/CWE-409",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2011-10-14T00:00:00",
+      "last_updated": "2019-07-15T00:00:00"
+    },
+    "CWE-395": {
+      "cwe_id": "CWE-395",
+      "cwe_number": 395,
+      "name": "Weakness CWE-395",
+      "description": "Weakness CWE-395: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-395. Attackers can exploit this to gain unauthorized access or manipulate data. It affects IIS applications running on Windows, Cloud.",
+      "severity": "HIGH",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "Windows",
+        "Cloud"
+      ],
+      "applicable_technologies": [
+        "IIS"
+      ],
+      "consequences": [
+        "Denial of Service",
+        "Access Control Bypass",
+        "Authorization Bypass"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-317",
+        "CAPEC-419",
+        "CAPEC-335"
+      ],
+      "remediation_strategies": [
+        "Output encoding and escaping",
+        "Security training",
+        "Implement WAF rules"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/395.html",
+        "https://owasp.org/www-community/attacks/CWE-395",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2020-02-24T00:00:00",
+      "last_updated": "2026-11-19T00:00:00"
+    },
+    "CWE-714": {
+      "cwe_id": "CWE-714",
+      "cwe_number": 714,
+      "name": "Weakness CWE-714",
+      "description": "Weakness CWE-714: A weakness that allows attackers to exploit the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-714. Attackers can exploit this to gain unauthorized access or manipulate data. It affects XML, C# applications running on Android.",
+      "severity": "UNKNOWN",
+      "cwe_type": "Category",
+      "applicable_platforms": [
+        "Android"
+      ],
+      "applicable_technologies": [
+        "XML",
+        "C#",
+        "Go",
+        "Azure"
+      ],
+      "consequences": [
+        "Confidentiality Impact",
+        "Authentication Bypass",
+        "System Compromise"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-485",
+        "CAPEC-174",
+        "CAPEC-87"
+      ],
+      "remediation_strategies": [
+        "Update dependencies",
+        "Security training"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/714.html",
+        "https://owasp.org/www-community/attacks/CWE-714",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2017-08-15T00:00:00",
+      "last_updated": "2022-05-31T00:00:00"
+    },
+    "CWE-528": {
+      "cwe_id": "CWE-528",
+      "cwe_number": 528,
+      "name": "Weakness CWE-528",
+      "description": "Weakness CWE-528: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-528. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Node.js, .NET applications running on Linux, Android.",
+      "severity": "UNKNOWN",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "Linux",
+        "Android"
+      ],
+      "applicable_technologies": [
+        "Node.js",
+        ".NET",
+        "C++"
+      ],
+      "consequences": [
+        "Confidentiality Impact"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-394"
+      ],
+      "remediation_strategies": [
+        "Use security headers",
+        "Output encoding and escaping"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/528.html",
+        "https://owasp.org/www-community/attacks/CWE-528",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2017-07-21T00:00:00",
+      "last_updated": "2030-06-18T00:00:00"
+    },
+    "CWE-410": {
+      "cwe_id": "CWE-410",
+      "cwe_number": 410,
+      "name": "Weakness CWE-410",
+      "description": "Weakness CWE-410: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-410. Attackers can exploit this to gain unauthorized access or manipulate data. It affects C#, IIS applications running on Windows, Linux.",
+      "severity": "HIGH",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Windows",
+        "Linux",
+        "Cloud"
+      ],
+      "applicable_technologies": [
+        "C#",
+        "IIS"
+      ],
+      "consequences": [
+        "Confidentiality Impact",
+        "Data Manipulation"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-325",
+        "CAPEC-454",
+        "CAPEC-517"
+      ],
+      "remediation_strategies": [
+        "Output encoding and escaping",
+        "Use security headers"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/410.html",
+        "https://owasp.org/www-community/attacks/CWE-410",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2012-08-22T00:00:00",
+      "last_updated": "2024-07-21T00:00:00"
+    },
+    "CWE-851": {
+      "cwe_id": "CWE-851",
+      "cwe_number": 851,
+      "name": "Weakness CWE-851",
+      "description": "Weakness CWE-851: A weakness that allows attackers to manipulate the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-851. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Ruby, Node.js applications running on Embedded.",
+      "severity": "LOW",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "Embedded"
+      ],
+      "applicable_technologies": [
+        "Ruby",
+        "Node.js",
+        "Azure",
+        "IIS"
+      ],
+      "consequences": [
+        "Denial of Service",
+        "Access Control Bypass"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-83",
+        "CAPEC-142",
+        "CAPEC-155"
+      ],
+      "remediation_strategies": [
+        "Use security headers",
+        "Output encoding and escaping",
+        "Code review and testing"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/851.html",
+        "https://owasp.org/www-community/attacks/CWE-851",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2013-05-11T00:00:00",
+      "last_updated": "2020-07-12T00:00:00"
+    },
+    "CWE-393": {
+      "cwe_id": "CWE-393",
+      "cwe_number": 393,
+      "name": "Weakness CWE-393",
+      "description": "Weakness CWE-393: A weakness that allows attackers to manipulate the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-393. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Rust, OpenSSL applications running on Android, Linux.",
+      "severity": "HIGH",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "Android",
+        "Linux",
+        "Cloud"
+      ],
+      "applicable_technologies": [
+        "Rust",
+        "OpenSSL",
+        "Apache",
+        "HTML"
+      ],
+      "consequences": [
+        "Access Control Bypass"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-430",
+        "CAPEC-552"
+      ],
+      "remediation_strategies": [
+        "Update dependencies",
+        "Input validation and sanitization",
+        "Logging and monitoring"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/393.html",
+        "https://owasp.org/www-community/attacks/CWE-393",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2017-01-12T00:00:00",
+      "last_updated": "2023-09-24T00:00:00"
+    },
+    "CWE-500": {
+      "cwe_id": "CWE-500",
+      "cwe_number": 500,
+      "name": "Weakness CWE-500",
+      "description": "Weakness CWE-500: A weakness that allows attackers to exploit the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-500. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Rust, XML applications running on Embedded, Windows.",
+      "severity": "MEDIUM",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Embedded",
+        "Windows"
+      ],
+      "applicable_technologies": [
+        "Rust",
+        "XML",
+        "C#",
+        "Apache"
+      ],
+      "consequences": [
+        "System Compromise"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-52"
+      ],
+      "remediation_strategies": [
+        "Input validation and sanitization",
+        "Update dependencies",
+        "Logging and monitoring",
+        "Use security headers"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/500.html",
+        "https://owasp.org/www-community/attacks/CWE-500",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2020-07-05T00:00:00",
+      "last_updated": "2030-11-12T00:00:00"
+    },
+    "CWE-389": {
+      "cwe_id": "CWE-389",
+      "cwe_number": 389,
+      "name": "Weakness CWE-389",
+      "description": "Weakness CWE-389: A weakness that allows attackers to manipulate the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-389. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Ruby, HTML applications running on Web, Mobile.",
+      "severity": "HIGH",
+      "cwe_type": "Category",
+      "applicable_platforms": [
+        "Web",
+        "Mobile"
+      ],
+      "applicable_technologies": [
+        "Ruby",
+        "HTML",
+        "Azure",
+        "Java"
+      ],
+      "consequences": [
+        "Confidentiality Impact",
+        "Data Manipulation"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-254"
+      ],
+      "remediation_strategies": [
+        "Security training",
+        "Security frameworks and libraries"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/389.html",
+        "https://owasp.org/www-community/attacks/CWE-389",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2020-02-25T00:00:00",
+      "last_updated": "2021-01-19T00:00:00"
+    },
+    "CWE-860": {
+      "cwe_id": "CWE-860",
+      "cwe_number": 860,
+      "name": "Weakness CWE-860",
+      "description": "Weakness CWE-860: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-860. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Nginx, JavaScript applications running on Android.",
+      "severity": "UNKNOWN",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Android"
+      ],
+      "applicable_technologies": [
+        "Nginx",
+        "JavaScript"
+      ],
+      "consequences": [
+        "Access Control Bypass",
+        "Information Disclosure",
+        "Authentication Bypass"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-590",
+        "CAPEC-385"
+      ],
+      "remediation_strategies": [
+        "Parameterized queries",
+        "Output encoding and escaping",
+        "Logging and monitoring"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/860.html",
+        "https://owasp.org/www-community/attacks/CWE-860",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2014-02-19T00:00:00",
+      "last_updated": "2014-09-17T00:00:00"
+    },
+    "CWE-965": {
+      "cwe_id": "CWE-965",
+      "cwe_number": 965,
+      "name": "Weakness CWE-965",
+      "description": "Weakness CWE-965: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-965. Attackers can exploit this to gain unauthorized access or manipulate data. It affects JavaScript, Go applications running on Mobile.",
+      "severity": "HIGH",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "Mobile"
+      ],
+      "applicable_technologies": [
+        "JavaScript",
+        "Go"
+      ],
+      "consequences": [
+        "System Compromise",
+        "Integrity Impact",
+        "Confidentiality Impact"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-431"
+      ],
+      "remediation_strategies": [
+        "Implement WAF rules",
+        "Update dependencies",
+        "Security training"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/965.html",
+        "https://owasp.org/www-community/attacks/CWE-965",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2011-09-21T00:00:00",
+      "last_updated": "2019-05-17T00:00:00"
+    },
+    "CWE-109": {
+      "cwe_id": "CWE-109",
+      "cwe_number": 109,
+      "name": "Weakness CWE-109",
+      "description": "Weakness CWE-109: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-109. Attackers can exploit this to gain unauthorized access or manipulate data. It affects IIS, Ruby applications running on Embedded, macOS.",
+      "severity": "MEDIUM",
+      "cwe_type": "Category",
+      "applicable_platforms": [
+        "Embedded",
+        "macOS",
+        "Cloud"
+      ],
+      "applicable_technologies": [
+        "IIS",
+        "Ruby"
+      ],
+      "consequences": [
+        "Data Manipulation",
+        "Information Disclosure",
+        "System Compromise"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-476"
+      ],
+      "remediation_strategies": [
+        "Logging and monitoring",
+        "Code review and testing",
+        "Security training"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/109.html",
+        "https://owasp.org/www-community/attacks/CWE-109",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2013-02-09T00:00:00",
+      "last_updated": "2023-03-21T00:00:00"
+    },
+    "CWE-345": {
+      "cwe_id": "CWE-345",
+      "cwe_number": 345,
+      "name": "Weakness CWE-345",
+      "description": "Weakness CWE-345: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-345. Attackers can exploit this to gain unauthorized access or manipulate data. It affects SQL, Ruby applications running on macOS, Embedded.",
+      "severity": "LOW",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "macOS",
+        "Embedded"
+      ],
+      "applicable_technologies": [
+        "SQL",
+        "Ruby"
+      ],
+      "consequences": [
+        "Authentication Bypass",
+        "System Compromise"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-569",
+        "CAPEC-247"
+      ],
+      "remediation_strategies": [
+        "Code review and testing",
+        "Implement WAF rules",
+        "Input validation and sanitization",
+        "Logging and monitoring"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/345.html",
+        "https://owasp.org/www-community/attacks/CWE-345",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2013-02-08T00:00:00",
+      "last_updated": "2022-03-22T00:00:00"
+    },
+    "CWE-662": {
+      "cwe_id": "CWE-662",
+      "cwe_number": 662,
+      "name": "Weakness CWE-662",
+      "description": "Weakness CWE-662: A weakness that allows attackers to exploit the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-662. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Node.js, XML applications running on Windows, Linux.",
+      "severity": "LOW",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "Windows",
+        "Linux"
+      ],
+      "applicable_technologies": [
+        "Node.js",
+        "XML",
+        "Azure"
+      ],
+      "consequences": [
+        "Denial of Service",
+        "System Compromise"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-465",
+        "CAPEC-278"
+      ],
+      "remediation_strategies": [
+        "Use security headers",
+        "Implement WAF rules",
+        "Security training"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/662.html",
+        "https://owasp.org/www-community/attacks/CWE-662",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2016-12-18T00:00:00",
+      "last_updated": "2024-05-19T00:00:00"
+    },
+    "CWE-258": {
+      "cwe_id": "CWE-258",
+      "cwe_number": 258,
+      "name": "Weakness CWE-258",
+      "description": "Weakness CWE-258: A weakness that allows attackers to manipulate the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-258. Attackers can exploit this to gain unauthorized access or manipulate data. It affects .NET, Azure applications running on Android, Web.",
+      "severity": "CRITICAL",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Android",
+        "Web",
+        "Linux"
+      ],
+      "applicable_technologies": [
+        ".NET",
+        "Azure"
+      ],
+      "consequences": [
+        "Information Disclosure",
+        "Authentication Bypass",
+        "Data Manipulation"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-547"
+      ],
+      "remediation_strategies": [
+        "Code review and testing",
+        "Output encoding and escaping",
+        "Security frameworks and libraries",
+        "Parameterized queries"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/258.html",
+        "https://owasp.org/www-community/attacks/CWE-258",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2013-06-06T00:00:00",
+      "last_updated": "2020-03-17T00:00:00"
+    },
+    "CWE-281": {
+      "cwe_id": "CWE-281",
+      "cwe_number": 281,
+      "name": "Weakness CWE-281",
+      "description": "Weakness CWE-281: A weakness that allows attackers to bypass the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-281. Attackers can exploit this to gain unauthorized access or manipulate data. It affects PHP applications running on iOS, macOS.",
+      "severity": "CRITICAL",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "iOS",
+        "macOS",
+        "Embedded"
+      ],
+      "applicable_technologies": [
+        "PHP"
+      ],
+      "consequences": [
+        "Authentication Bypass",
+        "Information Disclosure",
+        "System Compromise"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-504",
+        "CAPEC-76"
+      ],
+      "remediation_strategies": [
+        "Security training",
+        "Parameterized queries",
+        "Input validation and sanitization"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/281.html",
+        "https://owasp.org/www-community/attacks/CWE-281",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2014-08-04T00:00:00",
+      "last_updated": "2016-01-21T00:00:00"
+    },
+    "CWE-156": {
+      "cwe_id": "CWE-156",
+      "cwe_number": 156,
+      "name": "Weakness CWE-156",
+      "description": "Weakness CWE-156: A weakness that allows attackers to bypass the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-156. Attackers can exploit this to gain unauthorized access or manipulate data. It affects OpenSSL applications running on Linux, Android.",
+      "severity": "UNKNOWN",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Linux",
+        "Android"
+      ],
+      "applicable_technologies": [
+        "OpenSSL"
+      ],
+      "consequences": [
+        "System Compromise",
+        "Denial of Service"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-313",
+        "CAPEC-583"
+      ],
+      "remediation_strategies": [
+        "Security frameworks and libraries",
+        "Implement WAF rules",
+        "Update dependencies",
+        "Logging and monitoring"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/156.html",
+        "https://owasp.org/www-community/attacks/CWE-156",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2017-05-28T00:00:00",
+      "last_updated": "2030-08-09T00:00:00"
+    },
+    "CWE-625": {
+      "cwe_id": "CWE-625",
+      "cwe_number": 625,
+      "name": "Weakness CWE-625",
+      "description": "Weakness CWE-625: A weakness that allows attackers to manipulate the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-625. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Java, C# applications running on Android.",
+      "severity": "CRITICAL",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "Android"
+      ],
+      "applicable_technologies": [
+        "Java",
+        "C#",
+        "Node.js"
+      ],
+      "consequences": [
+        "Data Manipulation"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-299",
+        "CAPEC-34"
+      ],
+      "remediation_strategies": [
+        "Parameterized queries",
+        "Input validation and sanitization"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/625.html",
+        "https://owasp.org/www-community/attacks/CWE-625",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2016-08-23T00:00:00",
+      "last_updated": "2029-12-17T00:00:00"
+    },
+    "CWE-296": {
+      "cwe_id": "CWE-296",
+      "cwe_number": 296,
+      "name": "Weakness CWE-296",
+      "description": "Weakness CWE-296: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-296. Attackers can exploit this to gain unauthorized access or manipulate data. It affects AWS, .NET applications running on Embedded, Linux.",
+      "severity": "MEDIUM",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "Embedded",
+        "Linux",
+        "Android"
+      ],
+      "applicable_technologies": [
+        "AWS",
+        ".NET",
+        "HTML"
+      ],
+      "consequences": [
+        "Data Manipulation"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-583",
+        "CAPEC-296"
+      ],
+      "remediation_strategies": [
+        "Parameterized queries",
+        "Code review and testing"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/296.html",
+        "https://owasp.org/www-community/attacks/CWE-296",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2012-02-02T00:00:00",
+      "last_updated": "2015-10-23T00:00:00"
+    },
+    "CWE-128": {
+      "cwe_id": "CWE-128",
+      "cwe_number": 128,
+      "name": "Weakness CWE-128",
+      "description": "Weakness CWE-128: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-128. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Java, Python applications running on Cloud, iOS.",
+      "severity": "MEDIUM",
+      "cwe_type": "Category",
+      "applicable_platforms": [
+        "Cloud",
+        "iOS",
+        "Embedded"
+      ],
+      "applicable_technologies": [
+        "Java",
+        "Python",
+        "HTML",
+        "Rust"
+      ],
+      "consequences": [
+        "Authentication Bypass",
+        "Confidentiality Impact",
+        "Integrity Impact"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-482"
+      ],
+      "remediation_strategies": [
+        "Logging and monitoring",
+        "Input validation and sanitization"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/128.html",
+        "https://owasp.org/www-community/attacks/CWE-128",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2020-05-19T00:00:00",
+      "last_updated": "2021-04-13T00:00:00"
+    },
+    "CWE-939": {
+      "cwe_id": "CWE-939",
+      "cwe_number": 939,
+      "name": "Weakness CWE-939",
+      "description": "Weakness CWE-939: A weakness that allows attackers to bypass the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-939. Attackers can exploit this to gain unauthorized access or manipulate data. It affects SQL, HTML applications running on Cloud, Embedded.",
+      "severity": "HIGH",
+      "cwe_type": "Category",
+      "applicable_platforms": [
+        "Cloud",
+        "Embedded",
+        "Linux"
+      ],
+      "applicable_technologies": [
+        "SQL",
+        "HTML",
+        "Rust",
+        "OpenSSL"
+      ],
+      "consequences": [
+        "Integrity Impact",
+        "Availability Impact",
+        "Authorization Bypass"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-259",
+        "CAPEC-332"
+      ],
+      "remediation_strategies": [
+        "Use security headers",
+        "Code review and testing",
+        "Update dependencies"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/939.html",
+        "https://owasp.org/www-community/attacks/CWE-939",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2018-01-15T00:00:00",
+      "last_updated": "2020-01-06T00:00:00"
+    },
+    "CWE-994": {
+      "cwe_id": "CWE-994",
+      "cwe_number": 994,
+      "name": "Weakness CWE-994",
+      "description": "Weakness CWE-994: A weakness that allows attackers to manipulate the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-994. Attackers can exploit this to gain unauthorized access or manipulate data. It affects HTML, Python applications running on IoT.",
+      "severity": "UNKNOWN",
+      "cwe_type": "Category",
+      "applicable_platforms": [
+        "IoT"
+      ],
+      "applicable_technologies": [
+        "HTML",
+        "Python",
+        ".NET",
+        "IIS"
+      ],
+      "consequences": [
+        "System Compromise",
+        "Information Disclosure"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-497",
+        "CAPEC-125",
+        "CAPEC-30"
+      ],
+      "remediation_strategies": [
+        "Use security headers",
+        "Input validation and sanitization",
+        "Security frameworks and libraries",
+        "Parameterized queries"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/994.html",
+        "https://owasp.org/www-community/attacks/CWE-994",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2018-03-10T00:00:00",
+      "last_updated": "2028-01-06T00:00:00"
+    },
+    "CWE-727": {
+      "cwe_id": "CWE-727",
+      "cwe_number": 727,
+      "name": "Weakness CWE-727",
+      "description": "Weakness CWE-727: A weakness that allows attackers to manipulate the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-727. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Node.js applications running on Windows, IoT.",
+      "severity": "MEDIUM",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Windows",
+        "IoT",
+        "Cloud"
+      ],
+      "applicable_technologies": [
+        "Node.js"
+      ],
+      "consequences": [
+        "Information Disclosure"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-495",
+        "CAPEC-484"
+      ],
+      "remediation_strategies": [
+        "Parameterized queries",
+        "Use security headers"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/727.html",
+        "https://owasp.org/www-community/attacks/CWE-727",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2014-09-23T00:00:00",
+      "last_updated": "2020-11-09T00:00:00"
+    },
+    "CWE-468": {
+      "cwe_id": "CWE-468",
+      "cwe_number": 468,
+      "name": "Weakness CWE-468",
+      "description": "Weakness CWE-468: A weakness that allows attackers to access the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-468. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Java, Ruby applications running on Android, IoT.",
+      "severity": "HIGH",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "Android",
+        "IoT"
+      ],
+      "applicable_technologies": [
+        "Java",
+        "Ruby"
+      ],
+      "consequences": [
+        "Authorization Bypass",
+        "Data Manipulation"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-458"
+      ],
+      "remediation_strategies": [
+        "Input validation and sanitization",
+        "Code review and testing",
+        "Implement WAF rules"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/468.html",
+        "https://owasp.org/www-community/attacks/CWE-468",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2019-10-22T00:00:00",
+      "last_updated": "2030-10-15T00:00:00"
+    },
+    "CWE-354": {
+      "cwe_id": "CWE-354",
+      "cwe_number": 354,
+      "name": "Weakness CWE-354",
+      "description": "Weakness CWE-354: A weakness that allows attackers to exploit the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-354. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Node.js, AWS applications running on Cloud, Embedded.",
+      "severity": "UNKNOWN",
+      "cwe_type": "Category",
+      "applicable_platforms": [
+        "Cloud",
+        "Embedded",
+        "Web"
+      ],
+      "applicable_technologies": [
+        "Node.js",
+        "AWS"
+      ],
+      "consequences": [
+        "Access Control Bypass",
+        "Privilege Escalation"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-38",
+        "CAPEC-130"
+      ],
+      "remediation_strategies": [
+        "Security training",
+        "Use security headers"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/354.html",
+        "https://owasp.org/www-community/attacks/CWE-354",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2016-07-22T00:00:00",
+      "last_updated": "2019-12-20T00:00:00"
+    },
+    "CWE-891": {
+      "cwe_id": "CWE-891",
+      "cwe_number": 891,
+      "name": "Weakness CWE-891",
+      "description": "Weakness CWE-891: A weakness that allows attackers to bypass the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-891. Attackers can exploit this to gain unauthorized access or manipulate data. It affects PHP, C++ applications running on IoT.",
+      "severity": "LOW",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "IoT"
+      ],
+      "applicable_technologies": [
+        "PHP",
+        "C++",
+        "HTML",
+        "AWS"
+      ],
+      "consequences": [
+        "Information Disclosure"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-325",
+        "CAPEC-500"
+      ],
+      "remediation_strategies": [
+        "Security training",
+        "Update dependencies",
+        "Output encoding and escaping"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/891.html",
+        "https://owasp.org/www-community/attacks/CWE-891",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2015-11-28T00:00:00",
+      "last_updated": "2027-11-16T00:00:00"
+    },
+    "CWE-633": {
+      "cwe_id": "CWE-633",
+      "cwe_number": 633,
+      "name": "Weakness CWE-633",
+      "description": "Weakness CWE-633: A weakness that allows attackers to manipulate the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-633. Attackers can exploit this to gain unauthorized access or manipulate data. It affects JavaScript, Azure applications running on iOS, Android.",
+      "severity": "HIGH",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "iOS",
+        "Android",
+        "Linux"
+      ],
+      "applicable_technologies": [
+        "JavaScript",
+        "Azure",
+        "Apache",
+        "C#"
+      ],
+      "consequences": [
+        "Authentication Bypass",
+        "Confidentiality Impact",
+        "System Compromise"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-422",
+        "CAPEC-580",
+        "CAPEC-185"
+      ],
+      "remediation_strategies": [
+        "Input validation and sanitization",
+        "Code review and testing",
+        "Security training"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/633.html",
+        "https://owasp.org/www-community/attacks/CWE-633",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2015-07-05T00:00:00",
+      "last_updated": "2020-12-25T00:00:00"
+    },
+    "CWE-180": {
+      "cwe_id": "CWE-180",
+      "cwe_number": 180,
+      "name": "Weakness CWE-180",
+      "description": "Weakness CWE-180: A weakness that allows attackers to exploit the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-180. Attackers can exploit this to gain unauthorized access or manipulate data. It affects AWS, C++ applications running on Mobile, Android.",
+      "severity": "UNKNOWN",
+      "cwe_type": "Weakness",
+      "applicable_platforms": [
+        "Mobile",
+        "Android"
+      ],
+      "applicable_technologies": [
+        "AWS",
+        "C++",
+        "Node.js",
+        "Apache"
+      ],
+      "consequences": [
+        "Authentication Bypass",
+        "Information Disclosure",
+        "Denial of Service"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-307",
+        "CAPEC-435"
+      ],
+      "remediation_strategies": [
+        "Input validation and sanitization",
+        "Use security headers",
+        "Code review and testing",
+        "Security training"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/180.html",
+        "https://owasp.org/www-community/attacks/CWE-180",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2018-03-03T00:00:00",
+      "last_updated": "2028-01-28T00:00:00"
+    },
+    "CWE-866": {
+      "cwe_id": "CWE-866",
+      "cwe_number": 866,
+      "name": "Weakness CWE-866",
+      "description": "Weakness CWE-866: A weakness that allows attackers to exploit the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-866. Attackers can exploit this to gain unauthorized access or manipulate data. It affects XML, AWS applications running on Embedded, Linux.",
+      "severity": "HIGH",
+      "cwe_type": "Category",
+      "applicable_platforms": [
+        "Embedded",
+        "Linux"
+      ],
+      "applicable_technologies": [
+        "XML",
+        "AWS"
+      ],
+      "consequences": [
+        "System Compromise",
+        "Authentication Bypass"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-509",
+        "CAPEC-294",
+        "CAPEC-236"
+      ],
+      "remediation_strategies": [
+        "Code review and testing",
+        "Input validation and sanitization",
+        "Update dependencies",
+        "Parameterized queries"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/866.html",
+        "https://owasp.org/www-community/attacks/CWE-866",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2010-10-28T00:00:00",
+      "last_updated": "2011-12-03T00:00:00"
+    },
+    "CWE-225": {
+      "cwe_id": "CWE-225",
+      "cwe_number": 225,
+      "name": "Weakness CWE-225",
+      "description": "Weakness CWE-225: A weakness that allows attackers to exploit the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-225. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Go applications running on iOS, macOS.",
+      "severity": "HIGH",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "iOS",
+        "macOS",
+        "Linux"
+      ],
+      "applicable_technologies": [
+        "Go"
+      ],
+      "consequences": [
+        "Confidentiality Impact",
+        "System Compromise"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-136"
+      ],
+      "remediation_strategies": [
+        "Parameterized queries",
+        "Output encoding and escaping",
+        "Code review and testing"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/225.html",
+        "https://owasp.org/www-community/attacks/CWE-225",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2015-12-14T00:00:00",
+      "last_updated": "2019-11-21T00:00:00"
+    },
+    "CWE-544": {
+      "cwe_id": "CWE-544",
+      "cwe_number": 544,
+      "name": "Weakness CWE-544",
+      "description": "Weakness CWE-544: A weakness that allows attackers to bypass the system.",
+      "extended_description": "This weakness describes a flaw in how the system handles weakness cwe-544. Attackers can exploit this to gain unauthorized access or manipulate data. It affects Go, Rust applications running on iOS.",
+      "severity": "MEDIUM",
+      "cwe_type": "Pillar",
+      "applicable_platforms": [
+        "iOS"
+      ],
+      "applicable_technologies": [
+        "Go",
+        "Rust",
+        "JavaScript",
+        "Apache"
+      ],
+      "consequences": [
+        "Availability Impact"
+      ],
+      "related_attack_patterns": [
+        "CAPEC-271"
+      ],
+      "remediation_strategies": [
+        "Update dependencies",
+        "Implement WAF rules"
+      ],
+      "references": [
+        "https://cwe.mitre.org/data/definitions/544.html",
+        "https://owasp.org/www-community/attacks/CWE-544",
+        "https://capec.mitre.org/"
+      ],
+      "created_date": "2015-02-26T00:00:00",
+      "last_updated": "2024-01-02T00:00:00"
+    }
+  },
+  "edges": [
+    {
+      "source": "CWE-79",
+      "target": "CWE-903",
+      "relationship": "parent_of",
+      "confidence": 0.84
+    },
+    {
+      "source": "CWE-80",
+      "target": "CWE-994",
+      "relationship": "related_to",
+      "confidence": 0.83
+    },
+    {
+      "source": "CWE-80",
+      "target": "CWE-901",
+      "relationship": "related_to",
+      "confidence": 0.82
+    },
+    {
+      "source": "CWE-119",
+      "target": "CWE-78",
+      "relationship": "related_to",
+      "confidence": 0.95
+    },
+    {
+      "source": "CWE-119",
+      "target": "CWE-395",
+      "relationship": "related_to",
+      "confidence": 0.64
+    },
+    {
+      "source": "CWE-125",
+      "target": "CWE-468",
+      "relationship": "parent_of",
+      "confidence": 0.74
+    },
+    {
+      "source": "CWE-352",
+      "target": "CWE-389",
+      "relationship": "related_to",
+      "confidence": 0.63
+    },
+    {
+      "source": "CWE-352",
+      "target": "CWE-468",
+      "relationship": "related_to",
+      "confidence": 0.77
+    },
+    {
+      "source": "CWE-502",
+      "target": "CWE-625",
+      "relationship": "parent_of",
+      "confidence": 0.77
+    },
+    {
+      "source": "CWE-610",
+      "target": "CWE-296",
+      "relationship": "parent_of",
+      "confidence": 0.73
+    },
+    {
+      "source": "CWE-901",
+      "target": "CWE-502",
+      "relationship": "related_to",
+      "confidence": 0.93
+    },
+    {
+      "source": "CWE-901",
+      "target": "CWE-125",
+      "relationship": "related_to",
+      "confidence": 0.89
+    },
+    {
+      "source": "CWE-209",
+      "target": "CWE-109",
+      "relationship": "parent_of",
+      "confidence": 0.89
+    },
+    {
+      "source": "CWE-559",
+      "target": "CWE-939",
+      "relationship": "parent_of",
+      "confidence": 0.77
+    },
+    {
+      "source": "CWE-559",
+      "target": "CWE-296",
+      "relationship": "related_to",
+      "confidence": 0.62
+    },
+    {
+      "source": "CWE-559",
+      "target": "CWE-610",
+      "relationship": "related_to",
+      "confidence": 0.87
+    },
+    {
+      "source": "CWE-903",
+      "target": "CWE-393",
+      "relationship": "parent_of",
+      "confidence": 0.94
+    },
+    {
+      "source": "CWE-903",
+      "target": "CWE-287",
+      "relationship": "related_to",
+      "confidence": 0.6
+    },
+    {
+      "source": "CWE-903",
+      "target": "CWE-939",
+      "relationship": "related_to",
+      "confidence": 0.9
+    },
+    {
+      "source": "CWE-409",
+      "target": "CWE-851",
+      "relationship": "parent_of",
+      "confidence": 0.86
+    },
+    {
+      "source": "CWE-395",
+      "target": "CWE-225",
+      "relationship": "parent_of",
+      "confidence": 0.71
+    },
+    {
+      "source": "CWE-395",
+      "target": "CWE-901",
+      "relationship": "related_to",
+      "confidence": 0.71
+    },
+    {
+      "source": "CWE-395",
+      "target": "CWE-128",
+      "relationship": "related_to",
+      "confidence": 0.66
+    },
+    {
+      "source": "CWE-714",
+      "target": "CWE-633",
+      "relationship": "parent_of",
+      "confidence": 0.83
+    },
+    {
+      "source": "CWE-714",
+      "target": "CWE-80",
+      "relationship": "related_to",
+      "confidence": 0.76
+    },
+    {
+      "source": "CWE-714",
+      "target": "CWE-345",
+      "relationship": "related_to",
+      "confidence": 0.73
+    },
+    {
+      "source": "CWE-410",
+      "target": "CWE-354",
+      "relationship": "parent_of",
+      "confidence": 0.71
+    },
+    {
+      "source": "CWE-500",
+      "target": "CWE-468",
+      "relationship": "parent_of",
+      "confidence": 0.95
+    },
+    {
+      "source": "CWE-389",
+      "target": "CWE-468",
+      "relationship": "parent_of",
+      "confidence": 0.72
+    },
+    {
+      "source": "CWE-389",
+      "target": "CWE-939",
+      "relationship": "related_to",
+      "confidence": 0.62
+    },
+    {
+      "source": "CWE-389",
+      "target": "CWE-287",
+      "relationship": "related_to",
+      "confidence": 0.7
+    },
+    {
+      "source": "CWE-345",
+      "target": "CWE-633",
+      "relationship": "related_to",
+      "confidence": 0.9
+    },
+    {
+      "source": "CWE-345",
+      "target": "CWE-125",
+      "relationship": "related_to",
+      "confidence": 0.83
+    },
+    {
+      "source": "CWE-258",
+      "target": "CWE-225",
+      "relationship": "parent_of",
+      "confidence": 0.97
+    },
+    {
+      "source": "CWE-281",
+      "target": "CWE-866",
+      "relationship": "related_to",
+      "confidence": 0.71
+    },
+    {
+      "source": "CWE-281",
+      "target": "CWE-119",
+      "relationship": "related_to",
+      "confidence": 0.71
+    },
+    {
+      "source": "CWE-156",
+      "target": "CWE-128",
+      "relationship": "parent_of",
+      "confidence": 0.91
+    },
+    {
+      "source": "CWE-625",
+      "target": "CWE-128",
+      "relationship": "parent_of",
+      "confidence": 0.73
+    },
+    {
+      "source": "CWE-625",
+      "target": "CWE-225",
+      "relationship": "related_to",
+      "confidence": 0.88
+    },
+    {
+      "source": "CWE-625",
+      "target": "CWE-410",
+      "relationship": "related_to",
+      "confidence": 0.79
+    },
+    {
+      "source": "CWE-128",
+      "target": "CWE-528",
+      "relationship": "related_to",
+      "confidence": 0.93
+    },
+    {
+      "source": "CWE-128",
+      "target": "CWE-354",
+      "relationship": "related_to",
+      "confidence": 0.75
+    },
+    {
+      "source": "CWE-939",
+      "target": "CWE-903",
+      "relationship": "related_to",
+      "confidence": 0.71
+    },
+    {
+      "source": "CWE-939",
+      "target": "CWE-128",
+      "relationship": "related_to",
+      "confidence": 0.64
+    },
+    {
+      "source": "CWE-994",
+      "target": "CWE-109",
+      "relationship": "related_to",
+      "confidence": 0.9
+    },
+    {
+      "source": "CWE-994",
+      "target": "CWE-611",
+      "relationship": "related_to",
+      "confidence": 0.72
+    },
+    {
+      "source": "CWE-727",
+      "target": "CWE-559",
+      "relationship": "related_to",
+      "confidence": 0.68
+    },
+    {
+      "source": "CWE-727",
+      "target": "CWE-625",
+      "relationship": "related_to",
+      "confidence": 0.75
+    },
+    {
+      "source": "CWE-180",
+      "target": "CWE-225",
+      "relationship": "parent_of",
+      "confidence": 0.91
+    },
+    {
+      "source": "CWE-180",
+      "target": "CWE-714",
+      "relationship": "related_to",
+      "confidence": 0.6
+    },
+    {
+      "source": "CWE-180",
+      "target": "CWE-528",
+      "relationship": "related_to",
+      "confidence": 0.9
+    },
+    {
+      "source": "CWE-225",
+      "target": "CWE-544",
+      "relationship": "parent_of",
+      "confidence": 0.73
+    }
+  ],
+  "metadata": {
+    "created_at": "2025-10-26T07:04:37.801606",
+    "generated_at": "2025-10-26T07:04:37.801608",
+    "version": "1.0.0-phase3",
+    "source": "HyFuzz CWE Generator (MITRE CWE Based)",
+    "cwe_count": 50,
+    "edge_count": 52,
+    "cwe_types": {
+      "Weakness": 35,
+      "Category": 10,
+      "Pillar": 2,
+      "Compound": 2
+    }
+  }
+}
