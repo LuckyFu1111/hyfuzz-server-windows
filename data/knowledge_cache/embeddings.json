@@ -1,0 +1,1500 @@
+{
+  "global": {
+    "version": "1.0.0-phase3",
+    "created_at": "2025-10-26T08:21:37.601341",
+    "embedding_dim": 768,
+    "embedding_model": "nomic-embed-text",
+    "total_embeddings": 150,
+    "data_types": [
+      "cve",
+      "cwe"
+    ],
+    "metric": "cosine",
+    "normalization": "l2",
+    "cve_count": 100,
+    "cwe_count": 50,
+    "seed": null
+  },
+  "items": [
+    {
+      "id": "CVE-2023-1000",
+      "type": "cve",
+      "text": "SQL injection vulnerability in Apache Struts",
+      "text_length": 44,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.589319",
+      "embedding_norm": 0.9999999999999999
+    },
+    {
+      "id": "CVE-2023-1001",
+      "type": "cve",
+      "text": "Cross-site scripting XSS in Django templates",
+      "text_length": 44,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.589439",
+      "embedding_norm": 1.0000000000000002
+    },
+    {
+      "id": "CVE-2023-1002",
+      "type": "cve",
+      "text": "Remote code execution RCE in PHP WordPress",
+      "text_length": 42,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.589529",
+      "embedding_norm": 1.0
+    },
+    {
+      "id": "CVE-2023-1003",
+      "type": "cve",
+      "text": "Buffer overflow in C++ OpenSSL library",
+      "text_length": 38,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.589618",
+      "embedding_norm": 1.0
+    },
+    {
+      "id": "CVE-2023-1004",
+      "type": "cve",
+      "text": "Authentication bypass in Spring Security",
+      "text_length": 40,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.589702",
+      "embedding_norm": 1.0000000000000002
+    },
+    {
+      "id": "CVE-2023-1005",
+      "type": "cve",
+      "text": "Path traversal vulnerability in Apache server",
+      "text_length": 45,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.589782",
+      "embedding_norm": 1.0
+    },
+    {
+      "id": "CVE-2023-1006",
+      "type": "cve",
+      "text": "Deserialization attack Java ObjectInputStream",
+      "text_length": 45,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.589861",
+      "embedding_norm": 1.0
+    },
+    {
+      "id": "CVE-2023-1007",
+      "type": "cve",
+      "text": "Command injection shell metacharacters Linux",
+      "text_length": 44,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.589946",
+      "embedding_norm": 1.0
+    },
+    {
+      "id": "CVE-2023-1008",
+      "type": "cve",
+      "text": "XXE XML external entity attack parsing",
+      "text_length": 38,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.590026",
+      "embedding_norm": 1.0
+    },
+    {
+      "id": "CVE-2023-1009",
+      "type": "cve",
+      "text": "CSRF cross-site request forgery token",
+      "text_length": 37,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.590105",
+      "embedding_norm": 1.0
+    },
+    {
+      "id": "CVE-2023-1000-v1",
+      "type": "cve",
+      "text": "SQL injection vulnerability in Apache Struts variant 1",
+      "text_length": 54,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.590187",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1000"
+    },
+    {
+      "id": "CVE-2023-1001-v2",
+      "type": "cve",
+      "text": "Cross-site scripting XSS in Django templates (version 2)",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.590271",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1001"
+    },
+    {
+      "id": "CVE-2023-1002-v3",
+      "type": "cve",
+      "text": "Remote code execution RCE in PHP WordPress (version 3)",
+      "text_length": 54,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.590353",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1002"
+    },
+    {
+      "id": "CVE-2023-1003-v4",
+      "type": "cve",
+      "text": "Related to Buffer overflow in C++ OpenSSL library",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.590435",
+      "embedding_norm": 1.0000000000000002,
+      "original_id": "CVE-2023-1003"
+    },
+    {
+      "id": "CVE-2023-1004-v5",
+      "type": "cve",
+      "text": "Related to Authentication bypass in Spring Security",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.590515",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1004"
+    },
+    {
+      "id": "CVE-2023-1005-v6",
+      "type": "cve",
+      "text": "Related to Path traversal vulnerability in Apache server",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.590630",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1005"
+    },
+    {
+      "id": "CVE-2023-1006-v7",
+      "type": "cve",
+      "text": "Deserialization attack Java ObjectInputStream variant 7",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.590713",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1006"
+    },
+    {
+      "id": "CVE-2023-1007-v8",
+      "type": "cve",
+      "text": "Command injection shell metacharacters Linux variant 8",
+      "text_length": 54,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.590794",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1007"
+    },
+    {
+      "id": "CVE-2023-1008-v9",
+      "type": "cve",
+      "text": "XXE XML external entity attack parsing variant 9",
+      "text_length": 48,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.590872",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1008"
+    },
+    {
+      "id": "CVE-2023-1009-v10",
+      "type": "cve",
+      "text": "CSRF cross-site request forgery token variant 10",
+      "text_length": 48,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.590953",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1009"
+    },
+    {
+      "id": "CVE-2023-1000-v11",
+      "type": "cve",
+      "text": "SQL injection vulnerability in Apache Struts variant 11",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.591036",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1000"
+    },
+    {
+      "id": "CVE-2023-1001-v12",
+      "type": "cve",
+      "text": "Cross-site scripting XSS in Django templates (version 12)",
+      "text_length": 57,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.591115",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1001"
+    },
+    {
+      "id": "CVE-2023-1002-v13",
+      "type": "cve",
+      "text": "Related to Remote code execution RCE in PHP WordPress",
+      "text_length": 53,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.591195",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1002"
+    },
+    {
+      "id": "CVE-2023-1003-v14",
+      "type": "cve",
+      "text": "Buffer overflow in C++ OpenSSL library variant 14",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.591274",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1003"
+    },
+    {
+      "id": "CVE-2023-1004-v15",
+      "type": "cve",
+      "text": "Authentication bypass in Spring Security (version 15)",
+      "text_length": 53,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.591353",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1004"
+    },
+    {
+      "id": "CVE-2023-1005-v16",
+      "type": "cve",
+      "text": "Path traversal vulnerability in Apache server variant 16",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.591431",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1005"
+    },
+    {
+      "id": "CVE-2023-1006-v17",
+      "type": "cve",
+      "text": "Related to Deserialization attack Java ObjectInputStream",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.591508",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1006"
+    },
+    {
+      "id": "CVE-2023-1007-v18",
+      "type": "cve",
+      "text": "Command injection shell metacharacters Linux (version 18)",
+      "text_length": 57,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.591588",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1007"
+    },
+    {
+      "id": "CVE-2023-1008-v19",
+      "type": "cve",
+      "text": "Related to XXE XML external entity attack parsing",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.591664",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1008"
+    },
+    {
+      "id": "CVE-2023-1009-v20",
+      "type": "cve",
+      "text": "CSRF cross-site request forgery token (version 20)",
+      "text_length": 50,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.591741",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1009"
+    },
+    {
+      "id": "CVE-2023-1000-v21",
+      "type": "cve",
+      "text": "SQL injection vulnerability in Apache Struts (version 21)",
+      "text_length": 57,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.591845",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1000"
+    },
+    {
+      "id": "CVE-2023-1001-v22",
+      "type": "cve",
+      "text": "Related to Cross-site scripting XSS in Django templates",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.591925",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1001"
+    },
+    {
+      "id": "CVE-2023-1002-v23",
+      "type": "cve",
+      "text": "Related to Remote code execution RCE in PHP WordPress",
+      "text_length": 53,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.592005",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1002"
+    },
+    {
+      "id": "CVE-2023-1003-v24",
+      "type": "cve",
+      "text": "Buffer overflow in C++ OpenSSL library variant 24",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.592086",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1003"
+    },
+    {
+      "id": "CVE-2023-1004-v25",
+      "type": "cve",
+      "text": "Authentication bypass in Spring Security variant 25",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.592165",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1004"
+    },
+    {
+      "id": "CVE-2023-1005-v26",
+      "type": "cve",
+      "text": "Related to Path traversal vulnerability in Apache server",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.592244",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1005"
+    },
+    {
+      "id": "CVE-2023-1006-v27",
+      "type": "cve",
+      "text": "Related to Deserialization attack Java ObjectInputStream",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.592321",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1006"
+    },
+    {
+      "id": "CVE-2023-1007-v28",
+      "type": "cve",
+      "text": "Related to Command injection shell metacharacters Linux",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.592403",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1007"
+    },
+    {
+      "id": "CVE-2023-1008-v29",
+      "type": "cve",
+      "text": "XXE XML external entity attack parsing variant 29",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.592478",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1008"
+    },
+    {
+      "id": "CVE-2023-1009-v30",
+      "type": "cve",
+      "text": "CSRF cross-site request forgery token variant 30",
+      "text_length": 48,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.592554",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1009"
+    },
+    {
+      "id": "CVE-2023-1000-v31",
+      "type": "cve",
+      "text": "SQL injection vulnerability in Apache Struts variant 31",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.592635",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1000"
+    },
+    {
+      "id": "CVE-2023-1001-v32",
+      "type": "cve",
+      "text": "Related to Cross-site scripting XSS in Django templates",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.592715",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1001"
+    },
+    {
+      "id": "CVE-2023-1002-v33",
+      "type": "cve",
+      "text": "Remote code execution RCE in PHP WordPress variant 33",
+      "text_length": 53,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.592796",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1002"
+    },
+    {
+      "id": "CVE-2023-1003-v34",
+      "type": "cve",
+      "text": "Buffer overflow in C++ OpenSSL library (version 34)",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.592877",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1003"
+    },
+    {
+      "id": "CVE-2023-1004-v35",
+      "type": "cve",
+      "text": "Authentication bypass in Spring Security variant 35",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.592953",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1004"
+    },
+    {
+      "id": "CVE-2023-1005-v36",
+      "type": "cve",
+      "text": "Path traversal vulnerability in Apache server variant 36",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.593041",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1005"
+    },
+    {
+      "id": "CVE-2023-1006-v37",
+      "type": "cve",
+      "text": "Related to Deserialization attack Java ObjectInputStream",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.593122",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1006"
+    },
+    {
+      "id": "CVE-2023-1007-v38",
+      "type": "cve",
+      "text": "Related to Command injection shell metacharacters Linux",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.593201",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1007"
+    },
+    {
+      "id": "CVE-2023-1008-v39",
+      "type": "cve",
+      "text": "XXE XML external entity attack parsing (version 39)",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.593280",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1008"
+    },
+    {
+      "id": "CVE-2023-1009-v40",
+      "type": "cve",
+      "text": "CSRF cross-site request forgery token (version 40)",
+      "text_length": 50,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.593357",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1009"
+    },
+    {
+      "id": "CVE-2023-1000-v41",
+      "type": "cve",
+      "text": "SQL injection vulnerability in Apache Struts variant 41",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.593436",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1000"
+    },
+    {
+      "id": "CVE-2023-1001-v42",
+      "type": "cve",
+      "text": "Related to Cross-site scripting XSS in Django templates",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.593515",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1001"
+    },
+    {
+      "id": "CVE-2023-1002-v43",
+      "type": "cve",
+      "text": "Remote code execution RCE in PHP WordPress variant 43",
+      "text_length": 53,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.593597",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1002"
+    },
+    {
+      "id": "CVE-2023-1003-v44",
+      "type": "cve",
+      "text": "Buffer overflow in C++ OpenSSL library (version 44)",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.593676",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1003"
+    },
+    {
+      "id": "CVE-2023-1004-v45",
+      "type": "cve",
+      "text": "Authentication bypass in Spring Security variant 45",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.593756",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1004"
+    },
+    {
+      "id": "CVE-2023-1005-v46",
+      "type": "cve",
+      "text": "Related to Path traversal vulnerability in Apache server",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.593831",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1005"
+    },
+    {
+      "id": "CVE-2023-1006-v47",
+      "type": "cve",
+      "text": "Deserialization attack Java ObjectInputStream variant 47",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.593908",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1006"
+    },
+    {
+      "id": "CVE-2023-1007-v48",
+      "type": "cve",
+      "text": "Command injection shell metacharacters Linux (version 48)",
+      "text_length": 57,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.593987",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1007"
+    },
+    {
+      "id": "CVE-2023-1008-v49",
+      "type": "cve",
+      "text": "Related to XXE XML external entity attack parsing",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.594062",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1008"
+    },
+    {
+      "id": "CVE-2023-1009-v50",
+      "type": "cve",
+      "text": "CSRF cross-site request forgery token (version 50)",
+      "text_length": 50,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.594137",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1009"
+    },
+    {
+      "id": "CVE-2023-1000-v51",
+      "type": "cve",
+      "text": "SQL injection vulnerability in Apache Struts variant 51",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.594227",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1000"
+    },
+    {
+      "id": "CVE-2023-1001-v52",
+      "type": "cve",
+      "text": "Cross-site scripting XSS in Django templates variant 52",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.594306",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1001"
+    },
+    {
+      "id": "CVE-2023-1002-v53",
+      "type": "cve",
+      "text": "Related to Remote code execution RCE in PHP WordPress",
+      "text_length": 53,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.594390",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1002"
+    },
+    {
+      "id": "CVE-2023-1003-v54",
+      "type": "cve",
+      "text": "Buffer overflow in C++ OpenSSL library (version 54)",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.594470",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1003"
+    },
+    {
+      "id": "CVE-2023-1004-v55",
+      "type": "cve",
+      "text": "Authentication bypass in Spring Security variant 55",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.594550",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1004"
+    },
+    {
+      "id": "CVE-2023-1005-v56",
+      "type": "cve",
+      "text": "Path traversal vulnerability in Apache server variant 56",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.594628",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1005"
+    },
+    {
+      "id": "CVE-2023-1006-v57",
+      "type": "cve",
+      "text": "Deserialization attack Java ObjectInputStream (version 57)",
+      "text_length": 58,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.594705",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1006"
+    },
+    {
+      "id": "CVE-2023-1007-v58",
+      "type": "cve",
+      "text": "Command injection shell metacharacters Linux (version 58)",
+      "text_length": 57,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.594786",
+      "embedding_norm": 0.9999999999999998,
+      "original_id": "CVE-2023-1007"
+    },
+    {
+      "id": "CVE-2023-1008-v59",
+      "type": "cve",
+      "text": "XXE XML external entity attack parsing (version 59)",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.594862",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1008"
+    },
+    {
+      "id": "CVE-2023-1009-v60",
+      "type": "cve",
+      "text": "Related to CSRF cross-site request forgery token",
+      "text_length": 48,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.594939",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1009"
+    },
+    {
+      "id": "CVE-2023-1000-v61",
+      "type": "cve",
+      "text": "SQL injection vulnerability in Apache Struts variant 61",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.595017",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1000"
+    },
+    {
+      "id": "CVE-2023-1001-v62",
+      "type": "cve",
+      "text": "Cross-site scripting XSS in Django templates variant 62",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.595094",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1001"
+    },
+    {
+      "id": "CVE-2023-1002-v63",
+      "type": "cve",
+      "text": "Remote code execution RCE in PHP WordPress variant 63",
+      "text_length": 53,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.595193",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1002"
+    },
+    {
+      "id": "CVE-2023-1003-v64",
+      "type": "cve",
+      "text": "Buffer overflow in C++ OpenSSL library (version 64)",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.595271",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1003"
+    },
+    {
+      "id": "CVE-2023-1004-v65",
+      "type": "cve",
+      "text": "Related to Authentication bypass in Spring Security",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.595349",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1004"
+    },
+    {
+      "id": "CVE-2023-1005-v66",
+      "type": "cve",
+      "text": "Path traversal vulnerability in Apache server variant 66",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.595435",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1005"
+    },
+    {
+      "id": "CVE-2023-1006-v67",
+      "type": "cve",
+      "text": "Related to Deserialization attack Java ObjectInputStream",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.595510",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1006"
+    },
+    {
+      "id": "CVE-2023-1007-v68",
+      "type": "cve",
+      "text": "Command injection shell metacharacters Linux (version 68)",
+      "text_length": 57,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.595589",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1007"
+    },
+    {
+      "id": "CVE-2023-1008-v69",
+      "type": "cve",
+      "text": "XXE XML external entity attack parsing (version 69)",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.595668",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1008"
+    },
+    {
+      "id": "CVE-2023-1009-v70",
+      "type": "cve",
+      "text": "CSRF cross-site request forgery token variant 70",
+      "text_length": 48,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.595745",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1009"
+    },
+    {
+      "id": "CVE-2023-1000-v71",
+      "type": "cve",
+      "text": "Related to SQL injection vulnerability in Apache Struts",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.595825",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1000"
+    },
+    {
+      "id": "CVE-2023-1001-v72",
+      "type": "cve",
+      "text": "Cross-site scripting XSS in Django templates (version 72)",
+      "text_length": 57,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.595908",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1001"
+    },
+    {
+      "id": "CVE-2023-1002-v73",
+      "type": "cve",
+      "text": "Related to Remote code execution RCE in PHP WordPress",
+      "text_length": 53,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.595988",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1002"
+    },
+    {
+      "id": "CVE-2023-1003-v74",
+      "type": "cve",
+      "text": "Buffer overflow in C++ OpenSSL library variant 74",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.596070",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1003"
+    },
+    {
+      "id": "CVE-2023-1004-v75",
+      "type": "cve",
+      "text": "Authentication bypass in Spring Security (version 75)",
+      "text_length": 53,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.596148",
+      "embedding_norm": 0.9999999999999998,
+      "original_id": "CVE-2023-1004"
+    },
+    {
+      "id": "CVE-2023-1005-v76",
+      "type": "cve",
+      "text": "Related to Path traversal vulnerability in Apache server",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.596228",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1005"
+    },
+    {
+      "id": "CVE-2023-1006-v77",
+      "type": "cve",
+      "text": "Deserialization attack Java ObjectInputStream variant 77",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.596304",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1006"
+    },
+    {
+      "id": "CVE-2023-1007-v78",
+      "type": "cve",
+      "text": "Related to Command injection shell metacharacters Linux",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.596381",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1007"
+    },
+    {
+      "id": "CVE-2023-1008-v79",
+      "type": "cve",
+      "text": "Related to XXE XML external entity attack parsing",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.596458",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1008"
+    },
+    {
+      "id": "CVE-2023-1009-v80",
+      "type": "cve",
+      "text": "Related to CSRF cross-site request forgery token",
+      "text_length": 48,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.596533",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1009"
+    },
+    {
+      "id": "CVE-2023-1000-v81",
+      "type": "cve",
+      "text": "SQL injection vulnerability in Apache Struts (version 81)",
+      "text_length": 57,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.596623",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1000"
+    },
+    {
+      "id": "CVE-2023-1001-v82",
+      "type": "cve",
+      "text": "Related to Cross-site scripting XSS in Django templates",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.596701",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1001"
+    },
+    {
+      "id": "CVE-2023-1002-v83",
+      "type": "cve",
+      "text": "Remote code execution RCE in PHP WordPress variant 83",
+      "text_length": 53,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.596781",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1002"
+    },
+    {
+      "id": "CVE-2023-1003-v84",
+      "type": "cve",
+      "text": "Related to Buffer overflow in C++ OpenSSL library",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.596861",
+      "embedding_norm": 1.0000000000000002,
+      "original_id": "CVE-2023-1003"
+    },
+    {
+      "id": "CVE-2023-1004-v85",
+      "type": "cve",
+      "text": "Related to Authentication bypass in Spring Security",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.596941",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1004"
+    },
+    {
+      "id": "CVE-2023-1005-v86",
+      "type": "cve",
+      "text": "Related to Path traversal vulnerability in Apache server",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.597018",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1005"
+    },
+    {
+      "id": "CVE-2023-1006-v87",
+      "type": "cve",
+      "text": "Deserialization attack Java ObjectInputStream variant 87",
+      "text_length": 56,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.597096",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1006"
+    },
+    {
+      "id": "CVE-2023-1007-v88",
+      "type": "cve",
+      "text": "Related to Command injection shell metacharacters Linux",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.597174",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CVE-2023-1007"
+    },
+    {
+      "id": "CVE-2023-1008-v89",
+      "type": "cve",
+      "text": "Related to XXE XML external entity attack parsing",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.597251",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1008"
+    },
+    {
+      "id": "CVE-2023-1009-v90",
+      "type": "cve",
+      "text": "CSRF cross-site request forgery token (version 90)",
+      "text_length": 50,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.597328",
+      "embedding_norm": 1.0,
+      "original_id": "CVE-2023-1009"
+    },
+    {
+      "id": "CWE-20",
+      "type": "cwe",
+      "text": "Improper input validation data type check",
+      "text_length": 41,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.597404",
+      "embedding_norm": 1.0
+    },
+    {
+      "id": "CWE-77",
+      "type": "cwe",
+      "text": "Command injection shell metacharacters",
+      "text_length": 38,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.597482",
+      "embedding_norm": 1.0
+    },
+    {
+      "id": "CWE-79",
+      "type": "cwe",
+      "text": "Cross-site scripting XSS browser rendering",
+      "text_length": 42,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.597559",
+      "embedding_norm": 0.9999999999999998
+    },
+    {
+      "id": "CWE-89",
+      "type": "cwe",
+      "text": "SQL injection database query string",
+      "text_length": 35,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.597639",
+      "embedding_norm": 0.9999999999999998
+    },
+    {
+      "id": "CWE-119",
+      "type": "cwe",
+      "text": "Buffer overflow memory bounds checking",
+      "text_length": 38,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.597719",
+      "embedding_norm": 0.9999999999999999
+    },
+    {
+      "id": "CWE-125",
+      "type": "cwe",
+      "text": "Out of bounds read memory access",
+      "text_length": 32,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.597803",
+      "embedding_norm": 1.0
+    },
+    {
+      "id": "CWE-190",
+      "type": "cwe",
+      "text": "Integer overflow arithmetic operation",
+      "text_length": 37,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.597880",
+      "embedding_norm": 0.9999999999999999
+    },
+    {
+      "id": "CWE-287",
+      "type": "cwe",
+      "text": "Improper authentication credentials verification",
+      "text_length": 48,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.597958",
+      "embedding_norm": 1.0
+    },
+    {
+      "id": "CWE-352",
+      "type": "cwe",
+      "text": "CSRF cross-site request forgery token",
+      "text_length": 37,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.598035",
+      "embedding_norm": 1.0
+    },
+    {
+      "id": "CWE-434",
+      "type": "cwe",
+      "text": "Unrestricted file upload dangerous type",
+      "text_length": 39,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.598113",
+      "embedding_norm": 1.0
+    },
+    {
+      "id": "CWE-20-v1",
+      "type": "cwe",
+      "text": "Improper input validation data type check (version 1)",
+      "text_length": 53,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.598194",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-20"
+    },
+    {
+      "id": "CWE-77-v2",
+      "type": "cwe",
+      "text": "Command injection shell metacharacters variant 2",
+      "text_length": 48,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.598275",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CWE-77"
+    },
+    {
+      "id": "CWE-79-v3",
+      "type": "cwe",
+      "text": "Related to Cross-site scripting XSS browser rendering",
+      "text_length": 53,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.598355",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-79"
+    },
+    {
+      "id": "CWE-89-v4",
+      "type": "cwe",
+      "text": "Related to SQL injection database query string",
+      "text_length": 46,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.598436",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-89"
+    },
+    {
+      "id": "CWE-119-v5",
+      "type": "cwe",
+      "text": "Buffer overflow memory bounds checking variant 5",
+      "text_length": 48,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.598517",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CWE-119"
+    },
+    {
+      "id": "CWE-125-v6",
+      "type": "cwe",
+      "text": "Related to Out of bounds read memory access",
+      "text_length": 43,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.598595",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-125"
+    },
+    {
+      "id": "CWE-190-v7",
+      "type": "cwe",
+      "text": "Integer overflow arithmetic operation (version 7)",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.598671",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-190"
+    },
+    {
+      "id": "CWE-287-v8",
+      "type": "cwe",
+      "text": "Related to Improper authentication credentials verification",
+      "text_length": 59,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.598749",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CWE-287"
+    },
+    {
+      "id": "CWE-352-v9",
+      "type": "cwe",
+      "text": "CSRF cross-site request forgery token (version 9)",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.598824",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-352"
+    },
+    {
+      "id": "CWE-434-v10",
+      "type": "cwe",
+      "text": "Unrestricted file upload dangerous type (version 10)",
+      "text_length": 52,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.598902",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-434"
+    },
+    {
+      "id": "CWE-20-v11",
+      "type": "cwe",
+      "text": "Improper input validation data type check (version 11)",
+      "text_length": 54,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.598987",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-20"
+    },
+    {
+      "id": "CWE-77-v12",
+      "type": "cwe",
+      "text": "Command injection shell metacharacters variant 12",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.599065",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CWE-77"
+    },
+    {
+      "id": "CWE-79-v13",
+      "type": "cwe",
+      "text": "Related to Cross-site scripting XSS browser rendering",
+      "text_length": 53,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.599142",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-79"
+    },
+    {
+      "id": "CWE-89-v14",
+      "type": "cwe",
+      "text": "SQL injection database query string (version 14)",
+      "text_length": 48,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.599221",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CWE-89"
+    },
+    {
+      "id": "CWE-119-v15",
+      "type": "cwe",
+      "text": "Buffer overflow memory bounds checking variant 15",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.599303",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CWE-119"
+    },
+    {
+      "id": "CWE-125-v16",
+      "type": "cwe",
+      "text": "Related to Out of bounds read memory access",
+      "text_length": 43,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.599380",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-125"
+    },
+    {
+      "id": "CWE-190-v17",
+      "type": "cwe",
+      "text": "Integer overflow arithmetic operation (version 17)",
+      "text_length": 50,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.599461",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-190"
+    },
+    {
+      "id": "CWE-287-v18",
+      "type": "cwe",
+      "text": "Related to Improper authentication credentials verification",
+      "text_length": 59,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.599542",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CWE-287"
+    },
+    {
+      "id": "CWE-352-v19",
+      "type": "cwe",
+      "text": "CSRF cross-site request forgery token variant 19",
+      "text_length": 48,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.599619",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-352"
+    },
+    {
+      "id": "CWE-434-v20",
+      "type": "cwe",
+      "text": "Unrestricted file upload dangerous type (version 20)",
+      "text_length": 52,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.599697",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-434"
+    },
+    {
+      "id": "CWE-20-v21",
+      "type": "cwe",
+      "text": "Improper input validation data type check variant 21",
+      "text_length": 52,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.599775",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-20"
+    },
+    {
+      "id": "CWE-77-v22",
+      "type": "cwe",
+      "text": "Command injection shell metacharacters (version 22)",
+      "text_length": 51,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.599853",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-77"
+    },
+    {
+      "id": "CWE-79-v23",
+      "type": "cwe",
+      "text": "Cross-site scripting XSS browser rendering variant 23",
+      "text_length": 53,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.599931",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-79"
+    },
+    {
+      "id": "CWE-89-v24",
+      "type": "cwe",
+      "text": "SQL injection database query string variant 24",
+      "text_length": 46,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.600009",
+      "embedding_norm": 1.0000000000000002,
+      "original_id": "CWE-89"
+    },
+    {
+      "id": "CWE-119-v25",
+      "type": "cwe",
+      "text": "Related to Buffer overflow memory bounds checking",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.600088",
+      "embedding_norm": 0.9999999999999998,
+      "original_id": "CWE-119"
+    },
+    {
+      "id": "CWE-125-v26",
+      "type": "cwe",
+      "text": "Out of bounds read memory access variant 26",
+      "text_length": 43,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.600172",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-125"
+    },
+    {
+      "id": "CWE-190-v27",
+      "type": "cwe",
+      "text": "Integer overflow arithmetic operation (version 27)",
+      "text_length": 50,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.600250",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-190"
+    },
+    {
+      "id": "CWE-287-v28",
+      "type": "cwe",
+      "text": "Improper authentication credentials verification (version 28)",
+      "text_length": 61,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.600329",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-287"
+    },
+    {
+      "id": "CWE-352-v29",
+      "type": "cwe",
+      "text": "CSRF cross-site request forgery token variant 29",
+      "text_length": 48,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.600405",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-352"
+    },
+    {
+      "id": "CWE-434-v30",
+      "type": "cwe",
+      "text": "Unrestricted file upload dangerous type variant 30",
+      "text_length": 50,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.600481",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-434"
+    },
+    {
+      "id": "CWE-20-v31",
+      "type": "cwe",
+      "text": "Improper input validation data type check (version 31)",
+      "text_length": 54,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.600559",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-20"
+    },
+    {
+      "id": "CWE-77-v32",
+      "type": "cwe",
+      "text": "Related to Command injection shell metacharacters",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.600636",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-77"
+    },
+    {
+      "id": "CWE-79-v33",
+      "type": "cwe",
+      "text": "Cross-site scripting XSS browser rendering (version 33)",
+      "text_length": 55,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.600717",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CWE-79"
+    },
+    {
+      "id": "CWE-89-v34",
+      "type": "cwe",
+      "text": "SQL injection database query string (version 34)",
+      "text_length": 48,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.600797",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CWE-89"
+    },
+    {
+      "id": "CWE-119-v35",
+      "type": "cwe",
+      "text": "Buffer overflow memory bounds checking variant 35",
+      "text_length": 49,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.600877",
+      "embedding_norm": 1.0000000000000002,
+      "original_id": "CWE-119"
+    },
+    {
+      "id": "CWE-125-v36",
+      "type": "cwe",
+      "text": "Related to Out of bounds read memory access",
+      "text_length": 43,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.600954",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-125"
+    },
+    {
+      "id": "CWE-190-v37",
+      "type": "cwe",
+      "text": "Integer overflow arithmetic operation (version 37)",
+      "text_length": 50,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.601034",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-190"
+    },
+    {
+      "id": "CWE-287-v38",
+      "type": "cwe",
+      "text": "Improper authentication credentials verification (version 38)",
+      "text_length": 61,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.601112",
+      "embedding_norm": 0.9999999999999999,
+      "original_id": "CWE-287"
+    },
+    {
+      "id": "CWE-352-v39",
+      "type": "cwe",
+      "text": "CSRF cross-site request forgery token (version 39)",
+      "text_length": 50,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.601188",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-352"
+    },
+    {
+      "id": "CWE-434-v40",
+      "type": "cwe",
+      "text": "Unrestricted file upload dangerous type variant 40",
+      "text_length": 50,
+      "embedding_index": 0,
+      "created_at": "2025-10-26T08:21:37.601264",
+      "embedding_norm": 1.0,
+      "original_id": "CWE-434"
+    }
+  ]
+}
