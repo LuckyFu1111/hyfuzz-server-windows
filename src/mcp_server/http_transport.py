@@ -1,4 +1,4 @@
-   """
+"""
 HyFuzz MCP Server - HTTP Transport Layer
 
 This module implements the HTTP transport layer for the MCP (Model Context Protocol) server.
