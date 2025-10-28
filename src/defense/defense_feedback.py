@@ -29,6 +29,14 @@ class DefenseFeedbackGenerator:
                 metadata={"rationale": result.rationale},
             )
         )
+        if result.risk_score:
+            feedback.append(
+                DefenseFeedback(
+                    category="risk",
+                    message=f"Calculated defense risk score: {result.risk_score:.2f}",
+                    metadata={"risk_score": f"{result.risk_score:.3f}"},
+                )
+            )
         for action in result.actions:
             feedback.append(
                 DefenseFeedback(

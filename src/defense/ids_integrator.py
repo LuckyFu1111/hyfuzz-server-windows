@@ -31,6 +31,16 @@ class IDSIntegrator(BaseDefenseModule):
         action = DefenseAction(
             name="ids_alert",
             description=alert.get("description", "IDS detected suspicious activity"),
+            metadata={
+                "signature": alert.get("signature_id"),
+                "sensor": alert.get("sensor"),
+                "cve_id": alert.get("cve_id"),
+            },
+        )
+
+        if cve_id := alert.get("cve_id"):
+            signal.event.tag(cve_id)
+
             metadata={"signature": alert.get("signature_id"), "sensor": alert.get("sensor")},
         )
 

@@ -6,6 +6,11 @@ from .waf_integrator import WAFIntegrator
 from .ids_integrator import IDSIntegrator
 from .log_aggregator import DefenseLogAggregator
 from .defense_analyzer import DefenseAnalyzer
+from .orchestrator import DefenseOrchestrator
+from .threat_context import ThreatContextBuilder
+
+__all__ = [
+    "DefenseOrchestrator",
 
 __all__ = [
     "DefenseEvent",
@@ -16,6 +21,7 @@ __all__ = [
     "IDSIntegrator",
     "DefenseLogAggregator",
     "DefenseAnalyzer",
+    "ThreatContextBuilder",
 ]
 
 

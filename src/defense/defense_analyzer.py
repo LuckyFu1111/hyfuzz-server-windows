@@ -16,6 +16,7 @@ class AnalyzerReport:
     severity_distribution: Dict[str, int] = field(default_factory=dict)
     average_confidence: float = 0.0
     verdict_counts: Dict[str, int] = field(default_factory=dict)
+    average_risk: float = 0.0
 
 
 class DefenseAnalyzer:
@@ -24,11 +25,16 @@ class DefenseAnalyzer:
     def build_report(self, results: Iterable[DefenseResult]) -> AnalyzerReport:
         report = AnalyzerReport()
         confidences: List[float] = []
+        risks: List[float] = []
 
         for result in results:
             self._increment(report.severity_distribution, result.signal.severity)
             self._increment(report.verdict_counts, result.verdict)
             confidences.append(result.signal.confidence)
+            risks.append(result.risk_score)
+
+        report.average_confidence = mean(confidences) if confidences else 0.0
+        report.average_risk = mean(risks) if risks else 0.0
 
         report.average_confidence = mean(confidences) if confidences else 0.0
         return report

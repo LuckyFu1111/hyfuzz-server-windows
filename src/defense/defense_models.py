@@ -37,6 +37,16 @@ class DefenseSignal:
         self.severity = new_severity
         self.notes = reason
 
+    def clone(self) -> "DefenseSignal":
+        """Return a shallow copy of the signal for isolated processing."""
+
+        return DefenseSignal(
+            event=self.event,
+            severity=self.severity,
+            confidence=self.confidence,
+            notes=self.notes,
+        )
+
 
 @dataclass
 class DefenseAction:
@@ -60,10 +70,13 @@ class DefenseResult:
     actions: List[DefenseAction]
     verdict: str
     rationale: str
+    risk_score: float = 0.0
+    context: Dict[str, Any] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert the result into a serializable dictionary."""
 
+        payload: Dict[str, Any] = {
         return {
             "signal": {
                 "source": self.signal.event.source,
@@ -75,6 +88,11 @@ class DefenseResult:
             "actions": [action.to_summary() for action in self.actions],
             "verdict": self.verdict,
             "rationale": self.rationale,
+            "risk_score": round(self.risk_score, 3),
+        }
+        if self.context:
+            payload["context"] = self.context
+        return payload
         }
 
 

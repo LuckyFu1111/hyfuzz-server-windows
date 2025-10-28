@@ -1,0 +1,19 @@
+# HyFuzz defense orchestration defaults
+#
+# This file is consumed by ``DefenseOrchestrator`` to bootstrap the defense
+# pipeline on Windows deployments. It can be extended with custom integrators by
+# adding additional entries to the ``integrators`` section.
+
+integrators:
+  waf:
+    type: waf
+    options:
+      blocklist:
+        - CVE-2020-93810
+        - sql_injection
+  ids:
+    type: ids
+
+defaults:
+  severity: info
+  confidence: 0.6

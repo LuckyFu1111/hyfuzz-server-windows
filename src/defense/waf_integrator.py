@@ -25,6 +25,8 @@ class WAFIntegrator(BaseDefenseModule):
 
         if reason in self.blocklist:
             signal.escalate("high", f"Blocked by custom rule for {reason}")
+            if reason.upper().startswith("CVE-"):
+                signal.event.tag(reason)
 
         action = DefenseAction(
             name="waf_block" if waf_status.lower() in WAF_BLOCK_TAGS else "waf_monitor",
