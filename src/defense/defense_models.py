@@ -77,6 +77,7 @@ class DefenseResult:
         """Convert the result into a serializable dictionary."""
 
         payload: Dict[str, Any] = {
+        return {
             "signal": {
                 "source": self.signal.event.source,
                 "severity": self.signal.severity,
@@ -92,6 +93,7 @@ class DefenseResult:
         if self.context:
             payload["context"] = self.context
         return payload
+        }
 
 
 if __name__ == "__main__":

@@ -41,6 +41,9 @@ class IDSIntegrator(BaseDefenseModule):
         if cve_id := alert.get("cve_id"):
             signal.event.tag(cve_id)
 
+            metadata={"signature": alert.get("signature_id"), "sensor": alert.get("sensor")},
+        )
+
         verdict = "investigate" if mapped_severity in {"medium", "high", "critical"} else "monitor"
         rationale = f"IDS signature {alert.get('signature_id', 'unknown')} triggered"
         return DefenseResult(signal=signal, actions=[action], verdict=verdict, rationale=rationale)

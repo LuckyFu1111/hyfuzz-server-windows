@@ -12,6 +12,10 @@ from .evasion_detector import EvasionDetector
 from .defense_analyzer import DefenseAnalyzer
 from .defense_feedback import DefenseFeedbackGenerator
 from .threat_context import ThreatContextBuilder
+from typing import Dict, Iterable, List, Optional
+import logging
+
+from .defense_models import DefenseEvent, DefenseResult, DefenseSignal, DefenseAction
 
 
 class DefenseIntegrator:
@@ -38,6 +42,10 @@ class DefenseIntegrator:
         self.analyzer = analyzer or DefenseAnalyzer()
         self.feedback_generator = feedback_generator or DefenseFeedbackGenerator()
         self.context_builder = context_builder or ThreatContextBuilder()
+    def __init__(self) -> None:
+        self._integrators: Dict[str, "BaseDefenseModule"] = {}
+        self._history: Dict[str, List[DefenseSignal]] = defaultdict(list)
+        self.logger = logging.getLogger(__name__)
 
     def register_integrator(self, name: str, integrator: "BaseDefenseModule") -> None:
         """Register a new defense module under a name."""
@@ -83,6 +91,14 @@ class DefenseIntegrator:
                 if context:
                     contexts.append(context)
                 signal.event.tag(*module_signal.event.tags)
+        actions: List[DefenseAction] = []
+        rationales: List[str] = []
+
+        for name, integrator in self._integrators.items():
+            result = integrator.handle_signal(signal)
+            if result:
+                actions.extend(result.actions)
+                rationales.append(result.rationale)
 
         if not actions:
             self.logger.debug("No actions produced for signal from %s", signal.event.source)
@@ -130,6 +146,15 @@ class DefenseIntegrator:
             except Exception:  # pragma: no cover - defensive logging
                 self.logger.exception("Defense subscriber raised an exception")
 
+        verdict = "monitor" if signal.severity == "info" else "investigate"
+        rationale = " | ".join(rationales) if rationales else "Aggregated defense response."
+        aggregated_result = DefenseResult(
+            signal=signal,
+            actions=actions,
+            verdict=verdict,
+            rationale=rationale,
+        )
+        self.logger.debug("Aggregated result: %s", aggregated_result.to_dict())
         return aggregated_result
 
     def recent_signals(self, source: str, limit: int = 10) -> Iterable[DefenseSignal]:
@@ -205,6 +230,7 @@ if __name__ == "__main__":
     integrator = DefenseIntegrator()
     integrator.register_integrator("echo", EchoModule())
     event = DefenseEvent(source="echo", payload={"demo": True, "cve_id": "CVE-2020-93810"})
+    event = DefenseEvent(source="echo", payload={"demo": True})
     signal = DefenseSignal(event=event, severity="info", confidence=0.9)
     result = integrator.process_signal(signal)
     print(result.to_dict() if result else "No result")

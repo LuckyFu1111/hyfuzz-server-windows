@@ -11,6 +11,8 @@ from .threat_context import ThreatContextBuilder
 
 __all__ = [
     "DefenseOrchestrator",
+
+__all__ = [
     "DefenseEvent",
     "DefenseResult",
     "DefenseSignal",

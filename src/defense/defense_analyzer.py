@@ -35,6 +35,8 @@ class DefenseAnalyzer:
 
         report.average_confidence = mean(confidences) if confidences else 0.0
         report.average_risk = mean(risks) if risks else 0.0
+
+        report.average_confidence = mean(confidences) if confidences else 0.0
         return report
 
     @staticmethod
