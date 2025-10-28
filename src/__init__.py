@@ -139,7 +139,7 @@ try:
     from src.mcp_server.message_handler import MessageHandler
     from src.mcp_server.capability_manager import CapabilityManager
     from src.mcp_server.session_manager import SessionManager
-except ImportError as e:
+except Exception as e:  # pragma: no cover - defensive import wrapper
     _logger.warning(f"MCP Server components import failed: {e}")
 
 # ============================================================================
@@ -164,7 +164,7 @@ try:
     from src.llm.cache_manager import CacheManager
     from src.llm.token_counter import TokenCounter
     from src.llm.response_parser import ResponseParser
-except ImportError as e:
+except Exception as e:  # pragma: no cover - defensive import wrapper
     _logger.warning(f"LLM Service components import failed: {e}")
 
 # ============================================================================
@@ -183,7 +183,7 @@ try:
     from src.knowledge.cwe_repository import CWERepository
     from src.knowledge.cve_repository import CVERepository
     from src.knowledge.vulnerability_db import VulnerabilityDB
-except ImportError as e:
+except Exception as e:  # pragma: no cover - defensive import wrapper
     _logger.warning(f"Knowledge base components import failed: {e}")
 
 # ============================================================================
@@ -196,7 +196,7 @@ ConfigLoader: Optional[Type] = None
 try:
     from src.config.settings import Settings
     from src.config.config_loader import ConfigLoader
-except ImportError as e:
+except Exception as e:  # pragma: no cover - defensive import wrapper
     _logger.warning(f"Configuration components import failed: {e}")
 
 # ============================================================================
