@@ -2,26 +2,24 @@
 
 from __future__ import annotations
 
+import logging
 from collections import defaultdict
 from typing import Callable, Dict, Iterable, List, Optional, Sequence
-import logging
 
-from .defense_models import DefenseEvent, DefenseResult, DefenseSignal, DefenseAction
-from .log_aggregator import DefenseLogAggregator
-from .evasion_detector import EvasionDetector
 from .defense_analyzer import DefenseAnalyzer
-from .defense_feedback import DefenseFeedbackGenerator
+from .defense_feedback import DefenseFeedback, DefenseFeedbackGenerator
+from .defense_models import DefenseAction, DefenseEvent, DefenseResult, DefenseSignal
+from .evasion_detector import EvasionDetector
+from .log_aggregator import DefenseLogAggregator
 from .threat_context import ThreatContextBuilder
-from typing import Dict, Iterable, List, Optional
-import logging
-
-from .defense_models import DefenseEvent, DefenseResult, DefenseSignal, DefenseAction
 
 
 class DefenseIntegrator:
-    """Integrates signals from different defense layers."""
+    """Integrates signals originating from multiple defense layers."""
 
     SEVERITY_ORDER = ["info", "low", "medium", "high", "critical"]
+    _MAX_HISTORY = 200
+    _MAX_RESULTS = 1000
 
     def __init__(
         self,
@@ -36,43 +34,48 @@ class DefenseIntegrator:
         self._history: Dict[str, List[DefenseSignal]] = defaultdict(list)
         self._result_history: List[DefenseResult] = []
         self._subscribers: List[Callable[[DefenseResult], None]] = []
+
         self.logger = logging.getLogger(__name__)
         self.log_aggregator = log_aggregator or DefenseLogAggregator()
         self.evasion_detector = evasion_detector or EvasionDetector()
         self.analyzer = analyzer or DefenseAnalyzer()
         self.feedback_generator = feedback_generator or DefenseFeedbackGenerator()
         self.context_builder = context_builder or ThreatContextBuilder()
-    def __init__(self) -> None:
-        self._integrators: Dict[str, "BaseDefenseModule"] = {}
-        self._history: Dict[str, List[DefenseSignal]] = defaultdict(list)
-        self.logger = logging.getLogger(__name__)
 
+    # ------------------------------------------------------------------
+    # Registration helpers
+    # ------------------------------------------------------------------
     def register_integrator(self, name: str, integrator: "BaseDefenseModule") -> None:
-        """Register a new defense module under a name."""
+        """Register a defense module under the supplied *name*."""
 
-        self.logger.debug("Registering integrator %s", name)
+        self.logger.debug("Registering defense integrator: %s", name)
         self._integrators[name] = integrator
 
     def list_integrators(self) -> List[str]:
-        """List names of registered integrators."""
+        """Return the names of the currently registered integrators."""
 
         return sorted(self._integrators)
 
     def subscribe(self, callback: Callable[[DefenseResult], None]) -> None:
-        """Register a callback that receives aggregated defense results."""
+        """Register a subscriber that will receive aggregated results."""
 
         self._subscribers.append(callback)
 
+    # ------------------------------------------------------------------
+    # Processing helpers
+    # ------------------------------------------------------------------
     def process_signal(self, signal: DefenseSignal) -> Optional[DefenseResult]:
-        """Dispatch the signal to all registered integrators."""
+        """Dispatch *signal* to all integrators and aggregate their responses."""
 
-        self.logger.debug(
-            "Processing signal from %s with severity %s",
-            signal.event.source,
-            signal.severity,
-        )
-        self._history[signal.event.source].append(signal)
+        source = signal.event.source
+        self.logger.debug("Processing defense signal from source %s", source)
+
+        self._history[source].append(signal.clone())
+        if len(self._history[source]) > self._MAX_HISTORY:
+            self._history[source] = self._history[source][-self._MAX_HISTORY :]
+
         self.log_aggregator.ingest(signal.event)
+
         actions: List[DefenseAction] = []
         rationales: List[str] = []
         severity_scores: List[float] = [self._severity_to_score(signal.severity)]
@@ -81,27 +84,29 @@ class DefenseIntegrator:
 
         for name, integrator in self._integrators.items():
             module_signal = signal.clone()
-            result = integrator.handle_signal(module_signal)
-            if result:
-                actions.extend(result.actions)
-                rationales.append(f"{name}: {result.rationale}")
-                severity_scores.append(self._severity_to_score(module_signal.severity))
-                confidences.append(module_signal.confidence)
-                context = self.context_builder.build_context(module_signal)
-                if context:
-                    contexts.append(context)
-                signal.event.tag(*module_signal.event.tags)
-        actions: List[DefenseAction] = []
-        rationales: List[str] = []
+            try:
+                result = integrator.handle_signal(module_signal)
+            except Exception:  # pragma: no cover - defensive logging
+                self.logger.exception("Defense integrator '%s' raised an exception", name)
+                continue
 
-        for name, integrator in self._integrators.items():
-            result = integrator.handle_signal(signal)
-            if result:
-                actions.extend(result.actions)
-                rationales.append(result.rationale)
+            if not result:
+                continue
+
+            actions.extend(result.actions)
+            rationales.append(f"{name}: {result.rationale}")
+            severity_scores.append(self._severity_to_score(module_signal.severity))
+            confidences.append(module_signal.confidence)
+
+            context = self.context_builder.build_context(module_signal)
+            if context:
+                contexts.append(context)
+
+            if module_signal.event.tags:
+                signal.event.tag(*module_signal.event.tags)
 
         if not actions:
-            self.logger.debug("No actions produced for signal from %s", signal.event.source)
+            self.logger.debug("No defense actions produced for source %s", source)
             return None
 
         aggregated_signal = signal.clone()
@@ -109,18 +114,15 @@ class DefenseIntegrator:
         aggregated_signal.confidence = max(confidences)
 
         evasion_score = self.evasion_detector.score(aggregated_signal)
-        merged_context = self.context_builder.merge_contexts(contexts)
+        merged_context = self.context_builder.merge_contexts(contexts) if contexts else {}
         if evasion_score:
             merged_context.setdefault("analytics", {})["evasion_score"] = round(evasion_score, 3)
 
-        knowledge_score = merged_context.get("analytics", {}).get("knowledge_risk", 0.0)
+        knowledge_score = float(merged_context.get("analytics", {}).get("knowledge_risk", 0.0))
         risk_score = self._calculate_risk(max(severity_scores), knowledge_score, evasion_score)
         verdict = self._verdict_from_risk(risk_score)
-        rationale_parts = rationales or ["Aggregated defense response."]
-        if merged_context.get("cves"):
-            tracked = ", ".join(item["cve_id"] for item in merged_context["cves"])
-            rationale_parts.append(f"Related CVEs: {tracked}")
-        rationale = " | ".join(rationale_parts)
+
+        rationale = " | ".join(rationales) if rationales else "Aggregated defense response."
 
         aggregated_result = DefenseResult(
             signal=aggregated_signal,
@@ -128,17 +130,19 @@ class DefenseIntegrator:
             verdict=verdict,
             rationale=rationale,
             risk_score=risk_score,
-            context=merged_context,
+            context=merged_context or {},
         )
+
         self._result_history.append(aggregated_result)
-        summary = self.analyzer.build_report(self._result_history[-20:])
-        aggregated_result.context.setdefault("analytics", {})["average_risk_window"] = round(
-            summary.average_risk, 3
-        )
-        aggregated_result.context["analytics"]["average_confidence_window"] = round(
-            summary.average_confidence, 3
-        )
-        self.logger.debug("Aggregated result: %s", aggregated_result.to_dict())
+        if len(self._result_history) > self._MAX_RESULTS:
+            self._result_history = self._result_history[-self._MAX_RESULTS :]
+
+        summary = self.analyzer.build_report(self._result_history[-50:])
+        analytics = aggregated_result.context.setdefault("analytics", {})
+        analytics["average_risk_window"] = round(summary.average_risk, 3)
+        analytics["average_confidence_window"] = round(summary.average_confidence, 3)
+
+        self.logger.debug("Aggregated defense result: %s", aggregated_result.to_dict())
 
         for callback in self._subscribers:
             try:
@@ -146,31 +150,10 @@ class DefenseIntegrator:
             except Exception:  # pragma: no cover - defensive logging
                 self.logger.exception("Defense subscriber raised an exception")
 
-        verdict = "monitor" if signal.severity == "info" else "investigate"
-        rationale = " | ".join(rationales) if rationales else "Aggregated defense response."
-        aggregated_result = DefenseResult(
-            signal=signal,
-            actions=actions,
-            verdict=verdict,
-            rationale=rationale,
-        )
-        self.logger.debug("Aggregated result: %s", aggregated_result.to_dict())
         return aggregated_result
 
-    def recent_signals(self, source: str, limit: int = 10) -> Iterable[DefenseSignal]:
-        """Retrieve recent signals for a given source."""
-
-        return self._history[source][-limit:]
-
-    def recent_results(self, limit: int = 10) -> Sequence[DefenseResult]:
-        """Return the most recent aggregated defense results."""
-
-        if limit <= 0:
-            return []
-        return self._result_history[-limit:]
-
     def process_batch(self, signals: Iterable[DefenseSignal]) -> List[DefenseResult]:
-        """Process a batch of signals and return aggregated results."""
+        """Process a batch of *signals* and return all produced results."""
 
         results: List[DefenseResult] = []
         for signal in signals:
@@ -179,6 +162,34 @@ class DefenseIntegrator:
                 results.append(result)
         return results
 
+    # ------------------------------------------------------------------
+    # Introspection helpers
+    # ------------------------------------------------------------------
+    def recent_signals(self, source: str, limit: int = 10) -> Iterable[DefenseSignal]:
+        """Return the most recent *limit* signals for *source*."""
+
+        if limit <= 0:
+            return []
+        return self._history[source][-limit:]
+
+    def recent_results(self, limit: int = 10) -> Sequence[DefenseResult]:
+        """Return the latest *limit* aggregated results."""
+
+        if limit <= 0:
+            return []
+        return self._result_history[-limit:]
+
+    # ------------------------------------------------------------------
+    # Feedback helpers
+    # ------------------------------------------------------------------
+    def generate_feedback(self, result: DefenseResult) -> List[DefenseFeedback]:
+        """Generate high-level feedback for downstream systems."""
+
+        return self.feedback_generator.generate(result)
+
+    # ------------------------------------------------------------------
+    # Utility helpers
+    # ------------------------------------------------------------------
     @classmethod
     def _severity_to_score(cls, severity: str) -> float:
         try:
@@ -215,22 +226,26 @@ class DefenseIntegrator:
 
 
 class BaseDefenseModule:
-    """Interface that all defense modules should follow."""
+    """Interface implemented by all defense modules."""
 
-    def handle_signal(self, signal: DefenseSignal) -> Optional[DefenseResult]:
+    def handle_signal(self, signal: DefenseSignal) -> Optional[DefenseResult]:  # pragma: no cover - interface
         raise NotImplementedError
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover - simple smoke test
     class EchoModule(BaseDefenseModule):
         def handle_signal(self, signal: DefenseSignal) -> Optional[DefenseResult]:
             action = DefenseAction(name="echo", description=f"Received {signal.severity} event")
-            return DefenseResult(signal=signal, actions=[action], verdict="log", rationale="Echo module test")
+            return DefenseResult(
+                signal=signal,
+                actions=[action],
+                verdict="log",
+                rationale="Echo module test",
+            )
 
     integrator = DefenseIntegrator()
     integrator.register_integrator("echo", EchoModule())
-    event = DefenseEvent(source="echo", payload={"demo": True, "cve_id": "CVE-2020-93810"})
-    event = DefenseEvent(source="echo", payload={"demo": True})
-    signal = DefenseSignal(event=event, severity="info", confidence=0.9)
-    result = integrator.process_signal(signal)
-    print(result.to_dict() if result else "No result")
+    demo_event = DefenseEvent(source="echo", payload={"demo": True})
+    demo_signal = DefenseSignal(event=demo_event, severity="info", confidence=0.9)
+    demo_result = integrator.process_signal(demo_signal)
+    print(demo_result.to_dict() if demo_result else "No result")

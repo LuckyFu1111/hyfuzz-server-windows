@@ -8,6 +8,14 @@ from typing import Dict, Iterable, List
 
 from .defense_models import DefenseResult, DefenseSignal
 
+_SEVERITY_WEIGHTS = {
+    "critical": 4,
+    "high": 3,
+    "medium": 2,
+    "low": 1,
+    "info": 0,
+}
+
 
 @dataclass
 class AnalyzerReport:
@@ -35,8 +43,6 @@ class DefenseAnalyzer:
 
         report.average_confidence = mean(confidences) if confidences else 0.0
         report.average_risk = mean(risks) if risks else 0.0
-
-        report.average_confidence = mean(confidences) if confidences else 0.0
         return report
 
     @staticmethod
@@ -44,26 +50,34 @@ class DefenseAnalyzer:
         counter[key] = counter.get(key, 0) + 1
 
     def rank_signals(self, signals: Iterable[DefenseSignal]) -> List[DefenseSignal]:
-        return sorted(signals, key=lambda signal: (signal.severity, signal.confidence), reverse=True)
+        """Order *signals* by severity and confidence."""
+
+        def _score(signal: DefenseSignal) -> tuple[int, float]:
+            severity_score = _SEVERITY_WEIGHTS.get(signal.severity.lower(), -1)
+            return severity_score, signal.confidence
+
+        return sorted(signals, key=_score, reverse=True)
 
 
-if __name__ == "__main__":
-    from .defense_models import DefenseEvent, DefenseAction
+if __name__ == "__main__":  # pragma: no cover - illustrative example
+    from .defense_models import DefenseAction, DefenseEvent
 
     analyzer = DefenseAnalyzer()
-    signals = [
+    results = [
         DefenseResult(
             signal=DefenseSignal(event=DefenseEvent(source="ids", payload={}), severity="high", confidence=0.8),
             actions=[DefenseAction(name="block", description="Blocked IP")],
             verdict="block",
             rationale="High severity alert",
+            risk_score=0.9,
         ),
         DefenseResult(
             signal=DefenseSignal(event=DefenseEvent(source="waf", payload={}), severity="medium", confidence=0.6),
             actions=[DefenseAction(name="monitor", description="Monitoring")],
             verdict="monitor",
             rationale="WAF allowed but flagged",
+            risk_score=0.55,
         ),
     ]
-    report = analyzer.build_report(signals)
+    report = analyzer.build_report(results)
     print(report)

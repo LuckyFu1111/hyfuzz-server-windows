@@ -1,31 +1,29 @@
-"""Defense integration package for HyFuzz server."""
+"""Defense subsystem public interface."""
 
-from .defense_models import DefenseEvent, DefenseResult, DefenseSignal
+from .defense_analyzer import DefenseAnalyzer
 from .defense_integrator import DefenseIntegrator
-from .waf_integrator import WAFIntegrator
+from .defense_models import DefenseEvent, DefenseResult, DefenseSignal
 from .ids_integrator import IDSIntegrator
 from .log_aggregator import DefenseLogAggregator
-from .defense_analyzer import DefenseAnalyzer
 from .orchestrator import DefenseOrchestrator
 from .threat_context import ThreatContextBuilder
+from .waf_integrator import WAFIntegrator
 
 __all__ = [
-    "DefenseOrchestrator",
-
-__all__ = [
+    "DefenseAnalyzer",
     "DefenseEvent",
+    "DefenseIntegrator",
+    "DefenseLogAggregator",
+    "DefenseOrchestrator",
     "DefenseResult",
     "DefenseSignal",
-    "DefenseIntegrator",
-    "WAFIntegrator",
     "IDSIntegrator",
-    "DefenseLogAggregator",
-    "DefenseAnalyzer",
     "ThreatContextBuilder",
+    "WAFIntegrator",
 ]
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover - illustrative example
     integrator = DefenseIntegrator()
     integrator.register_integrator("waf", WAFIntegrator())
     integrator.register_integrator("ids", IDSIntegrator())
