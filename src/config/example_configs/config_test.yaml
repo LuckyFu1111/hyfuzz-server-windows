@@ -1,0 +1,52 @@
+# ============================================================================
+# HyFuzz MCP Server - Test Configuration Example
+# ============================================================================
+# Optimised for automated testing, keeping external integrations deterministic
+# and fast.
+# ============================================================================
+
+environment: "testing"
+
+security:
+  auth:
+    enabled: false
+
+server:
+  host: "127.0.0.1"
+  port: 5200
+  debug: true
+  reload: false
+  workers: 1
+  request_timeout: 10
+  response_timeout: 15
+
+logging:
+  level: "WARNING"
+  console:
+    enabled: true
+  file:
+    enabled: false
+
+llm:
+  provider: "mock"
+  primary_model: "unit-test"
+  timeout: 10
+  retries: 1
+  cache_enabled: false
+
+fuzzing:
+  enabled: true
+  max_mutations: 32
+  mutation_depth: 1
+  report_interval: 1
+
+judge:
+  model: "stub"
+  temperature: 0.1
+  caching:
+    enabled: false
+
+monitoring:
+  metrics:
+    enabled: false
+

@@ -1,0 +1,32 @@
+# ============================================================================
+# HyFuzz MCP Server - Conservative Fuzzing Profile
+# ============================================================================
+# Tuned for long-running campaigns where target stability must be preserved.
+# ============================================================================
+
+environment: "fuzzing-conservative"
+
+fuzzing:
+  enabled: true
+  mode: "conservative"
+  protocols:
+    - coap
+    - modbus
+  max_mutations: 128
+  mutation_depth: 2
+  batch_size: 8
+  timeout: 10
+  cache_results: true
+  replay_failures: false
+
+learning:
+  feedback_loop:
+    enabled: true
+    min_confidence: 0.8
+    adjust_after_batches: 4
+
+monitoring:
+  metrics:
+    enabled: true
+    export_interval: 15
+

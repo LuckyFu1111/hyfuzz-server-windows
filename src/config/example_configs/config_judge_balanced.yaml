@@ -1,0 +1,36 @@
+# ============================================================================
+# HyFuzz MCP Server - Balanced Judge Profile
+# ============================================================================
+# Focuses on an even weighting between payload efficacy, defense response, and
+# contextual risk insights.
+# ============================================================================
+
+environment: "judge-balanced"
+
+judge:
+  model: "mistral"
+  temperature: 0.35
+  max_tokens: 896
+  reasoning:
+    chain_of_thought: true
+    max_steps: 8
+  scoring:
+    base_weight: 0.5
+    defense_weight: 0.3
+    context_weight: 0.2
+  caching:
+    enabled: true
+    ttl_seconds: 600
+
+feedback:
+  strategies:
+    - "risk_summary"
+    - "defense_alignment"
+    - "mutation_suggestions"
+
+monitoring:
+  metrics:
+    enabled: true
+    export_interval: 30
+    track_judge_insights: true
+
