@@ -1,31 +1,40 @@
-# HyFuzz Server - Windows MCP Server
+# HyFuzz Server – Windows MCP Orchestrator
 
-A hybrid AI-enhanced vulnerability detection framework server component for the HyFuzz system. This Windows-based MCP (Model Context Protocol) server integrates Large Language Models (LLMs) with structured vulnerability knowledge to enable intelligent fuzzing and exploit generation.
+> Phase 3 (Stateful Defense-Aware Fuzzing) • Version 2.0.0 • Windows build
+
+HyFuzz Server is the Windows-hosted brain of the HyFuzz distributed fuzzing ecosystem. The service exposes a Model Context Protocol (MCP) façade that coordinates Large Language Model (LLM) reasoning, knowledge fusion, adaptive fuzzing strategies, and defense-aware analytics before forwarding actionable payloads to the Ubuntu client executors.
 
 **Repository:** `hyfuzz-server-windows`  
-**Platform:** Windows 10/11  
-**Language:** Python 3.9+  
-**Status:** Phase 3 (STATEFUL) Development
+**Primary Platform:** Windows 10/11 (PowerShell + Python 3.9+)  
+**Secondary Targets:** Windows Server 2019/2022, WSL2, or Windows-hosted VirtualBox  
+**Lifecycle State:** Phase 3 complete (defense, multi-protocol, monitoring, and reporting)  
+**LLM Stack:** Ollama (default) with optional OpenAI/Azure fallbacks
 
 ---
 
 ## 📋 Table of Contents
 
 - [Overview](#overview)
+- [Phase 3 Deliverables](#phase-3-deliverables)
 - [Features](#features)
 - [System Requirements](#system-requirements)
 - [Installation](#installation)
 - [Quick Start](#quick-start)
+- [Operational Playbooks](#operational-playbooks)
 - [Configuration](#configuration)
 - [Architecture](#architecture)
+- [Ecosystem Topology](#ecosystem-topology)
 - [API Reference](#api-reference)
-- [LLM Integration](#llm-integration)
+- [LLM Integration](#-llm-integration)
 - [Knowledge Management](#knowledge-management)
 - [Development Guide](#development-guide)
 - [Testing](#testing)
 - [Troubleshooting](#troubleshooting)
+- [Documentation Map](#documentation-map)
 - [Contributing](#contributing)
 - [License](#license)
+- [Security Notice](#security-notice)
+- [Support](#support)
 
 ---
 
@@ -59,6 +68,23 @@ The server coordinates with the Ubuntu MCP Client to execute payloads against Co
 │   Data Models & Configuration           │
 └─────────────────────────────────────────┘
 ```
+
+---
+
+## 🧱 Phase 3 Deliverables
+
+Phase 3 finalises the Windows server feature set described in the project tree snapshot. The following subsystems are now implemented and wired into the primary MCP orchestration flow:
+
+| Area | Key Modules | Highlights |
+| ---- | ----------- | ---------- |
+| Defense Intelligence | `src/defense/` (integrator, analyzers, feedback) | Correlates WAF/IDS outputs with fuzzing context and drives evasion-aware scoring. |
+| Protocol Orchestration | `src/protocols/` registry + handlers | Unified factory for CoAP, Modbus, MQTT, HTTP, gRPC, and JSON-RPC pipelines with validation helpers. |
+| Distributed Tasking | `src/tasks/` queue, scheduler, worker manager | Celery-ready abstraction for coordinating multiple Ubuntu clients and replay campaigns. |
+| Monitoring & Telemetry | `src/monitoring/`, `src/dashboard/`, `src/reporting/` | Prometheus exporters, Grafana dashboard hooks, automated PDF/HTML report generators. |
+| Security & Governance | `src/auth/`, `src/resources/`, `src/notifications/` | RBAC, API key lifecycle, quota enforcement, and multi-channel alerting. |
+| Persistence & Ops | `src/migrations/`, `src/backup/`, `docker/`, `scripts/` | Database migrations, snapshot management, container entrypoints, and maintenance scripts. |
+
+Refer to [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for deeper component-level diagrams and dataflow explanations.
 
 ---
 
@@ -266,6 +292,61 @@ python scripts/test_mcp.py
 
 ---
 
+## 🛠️ Operational Playbooks
+
+### Daily Operations (PowerShell)
+
+```powershell
+# 1. Launch the server and background workers
+$env:PYTHONPATH = (Resolve-Path .).Path
+venv\Scripts\Activate.ps1
+python scripts\start_server.py
+
+# 2. Tail the aggregated logs in a separate terminal
+Get-Content .\logs\server.log -Wait
+
+# 3. (Optional) Start the dashboard for real-time metrics
+python scripts\start_dashboard.py --host 0.0.0.0 --port 8080
+```
+
+### Distributed Campaign Rollout
+
+```powershell
+# Start Celery-style task workers on the Windows host
+python scripts\start_workers.py --pool threads --concurrency 8
+
+# Trigger a distributed fuzzing campaign
+python scripts\run_fuzzing_campaign.py ^
+  --strategy adaptive ^
+  --targets config\example_configs\config_distributed.yaml ^
+  --sync-results
+
+# Monitor queued jobs and client heartbeats
+python scripts\monitor_tasks.py --interval 10
+```
+
+### Maintenance & Recovery
+
+```powershell
+# Rotate logs older than 14 days
+python scripts\maintenance\rotate_logs.py --retention-days 14
+
+# Snapshot configuration, database, and results artifacts
+python scripts\backup_system.py --output data\backups\$(Get-Date -Format 'yyyyMMdd_HHmm')
+
+# Restore the latest snapshot (dry run supported)
+python scripts\restore_system.py --snapshot <path> --dry-run
+```
+
+### VirtualBox / WSL2 Checklist
+
+- Ensure the Ubuntu client VM or WSL2 distribution exposes TCP ports 5000 (MCP) and 5672/6379 (if using RabbitMQ/Redis).
+- Share a host-only adapter so Windows and Ubuntu can resolve each other via static IPs or DNS entries.
+- When migrating to Windows 11, export the `.env` file and the `data/` knowledge cache; import them after re-provisioning VirtualBox.
+- Enable virtualization extensions (VT-x/AMD-V) in BIOS for stable instrumentation performance on the guest clients.
+
+---
+
 ## ⚙️ Configuration
 
 ### Environment Variables (.env)
@@ -401,6 +482,43 @@ security:
 6. **Response**: Send payload + reasoning chain to client
 7. **Feedback Loop**: Receive execution results and refine strategies
 8. **Learning**: Update embeddings and knowledge cache
+
+---
+
+## 🌐 Ecosystem Topology
+
+```
+         ┌───────────────────────────┐
+         │  Windows Host (Server)    │
+         │  • MCP API / WebSockets   │
+         │  • LLM + Knowledge Fusion │
+         │  • Defense Integrations   │
+         └────────────┬──────────────┘
+                      │
+        ┌─────────────┴──────────────┐
+        │                            │
+┌───────▼────────┐         ┌─────────▼────────┐
+│ Ubuntu Client  │         │ Ubuntu Client    │
+│ (VirtualBox/   │  ...    │ (Bare-metal/WSL) │
+│  Physical)     │         │                   │
+│ • Payload Exec │         │ • Instrumentation │
+│ • Coverage     │         │ • Crash Analysis  │
+└───────┬────────┘         └─────────┬────────┘
+        │                              │
+        └────────────┬─────────────────┘
+                     │ Results & Metrics
+                     ▼
+         ┌───────────────────────────┐
+         │ Shared Storage / DB       │
+         │ • PostgreSQL / SQLite     │
+         │ • Redis Cache             │
+         │ • Backup Snapshots        │
+         └───────────────────────────┘
+```
+
+- **Transport Mix**: MCP over stdio for local tooling, HTTPS/WebSocket for remote clients, RabbitMQ/Redis (optional) for distributed queueing.
+- **Observability Loop**: Metrics streamed to Prometheus exporters (`src/monitoring/metrics_collector.py`) and visualised via the dashboard web server.
+- **Defense Feedback**: WAF/IDS telemetry is ingested into `src/defense/log_aggregator.py` and feeds back into the LLM judge to steer payload selection.
 
 ---
 
@@ -825,31 +943,26 @@ python scripts/benchmark.py
 
 ---
 
-## 📖 Additional Resources
+## 📚 Documentation Map
 
-### Documentation
+| Guide | Description | When to Use |
+| ----- | ----------- | ----------- |
+| [docs/SETUP.md](docs/SETUP.md) | End-to-end Windows installation (PowerShell + VirtualBox notes). | First-time provisioning or migrating machines. |
+| [docs/API.md](docs/API.md) | REST + MCP endpoint reference with payload schemas. | Building automation or integrating external tooling. |
+| [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) | Deep dive into core services, data stores, and async flows. | Designing new modules or auditing data paths. |
+| [docs/DEFENSE_INTEGRATION.md](docs/DEFENSE_INTEGRATION.md) | How defense signals inform the LLM judge and feedback loop. | Tuning IDS/WAF correlation or adding new defense sources. |
+| [docs/PROTOCOL_GUIDE.md](docs/PROTOCOL_GUIDE.md) | Protocol registry, handshake flows, mutation strategies. | Extending coverage to new industrial/IoT protocols. |
+| [docs/DISTRIBUTED_FUZZING.md](docs/DISTRIBUTED_FUZZING.md) | Task queue topology, worker pools, failure recovery. | Operating large fuzzing campaigns across multiple clients. |
+| [docs/REPORTING_GUIDE.md](docs/REPORTING_GUIDE.md) | Report templates, scheduling, and export automation. | Creating stakeholder deliverables or scheduled summaries. |
+| [docs/MONITORING_GUIDE.md](docs/MONITORING_GUIDE.md) | Metrics catalog and dashboard instructions. | Setting up Prometheus/Grafana or custom alerts. |
+| [docs/LLM_INTEGRATION.md](docs/LLM_INTEGRATION.md) | Model selection, prompt strategies, caching policies. | Switching LLM providers or optimising inference costs. |
 
-- [API Documentation](docs/API.md)
-- [Architecture Guide](docs/ARCHITECTURE.md)
-- [LLM Integration Guide](docs/LLM_INTEGRATION.md)
-- [Setup Guide](docs/SETUP.md)
+Complementary repositories:
 
-### Related Projects
+- **HyFuzz Client (Ubuntu):** Execution agents and instrumentation – https://github.com/your-org/hyfuzz-client-ubuntu
+- **HyFuzz Specifications:** Shared protocol schemas and payload dictionaries – https://github.com/your-org/hyfuzz-specs
 
-- [HyFuzz Client (Ubuntu)](https://github.com/your-org/hyfuzz-client-ubuntu)
-- [HyFuzz Protocol Specs](https://github.com/your-org/hyfuzz-specs)
-
-### Research Papers
-
-- Chain-of-Thought Prompting: Wei et al. 2022
-- Retrieval-Augmented Generation: Guu et al. 2020
-- Fuzzing: Böhme et al. 2021
-
-### External Links
-
-- [Ollama Documentation](https://github.com/ollama/ollama)
-- [MCP Protocol Specification](https://spec.modelcontextprotocol.io)
-- [MITRE CWE Database](https://cwe.mitre.org)
+Further reading: Chain-of-Thought Prompting (Wei et al., 2022), Retrieval-Augmented Generation (Guu et al., 2020), Coverage-Guided Fuzzing (Böhme et al., 2021).
 
 ---
 
@@ -935,21 +1048,26 @@ Should generate payload or return timeout error gracefully
 ## 🗺️ Roadmap
 
 ### Phase 1 ✅ Complete
-- [x] MCP Protocol implementation
-- [x] Basic LLM integration
-- [x] HTTP transport layer
+- [x] MCP protocol foundation
+- [x] Initial LLM-assisted payload generation
+- [x] HTTP + WebSocket transports
 
-### Phase 2 ✅ In Progress
-- [x] CoT reasoning engine
-- [x] Graph DB knowledge base
-- [x] Vector DB embeddings
-- [ ] Feedback loop implementation
+### Phase 2 ✅ Complete
+- [x] Chain-of-Thought reasoning engine
+- [x] Dual knowledge base (graph + vector)
+- [x] Feedback loop scaffolding and telemetry hooks
 
-### Phase 3 🚀 Planned
-- [ ] STATEFUL fuzzing
-- [ ] Adaptive strategy tuning
-- [ ] Multi-target coordination
-- [ ] Performance optimization
+### Phase 3 ✅ Complete
+- [x] Defense-aware judging & analytics pipeline
+- [x] Distributed tasking + monitoring dashboard
+- [x] Protocol expansion (CoAP, Modbus, MQTT, HTTP, gRPC, JSON-RPC)
+- [x] Reporting, notifications, and backup automation
+
+### Phase 4 🚧 Planned
+- [ ] Hardware-in-the-loop fuzzing adapters
+- [ ] Automated campaign risk scoring for executive reports
+- [ ] Fine-tuned local LLM models for specific protocol families
+- [ ] Continuous compliance auditing and signed artefact delivery
 
 ---
 
@@ -973,23 +1091,22 @@ Should generate payload or return timeout error gracefully
 
 ## 📊 Statistics
 
-- **Total Lines of Code**: ~8,000+
-- **Test Coverage**: 82%
-- **Documentation**: 95% complete
-- **Code Quality**: A grade (pylint)
+- **Source footprint**: ~28,000 lines (Phase 3 aggregate across src/, tests/, docs/).
+- **Automated checks**: CI workflows cover linting, unit/integration/perf suites, dependency scanning.
+- **Knowledge assets**: >5,000 CWE nodes, >100,000 CVE mappings, on-disk embeddings cache shipped in `data/knowledge_cache/`.
+- **Operational scripts**: 30+ automation helpers under `scripts/` (provisioning, monitoring, maintenance).
 
 ---
 
 ## 🔐 Security Notice
 
-This tool is designed for authorized security testing and research only. Unauthorized access to computer systems is illegal. Users are responsible for ensuring compliance with all applicable laws and regulations.
+This platform is provided for sanctioned security testing, red-team simulation, and research within authorized environments only. Ensure written approval from system owners before executing any fuzzing or exploitation workflow.
 
-**Disclaimer**: This software is provided "as-is" without warranty. The authors are not responsible for misuse or damage caused by this tool.
+**Disclaimer:** Software is supplied “as is”, without warranties or guarantees. Operators bear responsibility for compliance with all applicable laws, regulations, and organizational policies.
 
 ---
 
-**Last Updated**: October 2025  
-**Version**: 1.0.0  
-**Status**: Active Development
-
-For the latest updates, visit: https://github.com/your-org/hyfuzz-server-windows
+**Last Updated:** 2025-01-27  
+**Version:** 2.0.0 (Phase 3 complete)  
+**Status:** Stable operations with ongoing Phase 4 planning  
+**Project URL:** https://github.com/your-org/hyfuzz-server-windows
