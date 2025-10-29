@@ -846,3 +846,19 @@ def run_validation_tests():
 
 if __name__ == "__main__":
     run_validation_tests()
+
+@dataclass
+class PayloadRequest:
+    """Request sent to LLM payload generator."""
+
+    prompt: str
+    temperature: float = 0.3
+
+
+@dataclass
+class PayloadResponse:
+    """Response from payload generator."""
+
+    payload: str
+    reasoning: str = ""
+

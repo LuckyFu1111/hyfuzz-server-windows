@@ -830,3 +830,17 @@ if __name__ == "__main__":
     print("=" * 80)
 
     sys.exit(0 if passed == total else 1)
+
+class ValidationError(MCPException):
+    """Raised when request validation fails."""
+
+    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None) -> None:
+        super().__init__(message=message, code="VALIDATION_ERROR", details=details)
+
+
+class ServerError(MCPException):
+    """Raised when internal server errors occur."""
+
+    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None) -> None:
+        super().__init__(message=message, code="SERVER_ERROR", details=details)
+

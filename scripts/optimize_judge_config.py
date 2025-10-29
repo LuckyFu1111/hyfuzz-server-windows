@@ -1,0 +1,1 @@
+print("Optimizing judge config")
