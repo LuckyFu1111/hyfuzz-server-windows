@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use HyFuzz Server Windows in your research, please cite it as follows."
+title: "HyFuzz Server Windows"
+version: 2.0.0
+date-released: 2025-01-27
+authors:
+  - family-names: HyFuzz
+    given-names: Team

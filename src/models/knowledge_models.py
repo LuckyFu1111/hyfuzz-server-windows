@@ -803,3 +803,38 @@ def run_validation_tests():
 
 if __name__ == "__main__":
     run_validation_tests()
+
+@dataclass
+class CWEModel:
+    """Simplified CWE model for testing."""
+
+    identifier: str
+    name: str
+    description: str = ""
+
+
+@dataclass
+class CVEModel:
+    """Simplified CVE model for testing."""
+
+    identifier: str
+    severity: str = "UNKNOWN"
+    description: str = ""
+
+
+@dataclass
+class VulnerabilityInfo:
+    """Combined vulnerability information returned by knowledge lookups."""
+
+    cwe: CWEModel | None = None
+    cve: CVEModel | None = None
+    score: float = 0.0
+
+
+@dataclass
+class KnowledgeQueryResult:
+    """Result container for knowledge queries."""
+
+    query: str
+    results: list["VulnerabilityInfo"]
+

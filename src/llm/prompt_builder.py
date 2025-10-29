@@ -17,6 +17,34 @@ from typing import Optional, Dict, List, Any, Tuple, Union
 from dataclasses import dataclass, field, asdict
 from enum import Enum
 from abc import ABC, abstractmethod
+
+
+@dataclass
+class PromptTemplate:
+    """Reusable prompt template definition."""
+
+    name: str
+    prefix: str = ""
+    suffix: str = ""
+
+    def render(self, content: str) -> str:
+        return f"{self.prefix}{content}{self.suffix}"
+
+
+class PromptBuilder:
+    """Simple prompt builder supporting template application."""
+
+    def __init__(self, template: PromptTemplate | None = None) -> None:
+        self.template = template or PromptTemplate(name="default")
+
+    def build(self, content: str) -> str:
+        return self.template.render(content)
+
+    def with_template(self, template: PromptTemplate) -> "PromptBuilder":
+        self.template = template
+        return self
+
+
 from datetime import datetime
 from enum import auto
 
