@@ -6,6 +6,14 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
+_SEVERITY_LEVELS = {
+    "info": 0,
+    "low": 1,
+    "medium": 2,
+    "high": 3,
+    "critical": 4,
+}
+
 
 @dataclass
 class DefenseEvent:
@@ -19,7 +27,10 @@ class DefenseEvent:
     def tag(self, *labels: str) -> None:
         """Attach labels to the event for later filtering."""
 
-        self.tags.extend(label for label in labels if label not in self.tags)
+        for label in labels:
+            normalized = str(label)
+            if normalized and normalized not in self.tags:
+                self.tags.append(normalized)
 
 
 @dataclass
@@ -32,9 +43,12 @@ class DefenseSignal:
     notes: Optional[str] = None
 
     def escalate(self, new_severity: str, reason: str) -> None:
-        """Escalate the severity of the signal with contextual notes."""
+        """Escalate the severity of the signal with contextual *reason*."""
 
-        self.severity = new_severity
+        current = _SEVERITY_LEVELS.get(self.severity.lower(), 0)
+        incoming = _SEVERITY_LEVELS.get(new_severity.lower(), current)
+        if incoming >= current:
+            self.severity = new_severity.lower()
         self.notes = reason
 
     def clone(self) -> "DefenseSignal":
@@ -77,7 +91,6 @@ class DefenseResult:
         """Convert the result into a serializable dictionary."""
 
         payload: Dict[str, Any] = {
-        return {
             "signal": {
                 "source": self.signal.event.source,
                 "severity": self.signal.severity,
@@ -93,10 +106,9 @@ class DefenseResult:
         if self.context:
             payload["context"] = self.context
         return payload
-        }
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover - illustrative example
     sample_event = DefenseEvent(source="ids", payload={"rule": "sql_injection"})
     sample_event.tag("critical", "sql")
     signal = DefenseSignal(event=sample_event, severity="high", confidence=0.8)
@@ -105,5 +117,6 @@ if __name__ == "__main__":
         actions=[DefenseAction(name="alert", description="Notified SOC")],
         verdict="block",
         rationale="Matched SQLi signature with high confidence.",
+        risk_score=0.92,
     )
     print(result.to_dict())
