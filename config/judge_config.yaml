@@ -1,0 +1,36 @@
+################################################################################
+# Phase 3 Judge Runtime Configuration
+################################################################################
+
+model:
+  provider: "ollama"
+  name: "mistral"
+  temperature: 0.4
+  top_p: 0.9
+  max_output_tokens: 1024
+
+reasoning:
+  enable_chain_of_thought: true
+  max_cot_steps: 8
+  enable_graph_context: true
+  enable_vector_lookup: true
+
+scoring:
+  base_weight: 0.6
+  defense_weight: 0.3
+  context_weight: 0.1
+  verdict_thresholds:
+    safe: 0.3
+    monitor: 0.6
+    critical: 0.85
+
+cache:
+  enabled: true
+  backend: "memory"
+  ttl_seconds: 900
+
+telemetry:
+  enable_metrics: true
+  metrics_namespace: "hyfuzz.judge"
+  publish_feedback: true
+

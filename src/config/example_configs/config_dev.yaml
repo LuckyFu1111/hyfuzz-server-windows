@@ -1,0 +1,58 @@
+# ============================================================================
+# HyFuzz MCP Server - Development Configuration Example
+# ============================================================================
+# This lightweight example demonstrates how to override defaults for a
+# developer workstation.  Only the settings that typically change for local
+# development are specified; all other values fall back to the defaults defined
+# under src/config/default_config.yaml.
+# ============================================================================
+
+environment: "development"
+
+server:
+  host: "127.0.0.1"
+  port: 5100
+  debug: true
+  reload: true
+  workers: 1
+
+transport:
+  default: "stdio"
+  http:
+    enabled: true
+    endpoint: "/mcp"
+    port: 5100
+
+logging:
+  level: "DEBUG"
+  console:
+    enabled: true
+  file:
+    enabled: false
+
+llm:
+  provider: "ollama"
+  primary_model: "mistral"
+  temperature: 0.65
+  max_tokens: 1536
+
+fuzzing:
+  enabled: true
+  protocols:
+    - coap
+    - modbus
+  max_mutations: 256
+  mutation_depth: 2
+
+judge:
+  model: "mistral"
+  temperature: 0.4
+  reasoning:
+    chain_of_thought: true
+    max_steps: 6
+
+monitoring:
+  metrics:
+    enabled: true
+    export_interval: 5
+
