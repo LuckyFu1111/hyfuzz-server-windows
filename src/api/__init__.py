@@ -184,3 +184,17 @@ def get_api_info() -> dict:
 
 # Module-level initialization logging
 logger.debug("API module loaded successfully")
+
+
+if __name__ == "__main__":  # pragma: no cover - manual smoke test
+    from src.config.settings import Settings
+    from src.mcp_server.server import MCPServer
+
+    demo_settings = Settings()
+    demo_server = MCPServer()
+    api_config = setup_api(demo_server, demo_settings)
+    print({
+        "router_has_routes": bool(api_config["router"].registry.routes),
+        "middleware_count": len(api_config["middleware"]),
+        "handler_keys": sorted(api_config["handlers"].keys()),
+    })

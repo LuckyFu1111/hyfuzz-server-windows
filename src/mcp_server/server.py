@@ -35,7 +35,7 @@ import time
 import uuid
 from typing import Dict, Any, Optional, List, Callable, Coroutine, Tuple
 from enum import Enum
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, field, asdict
 from datetime import datetime, timezone
 from pathlib import Path
 import signal
@@ -82,6 +82,7 @@ class TransportType(Enum):
 @dataclass
 class ServerConfig:
     """Server configuration"""
+
     name: str = "hyfuzz-mcp-server"
     version: str = "1.0.0"
     environment: str = "development"
@@ -92,7 +93,7 @@ class ServerConfig:
     port: int = 5000
 
     # Transport configuration
-    transports: List[str] = None
+    transports: List[str] = field(default_factory=lambda: ["stdio"])
     stdio_enabled: bool = True
     http_enabled: bool = False
     websocket_enabled: bool = False
@@ -115,9 +116,11 @@ class ServerConfig:
     enable_caching: bool = True
     enable_metrics: bool = True
 
-    def __post_init__(self):
-        """Validate and set defaults"""
-        if self.transports is None:
+    def __post_init__(self) -> None:
+        """Normalise configuration values after dataclass initialisation."""
+
+        # Defensive copy of transports to avoid accidental mutation sharing
+        if not self.transports:
             self.transports = ["stdio"]
 
 
