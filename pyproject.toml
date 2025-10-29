@@ -123,7 +123,7 @@ gpu = [
 # Advanced monitoring
 monitoring = [
     "sentry-sdk==1.39.1",
-    "datadog==0.47.0",
+    "datadog==0.52.1",
 ]
 
 # Distributed processing
@@ -155,7 +155,7 @@ all = [
     "torch==2.1.0",
     "faiss-gpu==1.7.4",
     "sentry-sdk==1.39.1",
-    "datadog==0.47.0",
+    "datadog==0.52.1",
     "celery==5.3.4",
     "kombu==5.3.4",
 ]
