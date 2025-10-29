@@ -1,0 +1,19 @@
+################################################################################
+# Judge Configuration Defaults
+################################################################################
+
+judge:
+  model: "mistral"
+  temperature: 0.4
+  max_tokens: 1024
+  reasoning:
+    chain_of_thought: true
+    max_steps: 8
+  scoring:
+    base_weight: 0.6
+    defense_weight: 0.3
+    context_weight: 0.1
+  caching:
+    enabled: true
+    ttl_seconds: 900
+

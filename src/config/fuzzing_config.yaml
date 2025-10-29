@@ -1,0 +1,16 @@
+################################################################################
+# Fuzzing Configuration Defaults
+################################################################################
+
+fuzzing:
+  enabled: true
+  protocols:
+    - coap
+    - modbus
+  max_mutations: 512
+  mutation_depth: 3
+  seed_directory: "data/test_data"
+  cache_results: true
+  replay_failures: true
+  report_interval: 10
+
