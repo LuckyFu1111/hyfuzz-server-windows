@@ -1,0 +1,77 @@
+# ============================================================================
+# HyFuzz MCP Server - Production Configuration Example
+# ============================================================================
+# Hardened settings suitable for a production deployment.  These values
+# prioritise security, stability, and predictable resource usage.
+# ============================================================================
+
+environment: "production"
+
+server:
+  host: "0.0.0.0"
+  port: 8443
+  debug: false
+  reload: false
+  workers: 4
+  max_concurrent_requests: 2000
+
+transport:
+  default: "http"
+  http:
+    enabled: true
+    endpoint: "/mcp"
+    port: 8443
+    ssl: true
+
+security:
+  auth:
+    enabled: true
+    type: "jwt"
+  tls:
+    enabled: true
+    cert_path: "certs/server.crt"
+    key_path: "certs/server.key"
+  rate_limit:
+    enabled: true
+    requests_per_minute: 600
+
+logging:
+  level: "INFO"
+  console:
+    enabled: false
+  file:
+    enabled: true
+    path: "logs/server.log"
+
+llm:
+  provider: "ollama"
+  primary_model: "mistral"
+  timeout: 120
+  retries: 5
+  backoff_factor: 2.5
+
+fuzzing:
+  enabled: true
+  max_mutations: 512
+  mutation_depth: 4
+  cache_results: true
+  replay_failures: true
+
+judge:
+  model: "mixtral"
+  max_tokens: 1024
+  scoring:
+    base_weight: 0.5
+    defense_weight: 0.35
+    context_weight: 0.15
+
+monitoring:
+  metrics:
+    enabled: true
+    export_interval: 30
+    export_endpoint: "/metrics"
+  alerting:
+    channels:
+      - "slack"
+      - "email"
+

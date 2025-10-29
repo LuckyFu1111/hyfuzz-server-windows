@@ -1,0 +1,16 @@
+################################################################################
+# Vulnerability Scanning Configuration Defaults
+################################################################################
+
+scanning:
+  pattern_matcher:
+    enabled: true
+    max_patterns: 100
+  cve_classifier:
+    enabled: true
+    model: "lightweight"
+  vulnerability_scanner:
+    timeout_seconds: 30
+    parallelism: 4
+    include_defense_logs: true
+

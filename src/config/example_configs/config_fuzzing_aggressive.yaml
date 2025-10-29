@@ -1,0 +1,33 @@
+# ============================================================================
+# HyFuzz MCP Server - Aggressive Fuzzing Profile
+# ============================================================================
+# Enables faster, deeper fuzzing campaigns suited to short-lived stress runs.
+# ============================================================================
+
+environment: "fuzzing-aggressive"
+
+fuzzing:
+  enabled: true
+  mode: "aggressive"
+  protocols:
+    - coap
+    - modbus
+    - mqtt
+  max_mutations: 1024
+  mutation_depth: 5
+  batch_size: 64
+  timeout: 2
+  cache_results: false
+  replay_failures: true
+
+learning:
+  feedback_loop:
+    enabled: true
+    min_confidence: 0.6
+    adjust_after_batches: 1
+
+monitoring:
+  metrics:
+    enabled: true
+    export_interval: 2
+
