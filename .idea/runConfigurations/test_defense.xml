@@ -1,0 +1,13 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration name="Tests - Defense" type="tests" factoryName="py.test">
+    <module name="hyfuzz-server-windows" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="PARAMS" value="tests/unit/test_defense_integrator.py" />
+    <option name="ADD_CONTENT_ROOTS" value="true" />
+    <option name="ADD_SOURCE_ROOTS" value="true" />
+    <envs>
+      <env name="PYTHONUNBUFFERED" value="1" />
+    </envs>
+    <method v="2" />
+  </configuration>
+</component>
