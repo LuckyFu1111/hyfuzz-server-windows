@@ -110,7 +110,7 @@ dev = [
     "ipython==8.18.1",
     "ipdb==0.13.13",
     "memory-profiler==0.61.0",
-    "line-profiler==4.1.1",
+    "line-profiler==5.0.0",
     "py-spy==0.3.14",
 ]
 
@@ -150,7 +150,7 @@ all = [
     "ipython==8.18.1",
     "ipdb==0.13.13",
     "memory-profiler==0.61.0",
-    "line-profiler==4.1.1",
+    "line-profiler==5.0.0",
     "py-spy==0.3.14",
     "torch==2.1.0",
     "faiss-gpu==1.7.4",
